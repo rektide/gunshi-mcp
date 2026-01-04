@@ -4,13 +4,13 @@
 	"description": "Gunshi plugin that exposes CLI commands as MCP tools and loads prompts from prompts/ folder",
 	"main": "gunshi-mcp.js",
 	"scripts": {
- 		"test": "vitest",
- 		"typecheck": "tsgo",
- 		"lint": "oxlint",
- 		"format": "oxfmt",
- 		"format:check": "oxfmt --check",
-  		"build": "concurrently \"npm:typecheck\" \"npm:lint\" \"npm:format:check\" \"npm:test\""
-  	},
+		"test": "vitest",
+		"typecheck": "tsgo",
+		"lint": "oxlint",
+		"format": "oxfmt",
+		"format:check": "oxfmt --check",
+		"build": "concurrently \"npm:typecheck\" \"npm:lint\" \"npm:format:check\" \"npm:test\""
+	},
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/rektide/gunshi-mcp.git"
@@ -35,17 +35,17 @@
 		"./package.json": "./package.json"
 	},
 	"dependencies": {
-		"gunshi": "*",
 		"@modelcontextprotocol/sdk": "*",
+		"gunshi": "*",
 		"package-directory": "*",
 		"zod": "*"
 	},
 	"devDependencies": {
- 		"vitest": "*",
- 		"tsdown": "*",
- 		"@typescript/native-preview": "*",
- 		"oxfmt": "*",
- 		"oxlint": "*",
- 		"concurrently": "*"
- 	}
+		"@typescript/native-preview": "7.0.0-dev.20260104.1",
+		"concurrently": "*",
+		"oxfmt": "*",
+		"oxlint": "*",
+		"tsdown": "0.19.0-beta.2",
+		"vitest": "*"
+	}
 }
