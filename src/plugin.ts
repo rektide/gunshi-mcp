@@ -1,4 +1,5 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js"
+import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js"
 import { packageDirectory } from "package-directory"
 import type { Plugin } from "gunshi/plugin"
 import type { McpPluginOptions, McpExtension } from "./types.js"
@@ -12,6 +13,7 @@ export type { McpExtension }
 interface PluginContext {
 	projectRoot?: string
 	promptsPath: string
+	commands: ReadonlyMap<string, unknown>
 }
 
 /**
@@ -37,6 +39,23 @@ interface PluginContext {
 export default function createMcpPlugin(options: McpPluginOptions = {}): Plugin {
 	let pluginContext: PluginContext | undefined
 	let server: McpServer | undefined
+	let isShuttingDown = false
+
+	const setupShutdownHandlers = () => {
+		const shutdown = async (signal: string) => {
+			if (isShuttingDown) {
+				return
+			}
+			isShuttingDown = true
+			if (options.debug) {
+				console.log(`[gunshi-mcp] Received ${signal}, shutting down...`)
+			}
+			process.exit(0)
+		}
+
+		process.on("SIGTERM", () => shutdown("SIGTERM"))
+		process.on("SIGINT", () => shutdown("SIGINT"))
+	}
 
 	return plugin({
 		id: MCP_PLUGIN_ID,
@@ -48,6 +67,7 @@ export default function createMcpPlugin(options: McpPluginOptions = {}): Plugin 
 				projectRoot,
 				promptsPath:
 					options.promptsDir ?? (projectRoot ? path.join(projectRoot, "prompts") : "prompts"),
+				commands: ctx.subCommands,
 			}
 
 			const serverName = "gunshi-mcp-server"
@@ -65,6 +85,8 @@ export default function createMcpPlugin(options: McpPluginOptions = {}): Plugin 
 					},
 				},
 			)
+
+			setupShutdownHandlers()
 
 			if (options.debug) {
 				console.log("[gunshi-mcp] MCP server initialized:", {
@@ -91,6 +113,13 @@ export default function createMcpPlugin(options: McpPluginOptions = {}): Plugin 
 							port ? `on port ${port}` : "using stdio",
 						)
 					}
+
+					if (!server) {
+						throw new Error("MCP server not initialized")
+					}
+
+					const transport = new StdioServerTransport()
+					await server.connect(transport)
 					console.log("MCP server running...")
 				},
 			})
@@ -99,6 +128,10 @@ export default function createMcpPlugin(options: McpPluginOptions = {}): Plugin 
 				console.log("[gunshi-mcp] Plugin initialized with options:", options)
 				console.log("[gunshi-mcp] Project root:", pluginContext.projectRoot)
 				console.log("[gunshi-mcp] Prompts path:", pluginContext.promptsPath)
+				console.log(
+					"[gunshi-mcp] Registered commands:",
+					Array.from(pluginContext.commands.keys()).join(", "),
+				)
 			}
 		},
 
@@ -112,11 +145,19 @@ export default function createMcpPlugin(options: McpPluginOptions = {}): Plugin 
 							port ? `on port ${port}` : "using stdio",
 						)
 					}
+
+					if (!server) {
+						throw new Error("MCP server not initialized")
+					}
+
+					const transport = new StdioServerTransport()
+					await server.connect(transport)
 				},
 				stopServer: async () => {
 					if (options.debug) {
 						console.log("[gunshi-mcp] Stopping MCP server...")
 					}
+					// Server will close when the stdio transport ends
 				},
 			}
 		},
