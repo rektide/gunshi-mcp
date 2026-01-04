@@ -37,6 +37,36 @@ interface PluginContext {
  * ```
  */
 export default function createMcpPlugin(options: McpPluginOptions = {}): Plugin {
+	const logger = options.logger || {
+		info: (msg, ...args) => {
+			console.log(msg, ...args)
+		},
+		warn: (msg, ...args) => {
+			console.warn(msg, ...args)
+		},
+		error: (msg, ...args) => {
+			console.error(msg, ...args)
+		},
+		debug: (msg, ...args) => {
+			if (options.debug) {
+				console.log(msg, ...args)
+			}
+		},
+		trace: () => {},
+		fatal: (msg, ...args) => {
+			console.error(msg, ...args)
+		},
+		child: () => ({
+			info: () => {},
+			warn: () => {},
+			error: () => {},
+			debug: () => {},
+			trace: () => {},
+			fatal: () => {},
+		}),
+		setLevel: () => {},
+	}
+
 	let pluginContext: PluginContext | undefined
 	let server: McpServer | undefined
 	let isShuttingDown = false
@@ -47,9 +77,7 @@ export default function createMcpPlugin(options: McpPluginOptions = {}): Plugin 
 				return
 			}
 			isShuttingDown = true
-			if (options.debug) {
-				console.log(`[gunshi-mcp] Received ${signal}, shutting down...`)
-			}
+			logger.info(`Received ${signal}, shutting down...`)
 			process.exit(0)
 		}
 
@@ -88,12 +116,10 @@ export default function createMcpPlugin(options: McpPluginOptions = {}): Plugin 
 
 			setupShutdownHandlers()
 
-			if (options.debug) {
-				console.log("[gunshi-mcp] MCP server initialized:", {
-					name: serverName,
-					version: serverVersion,
-				})
-			}
+			logger.debug("[gunshi-mcp] MCP server initialized:", {
+				name: serverName,
+				version: serverVersion,
+			})
 
 			ctx.addCommand("mcp", {
 				name: "mcp",
@@ -107,44 +133,39 @@ export default function createMcpPlugin(options: McpPluginOptions = {}): Plugin 
 				run: async (ctx) => {
 					const args = ctx.values
 					const port = (args.port as number | undefined) ?? options.port
-					if (options.debug) {
-						console.log(
-							"[gunshi-mcp] Starting MCP server...",
-							port ? `on port ${port}` : "using stdio",
-						)
-					}
+					logger.debug(
+						"[gunshi-mcp] Starting MCP server...",
+						port ? `on port ${port}` : "using stdio",
+					)
 
 					if (!server) {
 						throw new Error("MCP server not initialized")
 					}
 
 					const transport = new StdioServerTransport()
+					logger.debug("Connecting stdio transport...")
 					await server.connect(transport)
-					console.log("MCP server running...")
+					logger.info("MCP server running...")
 				},
 			})
 
-			if (options.debug) {
-				console.log("[gunshi-mcp] Plugin initialized with options:", options)
-				console.log("[gunshi-mcp] Project root:", pluginContext.projectRoot)
-				console.log("[gunshi-mcp] Prompts path:", pluginContext.promptsPath)
-				console.log(
-					"[gunshi-mcp] Registered commands:",
-					Array.from(pluginContext.commands.keys()).join(", "),
-				)
-			}
+			logger.debug("[gunshi-mcp] Plugin initialized with options:", options)
+			logger.debug("[gunshi-mcp] Project root:", pluginContext.projectRoot)
+			logger.debug("[gunshi-mcp] Prompts path:", pluginContext.promptsPath)
+			logger.debug(
+				"[gunshi-mcp] Registered commands:",
+				Array.from(pluginContext.commands.keys()).join(", "),
+			)
 		},
 
 		extension: () => {
 			return {
 				startServer: async (serverOptions?: { port?: number }) => {
 					const port = serverOptions?.port ?? options.port
-					if (options.debug) {
-						console.log(
-							"[gunshi-mcp] Starting MCP server...",
-							port ? `on port ${port}` : "using stdio",
-						)
-					}
+					logger.debug(
+						"[gunshi-mcp] Starting MCP server...",
+						port ? `on port ${port}` : "using stdio",
+					)
 
 					if (!server) {
 						throw new Error("MCP server not initialized")
@@ -154,10 +175,8 @@ export default function createMcpPlugin(options: McpPluginOptions = {}): Plugin 
 					await server.connect(transport)
 				},
 				stopServer: async () => {
-					if (options.debug) {
-						console.log("[gunshi-mcp] Stopping MCP server...")
-					}
-					// Server will close when the stdio transport ends
+					logger.debug("[gunshi-mcp] Stopping MCP server...")
+					// Server will close when stdio transport ends
 				},
 			}
 		},
