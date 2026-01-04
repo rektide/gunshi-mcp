@@ -1,28 +1,23 @@
 {
-  "compilerOptions": {
-    "module": "ESNext",
-    "moduleResolution": "bundler",
-    "target": "ESNext",
-    "lib": ["ESNext"],
-    "noEmit": true,
-    "isolatedDeclarations": true,
-    "allowImportingTsExtensions": true,
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
-    "strict": true,
-    "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true,
-    "resolveJsonModule": true,
-    "declaration": true,
-    "declarationMap": false,
-    "outDir": "./build",
-    "rootDir": "./"
-  },
-  "include": [
-    "./**/*.ts"
-  ],
-  "exclude": [
-    "./node_modules",
-    "./build"
-  ]
+	"compilerOptions": {
+		"module": "ESNext",
+		"moduleResolution": "bundler",
+		"target": "ESNext",
+		"lib": ["ESNext"],
+		"noEmit": true,
+		"isolatedDeclarations": true,
+		"allowImportingTsExtensions": true,
+		"esModuleInterop": true,
+		"allowSyntheticDefaultImports": true,
+		"strict": true,
+		"skipLibCheck": true,
+		"forceConsistentCasingInFileNames": true,
+		"resolveJsonModule": true,
+		"declaration": true,
+		"declarationMap": false,
+		"outDir": "./build",
+		"rootDir": "./"
+	},
+	"include": ["./**/*.ts"],
+	"exclude": ["./node_modules", "./build"]
 }

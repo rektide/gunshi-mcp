@@ -2,7 +2,30 @@
 	"name": "gunshi-mcp",
 	"version": "1.0.0",
 	"description": "Gunshi plugin that exposes CLI commands as MCP tools and loads prompts from prompts/ folder",
+	"keywords": [
+		"cli",
+		"gunshi",
+		"mcp",
+		"model-context-protocol",
+		"plugin"
+	],
+	"homepage": "https://github.com/rektide/gunshi-mcp#readme",
+	"bugs": {
+		"url": "https://github.com/rektide/gunshi-mcp/issues"
+	},
+	"license": "MIT",
+	"author": "rektide de la faye",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/rektide/gunshi-mcp.git"
+	},
+	"type": "module",
 	"main": "gunshi-mcp.js",
+	"module": "gunshi-mcp.js",
+	"exports": {
+		".": "./gunshi-mcp.js",
+		"./package.json": "./package.json"
+	},
 	"scripts": {
 		"test": "vitest",
 		"typecheck": "tsgo",
@@ -11,29 +34,6 @@
 		"format:check": "oxfmt --check",
 		"build": "concurrently \"npm:typecheck\" \"npm:lint\" \"npm:format:check\" \"npm:test\""
 	},
-	"repository": {
-		"type": "git",
-		"url": "git+https://github.com/rektide/gunshi-mcp.git"
-	},
-	"keywords": [
-		"gunshi",
-		"mcp",
-		"model-context-protocol",
-		"plugin",
-		"cli"
-	],
-	"author": "rektide de la faye",
-	"license": "MIT",
-	"type": "module",
-	"bugs": {
-		"url": "https://github.com/rektide/gunshi-mcp/issues"
-	},
-	"homepage": "https://github.com/rektide/gunshi-mcp#readme",
-	"module": "gunshi-mcp.js",
-	"exports": {
-		".": "./gunshi-mcp.js",
-		"./package.json": "./package.json"
-	},
 	"dependencies": {
 		"@modelcontextprotocol/sdk": "*",
 		"gunshi": "*",
@@ -41,6 +41,7 @@
 		"zod": "*"
 	},
 	"devDependencies": {
+		"@types/node": "^25.0.3",
 		"@typescript/native-preview": "7.0.0-dev.20260104.1",
 		"concurrently": "*",
 		"oxfmt": "*",

@@ -1,342 +1,186 @@
-# gunshi-mcp
+# Gunshi MCP Plugin - Development Guide
 
-> Gunshi plugin that exposes CLI commands as Model Context Protocol (MCP) tools and loads prompts from a `prompts/` folder
+A Gunshi plugin that exposes CLI commands as Model Context Protocol (MCP) tools and loads prompts from a `prompts/` folder at the project root.
 
-[![npm version](https://img.shields.io/npm/v/gunshi-mcp.svg)](https://www.npmjs.com/package/gunshi-mcp)
-[![License](https://img.shields.io/npm/l/gunshi-mcp.svg)](LICENSE)
-[![TypeScript](https://img.shields.io/badge/TypeScript-Ready-blue.svg)](https://www.typescriptlang.org/)
+> **🚧 Early Development - Foundation Phase**
+>
+> This README is focused on guiding development forward. For end-user documentation, see DOCS.md when ready.
 
-## Table of Contents
+## Overview
 
-- [Features](#features)
-- [Installation](#installation)
-- [Usage](#usage)
-- [Configuration](#configuration)
-- [MCP Tools](#mcp-tools)
-- [MCP Prompts](#mcp-prompts)
-- [API](#api)
-- [Examples](#examples)
-- [Development](#development)
-- [Contributing](#contributing)
-- [License](#license)
+This plugin integrates Gunshi's command system with the Model Context Protocol, allowing LLMs to interact with your CLI commands through a standardized interface. It automatically:
 
-## Features
+- Discovers all registered Gunshi commands
+- Registers each command as an MCP tool
+- Loads prompt templates from a `prompts/` folder
+- Provides a stdin/stdout MCP server for communication
 
-- 🚀 **Expose Gunshi Commands as MCP Tools** - Automatically discovers all registered Gunshi commands and creates MCP tools for each
-- 📝 **Prompt Loading System** - Loads and registers prompts from a `prompts/` folder at project root
-- 🔌 **Simple Plugin Integration** - Drop-in Gunshi plugin with minimal setup
-- 🎯 **Type-Safe** - Full TypeScript support with proper type definitions
-- ⚡ **Zero Configuration** - Works out of the box with sensible defaults
-- 🛠️ **Extensible** - Customize prompts directory, server options, and more
-- 🧪 **Tested** - Comprehensive test suite with Vitest
+## Project Status
 
-## Installation
+**🚧 Early Development - Foundation Phase**
 
-```bash
-# Using pnpm (recommended)
-pnpm add gunshi-mcp
+The project is in the initial setup phase. Core infrastructure is being built to support MCP integration.
 
-# Using npm
-npm install gunshi-mcp
+### Completed
 
-# Using yarn
-yarn add gunshi-mcp
-```
+- ✅ Package configuration
+- ✅ TypeScript configuration
+- ✅ Build script setup
+- ✅ Project structure defined
+- ✅ README created
 
-### Peer Dependencies
+### In Progress
 
-Ensure you have `gunshi` installed in your project:
+- Setting up directory structure
+- Installing dependencies
+- Core plugin infrastructure
+
+## Development Guide
+
+### Quick Start for Developers
 
 ```bash
-pnpm add gunshi
+# 1. Install dependencies
+pnpm install
+
+# 2. Run quality checks (typecheck, lint, format, test in parallel)
+npm run build
+
+# 3. View tasks
+bd ready
+
+# 4. Start working on a task
+bd show <task-id>
+bd update <task-id> --status in_progress
+
+# 5. When done
+bd close <task-id>
 ```
 
-## Usage
+### Task Tracking
 
-### Basic Setup
+This project uses **beads** for task management. The development plan is organized into 8 epics:
 
-```typescript
-import { cli, define } from 'gunshi'
-import mcpPlugin from 'gunshi-mcp'
+1. **Project Setup and Foundation** - Configuration and build tooling
+2. **Core Plugin Infrastructure** - Gunshi plugin factory and command registration
+3. **MCP Server Integration** - MCP server setup and stdio transport
+4. **Command Discovery** - Mapping Gunshi commands to MCP tools
+5. **Prompt Loading System** - Loading prompts from prompts/ folder
+6. **Tool Execution Engine** - Handling MCP tool calls and executing commands
+7. **Testing and Validation** - Unit and integration tests
+8. **Documentation and Examples** - User-facing documentation
 
-// Define your Gunshi commands
-const command = define({
-	name: 'my-cli',
-	description: 'My CLI application',
-	args: {
-		verbose: {
-			type: 'boolean',
-			description: 'Enable verbose output'
-		}
-	},
-	run: ctx => {
-		if (ctx.values.verbose) {
-			console.log('Verbose mode enabled')
-		}
-		console.log('My CLI running...')
-	}
-})
-
-// Add MCP plugin and start CLI
-await cli(process.argv.slice(2), command, {
-	name: 'my-cli',
-	version: '1.0.0',
-	plugins: [mcpPlugin()]
-})
-```
-
-### Starting the MCP Server
+#### View Tasks
 
 ```bash
-# Run MCP server command
-my-cli mcp
+# See all ready tasks (no blockers)
+bd ready
 
-# With options
-my-cli mcp --port 3000
+# See all tasks by status
+bd list --status open
+bd list --status in_progress
+
+# Show task details
+bd show <task-id>
+
+# See blocked tasks and why
+bd blocked
 ```
 
-### Connecting MCP Client
+## Architecture
 
-The MCP server will expose all your Gunshi commands as tools:
-
-```bash
-# Example MCP client connection
-mcp-client connect --transport stdio --command "my-cli mcp"
-```
-
-## Configuration
-
-The plugin accepts configuration options:
-
-```typescript
-import mcpPlugin from 'gunshi-mcp'
-
-const plugin = mcpPlugin({
-	promptsDir: './custom-prompts',  // Custom prompts directory
-	debug: true,                       // Enable debug logging
-})
-```
-
-### Options
-
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `promptsDir` | `string` | `{projectRoot}/prompts` | Path to prompts directory |
-| `debug` | `boolean` | `false` | Enable debug logging |
-
-## MCP Tools
-
-Every Gunshi command in your CLI is automatically exposed as an MCP tool with:
-
-- **Tool Name**: Same as command name (kebab-case)
-- **Description**: Command description from metadata
-- **Input Schema**: Automatically generated from command arguments
-
-### Example
-
-If you have a Gunshi command:
-
-```typescript
-const deployCommand = define({
-	name: 'deploy',
-	description: 'Deploy application',
-	args: {
-		environment: {
-			type: 'string',
-			required: true,
-			description: 'Target environment'
-		},
-		version: {
-			type: 'string',
-			description: 'Version to deploy'
-		}
-	},
-	run: ctx => {
-		console.log(`Deploying to ${ctx.values.environment}`)
-	}
-})
-```
-
-The MCP tool will be:
-
-```json
-{
-  "name": "deploy",
-  "description": "Deploy application",
-  "inputSchema": {
-    "type": "object",
-    "properties": {
-      "environment": {
-        "type": "string",
-        "description": "Target environment"
-      },
-      "version": {
-        "type": "string",
-        "description": "Version to deploy"
-      }
-    },
-    "required": ["environment"]
-  }
-}
-```
-
-## MCP Prompts
-
-Create markdown files in your `prompts/` directory to expose them as MCP prompts:
-
-### Prompt Format
-
-```markdown
-# Code Review Prompt
-
-Review the following code for best practices, performance, and potential issues.
-
-## Usage
-
-This prompt provides a structured approach to code review focusing on:
-- Code quality and readability
-- Performance considerations
-- Security concerns
-- Best practices adherence
-
-## Example
-
-When reviewing code, consider:
-1. Are there any obvious bugs or edge cases?
-2. Is code readable and maintainable?
-3. Are there any performance optimizations?
-4. Are security best practices followed?
-```
-
-### File Structure
+### Components
 
 ```
-my-project/
-├── prompts/
-│   ├── code-review.md
-│   ├── documentation.md
-│   └── refactoring.md
-└── src/
-    └── cli.ts
+Gunshi CLI
+    ↓
+Gunshi Plugin System
+    ↓
+gunshi-mcp Plugin
+    ↓
+├─ MCP Server (@modelcontextprotocol/sdk)
+├─ Command Discovery (accesses Gunshi command registry)
+├─ Prompt Loader (reads prompts/ folder)
+└─ Tool Execution Handler
 ```
 
-The prompts will be registered and available to MCP clients.
+### Key Responsibilities
 
-## API
+**Plugin Factory**
 
-### `createMcpPlugin(options?)`
+- Creates Gunshi plugin with `plugin()` function
+- Registers `mcp` command using `ctx.addCommand()`
+- Detects project root via `package-directory`
+- Provides configuration options
 
-Creates a Gunshi MCP plugin instance.
+**MCP Server**
 
-```typescript
-import { createMcpPlugin } from 'gunshi-mcp'
+- Initializes `McpServer` instance
+- Configures stdio transport
+- Exposes tools and prompts to MCP clients
 
-const plugin = createMcpPlugin({
-	promptsDir: './prompts',
-	debug: false
-})
-```
+**Command Discovery**
 
-### Plugin Extension
+- Accesses Gunshi command registry (likely via `ctx.env.subCommands`)
+- Maps command arguments to Zod schemas
+- Registers each command as MCP tool with `server.registerTool()`
 
-The plugin extends command context with MCP server controls:
+**Prompt Loader**
 
-```typescript
-interface McpExtension {
-	startServer: (options?: { port?: number }) => Promise<void>
-	stopServer: () => Promise<void>
-}
-```
+- Scans `prompts/` folder at project root
+- Parses `.md` files for prompt templates
+- Registers prompts with `server.registerPrompt()`
 
-### Accessing Extension
+**Tool Execution**
 
-```typescript
-const command = define({
-	name: 'my-cli',
-	run: ctx => {
-		const mcp = ctx.extensions['mcp']
-		await mcp.startServer({ port: 3000 })
-	}
-})
-```
+- Receives MCP tool calls
+- Parses arguments from MCP request
+- Executes corresponding Gunshi command
+- Returns results in MCP format
 
-## Examples
+## Development Workflow
 
-### Complete Example
+### Prerequisites
 
-```typescript
-import { cli, define } from 'gunshi'
-import mcpPlugin from 'gunshi-mcp'
-
-// Define multiple commands
-const buildCommand = define({
-	name: 'build',
-	description: 'Build application',
-	args: {
-		watch: {
-			type: 'boolean',
-			description: 'Watch for changes'
-		}
-	},
-	run: ctx => {
-		console.log('Building...')
-	}
-})
-
-const testCommand = define({
-	name: 'test',
-	description: 'Run tests',
-	args: {
-		coverage: {
-			type: 'boolean',
-			description: 'Generate coverage report'
-		}
-	},
-	run: ctx => {
-		console.log('Running tests...')
-	}
-})
-
-// Setup CLI with MCP plugin
-await cli(process.argv.slice(2), [buildCommand, testCommand], {
-	name: 'dev-cli',
-	version: '1.0.0',
-	subCommands: {
-		build: buildCommand,
-		test: testCommand
-	},
-	plugins: [mcpPlugin({ debug: true })]
-})
-```
-
-See [examples/](./examples/) for more usage examples.
-
-## Development
+- Node.js (v18 or higher)
+- pnpm (preferred package manager)
+- beads (task tracker, see AGENTS.md)
 
 ### Setup
 
 ```bash
 # Clone repository
-git clone https://github.com/rektide/gunshi-mcp.git
+git clone <repo-url>
 cd gunshi-mcp
 
 # Install dependencies
 pnpm install
 
-# Run typecheck
-npm run typecheck
-
-# Run linter
-npm run lint
-
-# Run tests
-npm test
-
-# Build (runs typecheck, lint, format check, and tests)
+# Verify setup
 npm run build
 ```
 
-### Running Tests
+### Adding New Features
+
+1. **Create task**: Use `bd create` to add tasks for new features
+2. **Implement**: Write code following existing patterns
+3. **Test**: Run `npm run build` to verify typecheck, lint, and tests
+4. **Commit**: Commit changes with clear messages
+5. **Close task**: Mark task complete with `bd close <id>`
+
+### Code Style
+
+- Use TypeScript for all code
+- Prefer `.ts` files over `.js`
+- Run `oxfmt` before committing
+- No comments unless explicitly needed
+- Follow existing patterns in the codebase
+
+## Testing
+
+### Test Framework
+
+Uses **Vitest** for unit and integration tests.
 
 ```bash
 # Run all tests
@@ -345,51 +189,100 @@ npm test
 # Run tests in watch mode
 npm test -- --watch
 
-# Run tests with coverage
-npm test -- --coverage
+# Run specific test file
+npm test -- tests/fileName.test.ts
 ```
 
-### Code Style
+### Integration Tests
 
-This project uses:
-- **oxfmt** for code formatting
-- **oxlint** for linting
-- **TypeScript** strict mode with isolated declarations
+Integration tests will validate:
 
-Before committing:
+- MCP server startup and connection
+- Tool registration from Gunshi commands
+- Prompt loading from prompts/ folder
+- Tool execution and response formatting
+
+## Project Structure
+
+```
+gunshi-mcp/
+├── src/
+│   └── index.ts              # Main plugin entry point
+├── tests/
+│   ├── index.test.ts          # Plugin tests
+│   ├── mcp-server.test.ts    # MCP server tests
+│   └── integration.test.ts   # End-to-end tests
+├── prompts/                   # Example prompts folder (for users)
+├── package.json              # Package configuration
+├── tsconfig.json            # TypeScript configuration
+└── README.md               # This file
+```
+
+## Next Steps for Developers
+
+### Immediate Tasks (Ready to Start)
 
 ```bash
-npm run format
-npm run lint
-npm run typecheck
+# View ready tasks
+bd ready
+
+# Likely next tasks:
+# - gunshi-mcp-ghh: Set up directory structure
+# - gunshi-mcp-k06: Install runtime dependencies
+# - gunshi-mcp-6wm: Install development tooling
 ```
 
-Or just run:
+### Recommended Starting Point
 
-```bash
-npm run build
-```
+1. **Set up directory structure** - Create `src/` and `tests/` directories
+2. **Install dependencies** - Run `pnpm install` to get all required packages
+3. **Create plugin factory** - Start with basic Gunshi plugin structure
+4. **Add MCP command** - Register the `mcp` command
+5. **Test basic functionality** - Verify plugin loads without errors
+
+### Technical Research Needed
+
+Before implementing, research:
+
+- **Gunshi command registry access**: How to access all registered commands from a plugin
+- **Command argument schemas**: How Gunshi defines argument types for schema mapping
+- **MCP tool lifecycle**: How tools are called and how to return results
+- **Project root detection**: Using `package-directory` for finding prompts/ folder
+
+## Dependencies
+
+### Runtime
+
+- `gunshi` - CLI framework
+- `@modelcontextprotocol/sdk` - MCP TypeScript SDK
+- `package-directory` - Project root detection
+- `zod` - Schema validation
+
+### Development
+
+- `vitest` - Testing framework
+- `tsdown` - TypeScript bundler
+- `@typescript/native-preview` - TypeScript type checking
+- `oxfmt` - Code formatter
+- `oxlint` - Linter
+- `concurrently` - Run multiple npm scripts in parallel
 
 ## Contributing
 
-Contributions are welcome! Please read our contributing guidelines and submit pull requests to the main branch.
-
-### Development Workflow
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Make your changes
-4. Run tests and linting (`npm run build`)
-5. Commit your changes (`git commit -m 'Add amazing feature'`)
-6. Push to the branch (`git push origin feature/amazing-feature`)
-7. Open a Pull Request
+1. Check `bd ready` for available tasks
+2. Claim a task with `bd update <id> --status in_progress`
+3. Implement the feature
+4. Run `npm run build` to verify
+5. Commit and push changes
+6. Close the task with `bd close <id>`
 
 ## License
 
-MIT © [rektide de la faye](https://github.com/rektide)
+MIT
 
-## Related
+## Resources
 
-- [gunshi](https://github.com/kazupon/gunshi) - Modern JavaScript CLI framework
-- [Model Context Protocol](https://modelcontextprotocol.io/) - Open protocol for LLM context
-- [@modelcontextprotocol/sdk](https://github.com/modelcontextprotocol/typescript-sdk) - TypeScript SDK for MCP
+- [Gunshi Documentation](https://github.com/kazupon/gunshi)
+- [MCP Specification](https://modelcontextprotocol.io)
+- [MCP TypeScript SDK](https://github.com/modelcontextprotocol/typescript-sdk)
+- [beads Task Tracker](https://github.com/sst/beads)

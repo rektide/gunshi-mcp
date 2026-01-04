@@ -15,6 +15,11 @@ export interface McpPluginOptions {
 	debug?: boolean
 }
 
+export interface McpExtension {
+	startServer: (options?: { port?: number }) => Promise<void>
+	stopServer: () => Promise<void>
+}
+
 export interface CommandMetadata {
 	name: string
 	description: string
