@@ -1,16 +1,26 @@
 {
 	"name": "gunshi-mcp",
 	"version": "1.0.0",
-	"description": "",
-	"main": "index.js",
+	"description": "Gunshi plugin that exposes CLI commands as MCP tools and loads prompts from prompts/ folder",
+	"main": "gunshi-mcp.js",
 	"scripts": {
-		"test": "echo \"Error: no test specified\" && exit 1"
+		"test": "vitest",
+		"typecheck": "tsgo",
+		"lint": "oxlint",
+		"format": "oxfmt",
+		"format:check": "oxfmt --check"
 	},
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/rektide/gunshi-mcp.git"
 	},
-	"keywords": [],
+	"keywords": [
+		"gunshi",
+		"mcp",
+		"model-context-protocol",
+		"plugin",
+		"cli"
+	],
 	"author": "rektide de la faye",
 	"license": "MIT",
 	"type": "module",
@@ -18,5 +28,22 @@
 		"url": "https://github.com/rektide/gunshi-mcp/issues"
 	},
 	"homepage": "https://github.com/rektide/gunshi-mcp#readme",
-	"module": "gunshi-mcp.js"
+	"module": "gunshi-mcp.js",
+	"exports": {
+		".": "./gunshi-mcp.js",
+		"./package.json": "./package.json"
+	},
+	"dependencies": {
+		"gunshi": "*",
+		"@modelcontextprotocol/sdk": "*",
+		"package-directory": "*",
+		"zod": "*"
+	},
+	"devDependencies": {
+		"vitest": "*",
+		"tsdown": "*",
+		"@typescript/native-preview": "*",
+		"oxfmt": "*",
+		"oxlint": "*"
+	}
 }
