@@ -4,12 +4,13 @@
 	"description": "Gunshi plugin that exposes CLI commands as MCP tools and loads prompts from prompts/ folder",
 	"main": "gunshi-mcp.js",
 	"scripts": {
-		"test": "vitest",
-		"typecheck": "tsgo",
-		"lint": "oxlint",
-		"format": "oxfmt",
-		"format:check": "oxfmt --check"
-	},
+ 		"test": "vitest",
+ 		"typecheck": "tsgo",
+ 		"lint": "oxlint",
+ 		"format": "oxfmt",
+ 		"format:check": "oxfmt --check",
+  		"build": "concurrently \"npm:typecheck\" \"npm:lint\" \"npm:format:check\" \"npm:test\""
+  	},
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/rektide/gunshi-mcp.git"
@@ -40,10 +41,11 @@
 		"zod": "*"
 	},
 	"devDependencies": {
-		"vitest": "*",
-		"tsdown": "*",
-		"@typescript/native-preview": "*",
-		"oxfmt": "*",
-		"oxlint": "*"
-	}
+ 		"vitest": "*",
+ 		"tsdown": "*",
+ 		"@typescript/native-preview": "*",
+ 		"oxfmt": "*",
+ 		"oxlint": "*",
+ 		"concurrently": "*"
+ 	}
 }
