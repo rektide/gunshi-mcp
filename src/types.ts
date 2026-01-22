@@ -1,5 +1,3 @@
-import type { LoggerExtension } from "./plugins/logger.js"
-
 export interface McpPluginOptions {
 	/**
 	 * Port for MCP HTTP server (optional, defaults to stdio)
@@ -10,21 +8,6 @@ export interface McpPluginOptions {
 	 * Custom prompts directory path (defaults to {projectRoot}/prompts)
 	 */
 	promptsDir?: string
-
-	/**
-	 * Enable debug logging
-	 */
-	debug?: boolean
-
-	/**
-	 * Logger instance to use for logging
-	 */
-	logger?: LoggerExtension
-
-	/**
-	 * Enable stdio mode (forces logger to stderr)
-	 */
-	stdioMode?: boolean
 }
 
 export interface McpExtension {

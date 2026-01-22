@@ -3,12 +3,14 @@ import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js"
 import { packageDirectory } from "package-directory"
 import type { Plugin } from "gunshi/plugin"
 import type { McpPluginOptions, McpExtension } from "./types.js"
+import type { LoggerExtension } from "./plugins/logger.js"
 import { plugin } from "gunshi/plugin"
 import * as path from "node:path"
 
 export const MCP_PLUGIN_ID = "mcp"
 
 export type { McpExtension }
+export type { LoggerExtension }
 
 interface PluginContext {
 	projectRoot?: string
@@ -22,7 +24,6 @@ interface PluginContext {
  * @param options - Configuration options for the MCP plugin
  * @param options.port - Port for MCP HTTP server (optional, defaults to stdio)
  * @param options.promptsDir - Custom prompts directory path (defaults to {projectRoot}/prompts)
- * @param options.debug - Enable debug logging
  *
  * @returns A gunshi plugin that can be registered with the gunshi app
  *
@@ -32,52 +33,21 @@ interface PluginContext {
  *
  * app.use(createMcpPlugin({
  *   promptsDir: './custom-prompts',
- *   debug: true
  * }))
  * ```
  */
-export default function createMcpPlugin(options: McpPluginOptions = {}): Plugin {
-	const logger = options.logger || {
-		info: (msg, ...args) => {
-			console.log(msg, ...args)
-		},
-		warn: (msg, ...args) => {
-			console.warn(msg, ...args)
-		},
-		error: (msg, ...args) => {
-			console.error(msg, ...args)
-		},
-		debug: (msg, ...args) => {
-			if (options.debug) {
-				console.log(msg, ...args)
-			}
-		},
-		trace: () => {},
-		fatal: (msg, ...args) => {
-			console.error(msg, ...args)
-		},
-		child: () => ({
-			info: () => {},
-			warn: () => {},
-			error: () => {},
-			debug: () => {},
-			trace: () => {},
-			fatal: () => {},
-		}),
-		setLevel: () => {},
-	}
-
-	let pluginContext: PluginContext | undefined
+export default function createMcpPlugin(
+	options: McpPluginOptions = {},
+): Plugin<Record<string, unknown>> {
 	let server: McpServer | undefined
 	let isShuttingDown = false
 
-	const setupShutdownHandlers = () => {
-		const shutdown = async (signal: string) => {
+	const setupShutdownHandlers = (_logger: LoggerExtension) => {
+		const shutdown = async (_signal: string) => {
 			if (isShuttingDown) {
 				return
 			}
 			isShuttingDown = true
-			logger.info(`Received ${signal}, shutting down...`)
 			process.exit(0)
 		}
 
@@ -88,10 +58,11 @@ export default function createMcpPlugin(options: McpPluginOptions = {}): Plugin 
 	return plugin({
 		id: MCP_PLUGIN_ID,
 		name: "MCP Plugin",
+		dependencies: [{ id: "logging", optional: false }],
 
 		setup: async (ctx) => {
 			const projectRoot = await packageDirectory()
-			pluginContext = {
+			const pluginContext: PluginContext = {
 				projectRoot,
 				promptsPath:
 					options.promptsDir ?? (projectRoot ? path.join(projectRoot, "prompts") : "prompts"),
@@ -114,20 +85,31 @@ export default function createMcpPlugin(options: McpPluginOptions = {}): Plugin 
 				},
 			)
 
-			setupShutdownHandlers()
+			const logger = ctx.extensions["logging"] as LoggerExtension | undefined
 
-			logger.debug("[gunshi-mcp] MCP server initialized:", {
-				name: serverName,
-				version: serverVersion,
-			})
+			if (!logger) {
+				throw new Error(
+					"Logging plugin is required. Please add the logging plugin to your application.",
+				)
+			}
+
+			setupShutdownHandlers(logger)
+
+			logger.debug("[gunshi-mcp] MCP server initialized")
+			logger.debug("[gunshi-mcp] Project root:", pluginContext.projectRoot)
+			logger.debug("[gunshi-mcp] Prompts path:", pluginContext.promptsPath)
+			logger.debug(
+				"[gunshi-mcp] Registered commands:",
+				Array.from(pluginContext.commands.keys()).join(", "),
+			)
 
 			ctx.addCommand("mcp", {
 				name: "mcp",
-				description: "Run the MCP server for Model Context Protocol integration",
+				description: "Run the MCP server",
 				args: {
 					port: {
 						type: "number",
-						description: "Port for MCP server (optional, defaults to config)",
+						description: "Port for MCP server (optional, defaults to stdio)",
 					},
 				},
 				run: async (ctx) => {
@@ -148,17 +130,17 @@ export default function createMcpPlugin(options: McpPluginOptions = {}): Plugin 
 					logger.info("MCP server running...")
 				},
 			})
-
-			logger.debug("[gunshi-mcp] Plugin initialized with options:", options)
-			logger.debug("[gunshi-mcp] Project root:", pluginContext.projectRoot)
-			logger.debug("[gunshi-mcp] Prompts path:", pluginContext.promptsPath)
-			logger.debug(
-				"[gunshi-mcp] Registered commands:",
-				Array.from(pluginContext.commands.keys()).join(", "),
-			)
 		},
 
-		extension: () => {
+		extension: (ctx, _cmd) => {
+			const logger = (ctx.extensions as { logging?: LoggerExtension }).logging
+
+			if (!logger) {
+				throw new Error(
+					"Logging plugin is required. Please add the logging plugin to your application.",
+				)
+			}
+
 			return {
 				startServer: async (serverOptions?: { port?: number }) => {
 					const port = serverOptions?.port ?? options.port
