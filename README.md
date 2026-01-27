@@ -1,91 +1,14 @@
-# Gunshi MCP Plugin - Development Guide
+# Gunshi MCP
 
-A Gunshi plugin that exposes CLI commands as Model Context Protocol (MCP) tools and loads prompts from a `prompts/` folder at the project root.
-
-> **🚧 Early Development - Foundation Phase**
->
-> This README is focused on guiding development forward. For end-user documentation, see DOCS.md when ready.
+> A helper kit for getting gratis CLI interfaces when writing MCP
 
 ## Overview
 
 This plugin integrates Gunshi's command system with the Model Context Protocol, allowing LLMs to interact with your CLI commands through a standardized interface. It automatically:
 
-- Discovers all registered Gunshi commands
-- Registers each command as an MCP tool
-- Loads prompt templates from a `prompts/` folder
-- Provides a stdin/stdout MCP server for communication
-
-## Project Status
-
-**🚧 Early Development - Foundation Phase**
-
-The project is in the initial setup phase. Core infrastructure is being built to support MCP integration.
-
-### Completed
-
-- ✅ Package configuration
-- ✅ TypeScript configuration
-- ✅ Build script setup
-- ✅ Project structure defined
-- ✅ README created
-
-### In Progress
-
-- Setting up directory structure
-- Installing dependencies
-- Core plugin infrastructure
-
-## Development Guide
-
-### Quick Start for Developers
-
-```bash
-# 1. Install dependencies
-pnpm install
-
-# 2. Run quality checks (typecheck, lint, format, test in parallel)
-npm run build
-
-# 3. View tasks
-bd ready
-
-# 4. Start working on a task
-bd show <task-id>
-bd update <task-id> --status in_progress
-
-# 5. When done
-bd close <task-id>
-```
-
-### Task Tracking
-
-This project uses **beads** for task management. The development plan is organized into 8 epics:
-
-1. **Project Setup and Foundation** - Configuration and build tooling
-2. **Core Plugin Infrastructure** - Gunshi plugin factory and command registration
-3. **MCP Server Integration** - MCP server setup and stdio transport
-4. **Command Discovery** - Mapping Gunshi commands to MCP tools
-5. **Prompt Loading System** - Loading prompts from prompts/ folder
-6. **Tool Execution Engine** - Handling MCP tool calls and executing commands
-7. **Testing and Validation** - Unit and integration tests
-8. **Documentation and Examples** - User-facing documentation
-
-#### View Tasks
-
-```bash
-# See all ready tasks (no blockers)
-bd ready
-
-# See all tasks by status
-bd list --status open
-bd list --status in_progress
-
-# Show task details
-bd show <task-id>
-
-# See blocked tasks and why
-bd blocked
-```
+- Discovers all MCP tools definitions in `src/tools/` (and `tools/`), prompts in `src/prompts/` (and `prompts/`)
+- Creates `mcp stdio` and `mcp http` command to start the mcp server
+- Adds subcommands for each tool definition, to allow them to be ran as a CLI command
 
 ## Architecture
 
