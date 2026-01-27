@@ -1,4 +1,5 @@
 export * from "./plugin.ts"
+export * from "./mcp-plugin.ts"
 export {
 	ToolResult,
 	ToolContext,

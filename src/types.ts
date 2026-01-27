@@ -39,8 +39,8 @@ export interface GunshiArg {
 	type: "string" | "number" | "boolean" | "custom"
 	description?: string
 	short?: string
-	required?: boolean
-	default?: unknown
+	required?: true
+	default?: string | number | boolean | undefined
 	parse?: (value: string) => unknown
 }
 

@@ -81,8 +81,8 @@ export function zodSchemaToGunshiArgs(
 							: info.type),
 			description: override.description ?? info.description,
 			short: override.short,
-			required: override.required ?? info.required,
-			default: override.default ?? info.default,
+			required: (override.required ?? info.required) ? true : undefined,
+			default: override.default ?? (info.default as string | number | boolean | undefined),
 		}
 
 		if (info.type === "array" && !override.parse) {
