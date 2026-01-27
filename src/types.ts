@@ -49,3 +49,7 @@ export interface McpNewPluginOptions {
 	name?: string
 	version?: string
 }
+
+export interface McpToolExtra {
+	requestId?: string
+}
