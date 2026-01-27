@@ -10,6 +10,7 @@ export {
 	type McpNewPluginOptions,
 } from "./types.ts"
 export { defineTool } from "./define-tool.ts"
+export { zodSchemaToGunshiArgs } from "./zod-to-gunshi.ts"
 export {
 	default as createLoggingPlugin,
 	LOGGING_PLUGIN_ID,
