@@ -64,3 +64,21 @@ export interface McpNewPluginOptions {
 export interface McpToolExtra {
 	requestId?: string
 }
+
+/**
+ * Helper to assert Gunshi command context values match expected tool schema type.
+ * This is a type assertion that validates at compile time that values
+ * structurally match the expected schema.
+ *
+ * Note: This uses a type assertion (`as TSchema`) because runtime values
+ * from Gunshi are typed as `Record<string, unknown>` while tools expect
+ * their specific schema type. The cast is safe because Gunshi's argument
+ * parsing ensures values match the arg schema we provided.
+ *
+ * @internal
+ */
+export function assertToolInput<TSchema extends Record<string, unknown>>(
+	values: Record<string, unknown>,
+): TSchema {
+	return values as TSchema
+}

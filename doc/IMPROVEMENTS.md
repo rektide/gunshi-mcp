@@ -5,48 +5,58 @@ This document tracks potential improvements to the gunshi-mcp project following 
 ## Completed Work (Phases 1-5)
 
 ✅ **Phase 1: Tool Definition API**
+
 - Created `defineTool<TExtensions>()()` factory function
 - Defined `ToolDefinition`, `ToolContext`, `ToolResult` types
 - Full type inference for tool handlers
 
 ✅ **Phase 2: Schema Introspection**
+
 - Created `zodSchemaToGunshiArgs()` for Zod → Gunshi conversion
 - Handles: string, number, boolean, enum, array, object
 - Supports: `.optional()`, `.default()`, `.describe()`
 
 ✅ **Phase 3: Plugin with Dual Registration**
+
 - Created `createMcpPlugin()` that registers tools as Gunshi commands
 - Each tool becomes a CLI command with proper arg definitions
 
 ✅ **Phase 4: Tool Context Builder**
+
 - Created `buildToolContext()` for creating tool contexts
 - Provides extensions, log methods, and metadata
 
 ✅ **Phase 5: Output Formatting**
+
 - Created `extractText()` and `formatResult()` helpers
 - Supports text and JSON output formats
 
 ✅ **Phase 6: MCP Server Tool Registration**
+
 - Tools now registered with `server.registerTool()`
 - Proper ToolResult format with MCP annotations
 
 ## High Priority Improvements
 
 ### 1. Type Safety (Critical)
+
 **Current State**: Multiple `as any` casts throughout codebase
 
 **Why This Matters**:
+
 - Loses TypeScript's type checking benefits
 - Makes refactoring unsafe
 - IDE autocomplete doesn't work properly
 - Runtime type errors not caught at compile time
 
 **Where Used**:
+
 - `src/mcp-plugin.ts`: `cmdCtx.extensions as any`, `cmdCtx.values as any`
 - `src/mcp-plugin.ts`: `tool.inputSchema as any`, `tool.outputSchema as any`
 - `src/zod-to-gunshi.ts`: `tool.inputSchema as Record<string, unknown>`
 
 **Proposed Solution**:
+
 ```typescript
 // Define explicit type parameter for createMcpPlugin
 export interface CreateMcpPluginOptions<E extends Record<string, CommandContextExtension>> {
@@ -64,14 +74,17 @@ const result = await tool.handler(cmdCtx.values, toolCtx)
 ---
 
 ### 2. Tool Registration Tests (High Priority)
+
 **Current State**: Only basic plugin tests in `tests/basic.test.ts`
 
 **Why This Matters**:
+
 - No verification that tools are registered correctly
 - No tests for Zod schema conversion edge cases
 - No integration tests with actual MCP server
 
 **Proposed Tests**:
+
 ```typescript
 // tests/tool-registration.test.ts
 describe("Tool Registration", () => {
@@ -112,14 +125,17 @@ describe("Tool Registration", () => {
 ---
 
 ### 3. Tool Discovery Utility (Medium Priority)
+
 **Current State**: Tools must be manually passed to `createMcpPlugin()`
 
 **Why This Matters**:
+
 - Convenient auto-discovery as mentioned in PLAN-mcp.md
 - Consistent pattern for projects with many tools
 - Reduces boilerplate in plugin setup
 
 **Proposed Solution**:
+
 ```typescript
 // src/discover-tools.ts
 import { readdir } from "node:fs/promises"
@@ -158,14 +174,17 @@ app.use(createMcpPlugin({ tools }))
 ## Medium Priority Improvements
 
 ### 4. Error Handling & Formatting (Medium)
+
 **Current State**: Tool errors and structured content not well-formatted for CLI
 
 **Why This Matters**:
+
 - CLI needs friendly error messages
 - JSON format output needs to be complete
 - ToolResult needs proper isError flag handling
 
 **Proposed Solution**:
+
 ```typescript
 // src/format-result.ts
 export function formatToolError(error: Error): ToolResult {
@@ -210,14 +229,17 @@ export function formatToolResult(result: unknown, format?: "text" | "json"): Too
 ---
 
 ### 5. Global Format Flag (Medium)
+
 **Current State**: Each command needs `format: "json"` arg added manually
 
 **Why This Matters**:
+
 - Consistent output format across all tools
 - User doesn't need to remember `--format json` flag
 - Aligns with standard CLI patterns
 
 **Proposed Solution**:
+
 ```typescript
 // In zodSchemaToGunshiArgs, add format arg automatically
 export function zodSchemaToGunshiArgs(
@@ -243,15 +265,18 @@ export function zodSchemaToGunshiArgs(
 ---
 
 ### 6. Documentation & Examples (Medium)
+
 **Current State**: README.md exists but shows old approach, no end-to-end examples
 
 **Why This Matters**:
+
 - Users need clear examples of the new approach
 - Show both CLI usage and MCP integration
 - Demonstrate tool definition patterns
 
 **Proposed Additions**:
-```markdown
+
+````markdown
 ## Quick Start
 
 ### Defining a Tool
@@ -288,7 +313,7 @@ export const deployTool = defineTool<{
     }
   }
 })
-```
+````
 
 ### Setting Up the Plugin
 
@@ -328,7 +353,8 @@ const app = cli(
 // When connected to MCP client, tools are automatically available
 // Tool calls invoke the same handler as CLI commands
 ```
-```
+
+````
 
 **Estimated Effort**: 1-2 hours
 
@@ -358,21 +384,24 @@ export const myTool = defineTool<{
 }>()({
   // ... ctx.extensions[LOGGER_ID] is now typed
 })
-```
+````
 
 **Estimated Effort**: 1-2 hours (spread across multiple files)
 
 ---
 
 ### 8. Logging Integration (Low)
+
 **Current State**: Uses `console.log()` directly, no integration with Gunshi logger extension
 
 **Why This Matters**:
+
 - Consistent logging format with rest of app
 - Respects global log levels (--verbose, --quiet)
 - Better testability
 
 **Proposed Solution**:
+
 ```typescript
 // src/context.ts
 import type { LoggerExtension } from '../plugins/logger.js'
@@ -402,14 +431,17 @@ export function buildToolContext<E>(
 ---
 
 ### 9. Prompt Registration (Low - Future)
+
 **Current State**: Plugin creates MCP server with `prompts: {}` capability but no prompts registered
 
 **Why This Matters**:
+
 - Complete MCP support includes prompts
 - Aligns with original README plan
 - Could auto-discover from `prompts/` directory
 
 **Proposed Solution**:
+
 ```typescript
 // src/mcp-plugin.ts - in setup
 // After registering tools, register prompts
@@ -430,9 +462,11 @@ for (const file of promptFiles) {
 ---
 
 ### 10. Streaming Support (Low - Future)
+
 **Current State**: No support for long-running tools that need to stream output
 
 **Why This Matters**:
+
 - Better user experience for long operations
 - Aligns with MCP server capabilities
 - Prevents timeout issues
@@ -444,20 +478,24 @@ for (const file of promptFiles) {
 ## Implementation Order Recommendation
 
 ### Sprint 1 (Foundational - 1-2 days)
+
 1. **Type Safety (#1)** - Fix `as any` casts
 2. **Tool Registration Tests (#2)** - Add comprehensive test coverage
 3. **Error Handling (#4)** - Improve CLI error formatting
 
 ### Sprint 2 (Developer Experience - 1 day)
+
 4. **Tool Discovery (#3)** - Auto-discovery from `tools/` directory
 5. **Global Format Flag (#5)** - Add `--format` to all commands
 6. **Documentation (#6)** - Add examples and improve README
 
 ### Sprint 3 (Polish - 1-2 days)
+
 7. **Extension Type Safety (#7)** - Type-safe extension access
 8. **Logging Integration (#8)** - Use Gunshi logger
 
 ### Future Work
+
 9. **Prompt Registration (#9)** - Add prompt support
 10. **Streaming Support (#10)** - Long-running tools
 
@@ -466,10 +504,12 @@ for (const file of promptFiles) {
 ## Technical Debt & Cleanup
 
 ### Unused Files
+
 - `src/plugins/logger.ts` - Keep, used for logging extension
 - Old plugin approach in `src/plugin.ts` - Remove or mark as deprecated
 
 ### Code Quality
+
 - Add JSDoc comments to public APIs
 - Consistent error handling patterns
 - Extract magic strings to constants
@@ -478,16 +518,16 @@ for (const file of promptFiles) {
 
 ## Total Estimated Effort
 
-| Priority | Item | Effort | Cumulative |
-|----------|------|---------|------------|
-| High | Type Safety | 2-3h | 2-3h |
-| High | Tool Registration Tests | 2-3h | 4-6h |
-| Medium | Error Handling | 1-2h | 5-8h |
-| Medium | Global Format Flag | 0.5-1h | 5.5-9h |
-| Medium | Documentation & Examples | 1-2h | 6.5-11h |
-| Low | Extension Type Safety | 1-2h | 7.5-13h |
-| Low | Logging Integration | 0.5-1h | 8-14h |
-| Low | Prompt Registration | 1-2h | 9-16h |
-| Low | Streaming Support | 3-4h | 12-20h |
+| Priority | Item                     | Effort | Cumulative |
+| -------- | ------------------------ | ------ | ---------- |
+| High     | Type Safety              | 2-3h   | 2-3h       |
+| High     | Tool Registration Tests  | 2-3h   | 4-6h       |
+| Medium   | Error Handling           | 1-2h   | 5-8h       |
+| Medium   | Global Format Flag       | 0.5-1h | 5.5-9h     |
+| Medium   | Documentation & Examples | 1-2h   | 6.5-11h    |
+| Low      | Extension Type Safety    | 1-2h   | 7.5-13h    |
+| Low      | Logging Integration      | 0.5-1h | 8-14h      |
+| Low      | Prompt Registration      | 1-2h   | 9-16h      |
+| Low      | Streaming Support        | 3-4h   | 12-20h     |
 
 **Total estimated effort: 12-20 hours**

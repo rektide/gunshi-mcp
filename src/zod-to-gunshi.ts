@@ -8,33 +8,74 @@ interface ZodFieldInfo {
 	enumValues?: string[]
 }
 
-function introspectZodField(schema: unknown): ZodFieldInfo {
-	const s = schema as {
-		_def?: { typeName?: string }
-		description?: string
-	}
+/**
+ * Type guard to check if an object has a _def property (Zod schema)
+ */
+function hasZodDef(obj: unknown): obj is { _def: Record<string, unknown> } {
+	return typeof obj === "object" && obj !== null && "_def" in obj
+}
 
+function introspectZodField(schema: unknown): ZodFieldInfo {
 	let inner = schema
 	let required = true
 	let defaultValue: unknown
-	let description = s.description
+	let description = undefined as string | undefined
 
-	const def = (inner as { _def?: Record<string, unknown> })._def
-
-	if (def?.typeName === "ZodOptional") {
-		required = false
-		inner = (inner as { _def: { innerType?: unknown } })._def.innerType
+	// Extract description from outer schema if present
+	if (typeof inner === "object" && inner !== null && "description" in inner) {
+		description = inner.description as string | undefined
 	}
 
-	if (def?.typeName === "ZodDefault") {
-		defaultValue = (def.defaultValue as () => unknown)()
-		inner = (inner as { _def: { innerType?: unknown } })._def.innerType
+	// Walk through Zod wrappers (ZodOptional, ZodDefault, etc.)
+	while (hasZodDef(inner)) {
+		const def = inner._def
+
+		if (def.typeName === "ZodOptional") {
+			required = false
+			if (
+				hasZodDef(def) &&
+				"innerType" in def &&
+				typeof def.innerType === "object" &&
+				def.innerType !== null
+			) {
+				inner = def.innerType
+			}
+		} else if (def.typeName === "ZodDefault") {
+			if ("defaultValue" in def && typeof def.defaultValue === "function") {
+				try {
+					defaultValue = (def.defaultValue as () => unknown)()
+				} catch {
+					// Default value function might fail, that's ok
+				}
+			}
+			if (
+				hasZodDef(def) &&
+				"innerType" in def &&
+				typeof def.innerType === "object" &&
+				def.innerType !== null
+			) {
+				inner = def.innerType
+			}
+		} else {
+			// Found the actual schema type
+			break
+		}
 	}
 
-	const innerDef = (inner as { _def?: { typeName?: string; values?: unknown[] } })._def
-	description = description ?? (inner as { description?: string }).description
+	// Extract description from inner schema if not found on outer
+	if (
+		!description &&
+		hasZodDef(inner) &&
+		"description" in inner &&
+		typeof inner.description === "string"
+	) {
+		description = inner.description
+	}
 
-	const typeName = innerDef?.typeName
+	// Determine the base type
+	const typeName =
+		hasZodDef(inner) && typeof inner._def.typeName === "string" ? inner._def.typeName : undefined
+
 	switch (typeName) {
 		case "ZodString":
 			return { type: "string", required, default: defaultValue, description }
@@ -42,14 +83,19 @@ function introspectZodField(schema: unknown): ZodFieldInfo {
 			return { type: "number", required, default: defaultValue, description }
 		case "ZodBoolean":
 			return { type: "boolean", required, default: defaultValue, description }
-		case "ZodEnum":
+		case "ZodEnum": {
+			const values =
+				hasZodDef(inner) && "values" in inner._def && Array.isArray(inner._def.values)
+					? (inner._def.values as string[])
+					: undefined
 			return {
 				type: "enum",
 				required,
 				default: defaultValue,
 				description,
-				enumValues: innerDef?.values as string[],
+				enumValues: values,
 			}
+		}
 		case "ZodArray":
 			return { type: "array", required, default: defaultValue, description }
 		case "ZodObject":
@@ -59,9 +105,17 @@ function introspectZodField(schema: unknown): ZodFieldInfo {
 	}
 }
 
+/**
+ * Convert Zod schema to Gunshi argument definitions.
+ * This function handles type-safe conversion from Zod schemas to Gunshi's arg format.
+ *
+ * @param schema - The Zod schema as a record of fields
+ * @param overrides - Optional override for specific arguments (CLI configuration)
+ * @returns Gunshi argument definitions
+ */
 export function zodSchemaToGunshiArgs(
 	schema: Record<string, unknown>,
-	overrides?: Record<string, Partial<GunshiArg>>,
+	overrides?: Partial<Record<string, Partial<GunshiArg>>>,
 ): Record<string, GunshiArg> {
 	const args: Record<string, GunshiArg> = {}
 
@@ -82,7 +136,13 @@ export function zodSchemaToGunshiArgs(
 			description: override.description ?? info.description,
 			short: override.short,
 			required: (override.required ?? info.required) ? true : undefined,
-			default: override.default ?? (info.default as string | number | boolean | undefined),
+			default:
+				override.default ??
+				(typeof info.default === "string" ||
+				typeof info.default === "number" ||
+				typeof info.default === "boolean"
+					? info.default
+					: undefined),
 		}
 
 		if (info.type === "array" && !override.parse) {

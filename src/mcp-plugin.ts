@@ -2,6 +2,7 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js"
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js"
 import { plugin } from "gunshi/plugin"
 import type { ToolDefinition, GunshiArg } from "./types.js"
+import { assertToolInput } from "./types.js"
 import { buildToolContext } from "./context.js"
 import { zodSchemaToGunshiArgs } from "./zod-to-gunshi.js"
 import { formatResult } from "./output.js"
@@ -43,10 +44,7 @@ export function createMcpPlugin(options: McpNewPluginOptions = {}) {
 			toolDefinitions.push(...(options.tools ?? []))
 
 			for (const tool of toolDefinitions) {
-				const convertedArgs = zodSchemaToGunshiArgs(
-					tool.inputSchema as Record<string, unknown>,
-					tool.cli?.args as Record<string, Partial<GunshiArg>> | undefined,
-				)
+				const convertedArgs = zodSchemaToGunshiArgs(tool.inputSchema, tool.cli?.args)
 				const args: Record<string, GunshiArg> = {}
 
 				for (const [name, field] of Object.entries(convertedArgs)) {
@@ -62,9 +60,12 @@ export function createMcpPlugin(options: McpNewPluginOptions = {}) {
 					description: tool.description,
 					args: args,
 					run: async (cmdCtx) => {
-						const toolCtx = buildToolContext(cmdCtx.extensions as any)
-						const result = await tool.handler(cmdCtx.values as any, toolCtx)
-						console.log(formatResult(result, cmdCtx.values.format as "text" | "json" | undefined))
+						const mcpExtension = cmdCtx.extensions?.[MCP_NEW_PLUGIN_ID]
+						const toolCtx = buildToolContext(mcpExtension as Record<string, unknown>)
+						const toolInput = assertToolInput<typeof tool.inputSchema>(cmdCtx.values)
+						const result = await tool.handler(toolInput, toolCtx)
+						const format = cmdCtx.values.format as "text" | "json" | undefined
+						console.log(formatResult(result, format))
 					},
 				})
 			}
@@ -101,21 +102,21 @@ export function createMcpPlugin(options: McpNewPluginOptions = {}) {
 						outputSchema: tool.outputSchema as any,
 					},
 					async (inputArgs: any, extra: any) => {
-						const toolCtx = buildToolContext(ctx.extensions as any, {
+						const toolCtx = buildToolContext(ctx.extensions, {
 							requestId: extra?.requestId,
 						})
-						const result = await tool.handler(inputArgs as any, toolCtx)
+						const result = await tool.handler(inputArgs, toolCtx)
 						return {
-							type: "tool_result",
+							type: "tool_result" as const,
 							toolUseId: tool.name,
 							content: [
 								{
-									type: "text",
+									type: "text" as const,
 									text: formatResult(result),
-									annotations: extra?.annotations as any,
+									annotations: extra?.annotations,
 								},
 							],
-						} as any
+						}
 					},
 				)
 			}
