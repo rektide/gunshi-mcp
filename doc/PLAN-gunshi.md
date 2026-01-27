@@ -67,16 +67,16 @@ server.registerTool('deploy', {
 
 ## Type Mapping: Gunshi Args → Zod Schema
 
-| Gunshi `type` | Zod Schema | Notes |
-|---------------|------------|-------|
-| `string` | `z.string()` | |
-| `boolean` | `z.boolean()` | |
-| `number` | `z.number()` | |
-| `positional` | `z.string()` | Treated as optional string |
-| `custom` | `z.string()` | Accept string, parse at runtime |
-| `required: true` | no `.optional()` | |
-| `default: X` | `.default(X)` | |
-| `description: Y` | `.describe(Y)` | |
+| Gunshi `type`    | Zod Schema       | Notes                           |
+| ---------------- | ---------------- | ------------------------------- |
+| `string`         | `z.string()`     |                                 |
+| `boolean`        | `z.boolean()`    |                                 |
+| `number`         | `z.number()`     |                                 |
+| `positional`     | `z.string()`     | Treated as optional string      |
+| `custom`         | `z.string()`     | Accept string, parse at runtime |
+| `required: true` | no `.optional()` |                                 |
+| `default: X`     | `.default(X)`    |                                 |
+| `description: Y` | `.describe(Y)`   |                                 |
 
 ## Implementation Phases
 
@@ -106,7 +106,7 @@ export default function createMcpPlugin(options: McpPluginOptions = {}) {
         version: options.version ?? "1.0.0"
       })
       ctx.data.set("mcp:server", server)
-      
+
       // Register commands as tools
       for (const [name, command] of ctx.subCommands) {
         registerCommandAsTool(server, name, command, ctx.extensions)
@@ -145,10 +145,10 @@ import type { ArgOptions } from "gunshi"
 
 export function gunshiArgsToZod(args: Record<string, ArgOptions>): z.ZodRawShape {
   const schema: z.ZodRawShape = {}
-  
+
   for (const [name, arg] of Object.entries(args)) {
     let field: z.ZodTypeAny
-    
+
     switch (arg.type) {
       case 'string':
       case 'positional':
@@ -166,20 +166,20 @@ export function gunshiArgsToZod(args: Record<string, ArgOptions>): z.ZodRawShape
       default:
         field = z.string()
     }
-    
+
     if (arg.description) {
       field = field.describe(arg.description)
     }
-    
+
     if (arg.default !== undefined) {
       field = field.default(arg.default)
     } else if (!arg.required) {
       field = field.optional()
     }
-    
+
     schema[name] = field
   }
-  
+
   return schema
 }
 ```
@@ -196,7 +196,7 @@ function registerCommandAsTool(
 ) {
   const zodSchema = gunshiArgsToZod(command.args ?? {})
   const parsers = extractCustomParsers(command.args ?? {})
-  
+
   server.registerTool(name, {
     title: command.name ?? name,
     description: command.description ?? '',
@@ -204,13 +204,13 @@ function registerCommandAsTool(
   }, async (args) => {
     // Apply custom parsers
     const parsed = applyParsers(args, parsers)
-    
+
     // Build command context with full extension access
     const ctx = buildCommandContext(command, parsed, extensions)
-    
+
     // Execute and capture output
     const result = await captureOutput(() => command.run(ctx))
-    
+
     return {
       content: [{ type: 'text', text: result.output }],
       structuredContent: result.returnValue
@@ -226,9 +226,9 @@ function registerCommandAsTool(
 ctx.decorateCommand(baseRunner => async (context) => {
   const logger = ctx.extensions[loggerId]
   const startTime = Date.now()
-  
+
   logger.debug(`[mcp] Executing command: ${context.name}`)
-  
+
   try {
     const result = await baseRunner(context)
     logger.debug(`[mcp] Command ${context.name} completed in ${Date.now() - startTime}ms`)
@@ -253,13 +253,13 @@ interface CapturedOutput {
 async function captureOutput(fn: () => Promise<unknown>): Promise<CapturedOutput> {
   const chunks: string[] = []
   const errChunks: string[] = []
-  
+
   const originalWrite = process.stdout.write.bind(process.stdout)
   const originalErrWrite = process.stderr.write.bind(process.stderr)
-  
+
   process.stdout.write = (chunk: string) => { chunks.push(chunk); return true }
   process.stderr.write = (chunk: string) => { errChunks.push(chunk); return true }
-  
+
   try {
     const returnValue = await fn()
     return {
@@ -331,12 +331,12 @@ const command = defineMcp<{
 }>({
   name: 'deploy',
   description: 'Deploy application',
-  
+
   args: {
     env: { type: 'string', required: true },
     force: { type: 'boolean', short: 'f' }
   },
-  
+
   // MCP-specific overrides (optional)
   mcp: {
     title: 'Deploy Application',
@@ -346,7 +346,7 @@ const command = defineMcp<{
       env: z.enum(['staging', 'production']).describe('Target environment')
     }
   },
-  
+
   run: ctx => {
     ctx.extensions[loggerId].log(`Deploying to ${ctx.values.env}`)
   }
@@ -360,7 +360,7 @@ Tools have full access to all registered plugin extensions:
 ```typescript
 // Command using multiple extensions
 const backupCommand = define<{
-  extensions: 
+  extensions:
     & Record<typeof loggerId, LoggerExtension>
     & Record<typeof configId, ConfigExtension>
     & Record<typeof cacheId, CacheExtension>
@@ -371,7 +371,7 @@ const backupCommand = define<{
     const logger = ctx.extensions[loggerId]
     const config = ctx.extensions[configId]
     const cache = ctx.extensions[cacheId]
-    
+
     logger.log('Starting backup...')
     const backupPath = config.get('backup.destination')
     await cache.set('lastBackup', Date.now())
@@ -383,14 +383,14 @@ const backupCommand = define<{
 
 ## Files to Create/Modify
 
-| File | Purpose |
-|------|---------|
-| `src/types.ts` | Plugin ID, extension interface exports |
-| `src/schema.ts` | `gunshiArgsToZod()` conversion |
-| `src/register.ts` | Command-to-tool registration |
-| `src/capture.ts` | Output capture utilities |
-| `src/plugin.ts` | Plugin with proper types, decorators, lifecycle |
-| `src/define-mcp.ts` | Optional `defineMcp()` helper |
+| File                | Purpose                                         |
+| ------------------- | ----------------------------------------------- |
+| `src/types.ts`      | Plugin ID, extension interface exports          |
+| `src/schema.ts`     | `gunshiArgsToZod()` conversion                  |
+| `src/register.ts`   | Command-to-tool registration                    |
+| `src/capture.ts`    | Output capture utilities                        |
+| `src/plugin.ts`     | Plugin with proper types, decorators, lifecycle |
+| `src/define-mcp.ts` | Optional `defineMcp()` helper                   |
 
 ## Limitations
 

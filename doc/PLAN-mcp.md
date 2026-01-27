@@ -37,26 +37,26 @@ import { loggerId, LoggerExtension } from './plugins/logger/types.js'
 import { configId, ConfigExtension } from './plugins/config/types.js'
 
 export const deployTool = defineTool<{
-  extensions: 
+  extensions:
     & Record<typeof loggerId, LoggerExtension>
     & Record<typeof configId, ConfigExtension>
 }>({
   name: 'deploy',
   title: 'Deploy Application',
   description: 'Deploy to target environment',
-  
+
   inputSchema: {
     env: z.string().describe('Target environment'),
     force: z.boolean().optional().describe('Force deployment'),
     replicas: z.number().default(1)
   },
-  
+
   handler: async (args, ctx) => {
     // Full access to Gunshi extensions
     ctx.extensions[loggerId].log(`Deploying to ${args.env}`)
     const config = ctx.extensions[configId].get('deploy')
-    
-    return { 
+
+    return {
       content: [{ type: 'text', text: `Deployed to ${args.env}` }],
       structuredContent: { success: true, env: args.env }
     }
@@ -85,17 +85,17 @@ const command = {
 
 ## Type Mapping: Zod Schema → Gunshi Args
 
-| Zod Type | Gunshi `type` | Notes |
-|----------|---------------|-------|
-| `z.string()` | `string` | |
-| `z.boolean()` | `boolean` | |
-| `z.number()` | `number` | |
-| `z.enum([...])` | `string` | Could add validation |
-| `z.array(...)` | `custom` | Accept comma-separated |
-| `z.object(...)` | `custom` | Accept JSON string |
-| `.optional()` | `required: false` | |
-| `.default(X)` | `default: X` | |
-| `.describe(Y)` | `description: Y` | |
+| Zod Type        | Gunshi `type`     | Notes                  |
+| --------------- | ----------------- | ---------------------- |
+| `z.string()`    | `string`          |                        |
+| `z.boolean()`   | `boolean`         |                        |
+| `z.number()`    | `number`          |                        |
+| `z.enum([...])` | `string`          | Could add validation   |
+| `z.array(...)`  | `custom`          | Accept comma-separated |
+| `z.object(...)` | `custom`          | Accept JSON string     |
+| `.optional()`   | `required: false` |                        |
+| `.default(X)`   | `default: X`      |                        |
+| `.describe(Y)`  | `description: Y`  |                        |
 
 ## Implementation Phases
 
@@ -114,12 +114,12 @@ export interface ToolDefinition<
   description: string
   inputSchema: TSchema
   outputSchema?: z.ZodRawShape
-  
+
   // CLI-specific overrides
   cli?: {
     args?: Partial<Record<keyof TSchema, Partial<GunshiArg>>>
   }
-  
+
   handler: (
     args: z.infer<z.ZodObject<TSchema>>,
     ctx: ToolContext<TExtensions>
@@ -165,22 +165,22 @@ function introspectZodField(schema: z.ZodTypeAny): ZodFieldInfo {
   let required = true
   let defaultValue: unknown
   let description = schema.description
-  
+
   // Unwrap ZodOptional
   if (inner._def.typeName === 'ZodOptional') {
     required = false
     inner = inner._def.innerType
   }
-  
+
   // Unwrap ZodDefault
   if (inner._def.typeName === 'ZodDefault') {
     defaultValue = inner._def.defaultValue()
     inner = inner._def.innerType
   }
-  
+
   // Get description from inner type if not set
   description = description ?? inner.description
-  
+
   // Determine base type
   const typeName = inner._def.typeName
   switch (typeName) {
@@ -191,12 +191,12 @@ function introspectZodField(schema: z.ZodTypeAny): ZodFieldInfo {
     case 'ZodBoolean':
       return { type: 'boolean', required, default: defaultValue, description }
     case 'ZodEnum':
-      return { 
-        type: 'enum', 
-        required, 
-        default: defaultValue, 
+      return {
+        type: 'enum',
+        required,
+        default: defaultValue,
         description,
-        enumValues: inner._def.values 
+        enumValues: inner._def.values
       }
     case 'ZodArray':
       return { type: 'array', required, default: defaultValue, description }
@@ -212,14 +212,14 @@ export function zodSchemaToGunshiArgs(
   overrides?: Record<string, Partial<GunshiArg>>
 ): Record<string, GunshiArg> {
   const args: Record<string, GunshiArg> = {}
-  
+
   for (const [name, field] of Object.entries(schema)) {
     const info = introspectZodField(field)
     const override = overrides?.[name] ?? {}
-    
+
     const arg: GunshiArg = {
       type: override.type ?? (
-        info.type === 'enum' ? 'string' : 
+        info.type === 'enum' ? 'string' :
         info.type === 'array' ? 'custom' :
         info.type === 'object' ? 'custom' :
         info.type
@@ -229,21 +229,21 @@ export function zodSchemaToGunshiArgs(
       required: override.required ?? info.required,
       default: override.default ?? info.default
     }
-    
+
     // Add custom parser for complex types
     if (info.type === 'array' && !override.parse) {
       arg.parse = (v: string) => v.split(',').map(s => s.trim())
     } else if (info.type === 'object' && !override.parse) {
       arg.parse = (v: string) => JSON.parse(v)
     }
-    
+
     if (override.parse) {
       arg.parse = override.parse
     }
-    
+
     args[name] = arg
   }
-  
+
   return args
 }
 ```
@@ -275,13 +275,13 @@ export default function createMcpPlugin(options: McpPluginOptions = {}) {
 
     setup: async (ctx) => {
       const logger = ctx.extensions[loggerId]
-      
+
       const server = new McpServer({
         name: options.name ?? "gunshi-mcp",
         version: options.version ?? "1.0.0"
       })
       ctx.data.set("mcp:server", server)
-      
+
       // Register each tool as both MCP tool and Gunshi command
       for (const tool of options.tools ?? []) {
         // Register as MCP tool
@@ -294,7 +294,7 @@ export default function createMcpPlugin(options: McpPluginOptions = {}) {
           const toolCtx = buildToolContext(ctx.extensions, extra)
           return tool.handler(args, toolCtx)
         })
-        
+
         // Register as Gunshi command
         ctx.addCommand(tool.name, {
           name: tool.name,
@@ -306,7 +306,7 @@ export default function createMcpPlugin(options: McpPluginOptions = {}) {
             console.log(formatResult(result, cmdCtx.values.format))
           }
         })
-        
+
         logger.debug(`[mcp] Registered tool: ${tool.name}`)
       }
     },
@@ -315,7 +315,7 @@ export default function createMcpPlugin(options: McpPluginOptions = {}) {
     decorateCommand: (baseRunner) => async (context) => {
       const logger = ctx.extensions[loggerId]
       const start = Date.now()
-      
+
       try {
         const result = await baseRunner(context)
         logger.debug(`[mcp] ${context.name} completed in ${Date.now() - start}ms`)
@@ -383,7 +383,7 @@ export function extractText(result: ToolResult): string {
 }
 
 export function formatResult(
-  result: ToolResult, 
+  result: ToolResult,
   format?: 'text' | 'json'
 ): string {
   if (format === 'json' && result.structuredContent) {
@@ -462,29 +462,29 @@ import { configId, ConfigExtension } from './plugins/config/types.js'
 import { cacheId, CacheExtension } from './plugins/cache/types.js'
 
 export const backupTool = defineTool<{
-  extensions: 
+  extensions:
     & Record<typeof loggerId, LoggerExtension>
     & Record<typeof configId, ConfigExtension>
     & Record<typeof cacheId, CacheExtension>
 }>()({
   name: 'backup',
   description: 'Backup data',
-  
+
   inputSchema: {
     path: z.string().describe('Backup path')
   },
-  
+
   handler: async (args, ctx) => {
     const logger = ctx.extensions[loggerId]
     const config = ctx.extensions[configId]
     const cache = ctx.extensions[cacheId]
-    
+
     logger.log('Starting backup...')
     const dest = config.get('backup.destination')
     await cache.set('lastBackup', Date.now())
-    
-    return { 
-      content: [{ type: 'text', text: `Backed up to ${dest}` }] 
+
+    return {
+      content: [{ type: 'text', text: `Backed up to ${dest}` }]
     }
   }
 })
@@ -492,14 +492,14 @@ export const backupTool = defineTool<{
 
 ## Files to Create/Modify
 
-| File | Purpose |
-|------|---------|
-| `src/types.ts` | Plugin ID, extension interface, ToolContext |
-| `src/define-tool.ts` | `defineTool()` API |
-| `src/zod-to-gunshi.ts` | Schema conversion |
-| `src/context.ts` | Tool context builder |
-| `src/output.ts` | Result formatting |
-| `src/plugin.ts` | Plugin with dual registration |
+| File                   | Purpose                                     |
+| ---------------------- | ------------------------------------------- |
+| `src/types.ts`         | Plugin ID, extension interface, ToolContext |
+| `src/define-tool.ts`   | `defineTool()` API                          |
+| `src/zod-to-gunshi.ts` | Schema conversion                           |
+| `src/context.ts`       | Tool context builder                        |
+| `src/output.ts`        | Result formatting                           |
+| `src/plugin.ts`        | Plugin with dual registration               |
 
 ## Limitations
 
@@ -531,14 +531,14 @@ export const analyzeCodeTool = defineTool<{
   name: 'analyze-code',
   title: 'Code Analyzer',
   description: 'Analyze source code for issues',
-  
+
   inputSchema: {
     path: z.string().describe('Path to analyze'),
     rules: z.array(z.string()).optional().describe('Rule IDs to check'),
     format: z.enum(['text', 'json', 'sarif']).default('text'),
     fix: z.boolean().optional().describe('Auto-fix issues')
   },
-  
+
   outputSchema: {
     issues: z.array(z.object({
       file: z.string(),
@@ -547,7 +547,7 @@ export const analyzeCodeTool = defineTool<{
     })),
     count: z.number()
   },
-  
+
   // CLI-specific overrides
   cli: {
     args: {
@@ -557,13 +557,13 @@ export const analyzeCodeTool = defineTool<{
       fix: { short: 'F' }
     }
   },
-  
+
   handler: async ({ path, rules, format, fix }, ctx) => {
     ctx.extensions[loggerId].log(`Analyzing ${path}...`)
-    
+
     const issues = await analyze(path, { rules, fix })
     const output = { issues, count: issues.length }
-    
+
     return {
       content: [{ type: 'text', text: formatIssues(issues, format) }],
       structuredContent: output

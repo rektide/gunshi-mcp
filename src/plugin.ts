@@ -1,81 +1,34 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js"
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js"
 import { packageDirectory } from "package-directory"
-import type { Plugin } from "gunshi/plugin"
-import type { McpPluginOptions, McpExtension } from "./types.js"
-import type { LoggerExtension } from "./plugins/logger.js"
 import { plugin } from "gunshi/plugin"
-import * as path from "node:path"
 
-export const MCP_PLUGIN_ID = "mcp"
+export const MCP_PLUGIN_ID = "mcp" as const
+export type McpPluginId = typeof MCP_PLUGIN_ID
 
-export type { McpExtension }
-export type { LoggerExtension }
-
-interface PluginContext {
-	projectRoot?: string
-	promptsPath: string
-	commands: ReadonlyMap<string, unknown>
+export interface McpExtension {
+	startServer: (options?: { port?: number }) => Promise<void>
+	stopServer: () => Promise<void>
 }
 
-/**
- * Creates a gunshi plugin that provides MCP server functionality
- *
- * @param options - Configuration options for the MCP plugin
- * @param options.port - Port for MCP HTTP server (optional, defaults to stdio)
- * @param options.promptsDir - Custom prompts directory path (defaults to {projectRoot}/prompts)
- *
- * @returns A gunshi plugin that can be registered with the gunshi app
- *
- * @example
- * ```ts
- * import createMcpPlugin from 'gunshi-mcp'
- *
- * app.use(createMcpPlugin({
- *   promptsDir: './custom-prompts',
- * }))
- * ```
- */
-export default function createMcpPlugin(
-	options: McpPluginOptions = {},
-): Plugin<Record<string, unknown>> {
+export interface McpPluginOptions {
+	port?: number
+	promptsDir?: string
+}
+
+export default function createMcpPlugin(options: McpPluginOptions = {}) {
 	let server: McpServer | undefined
-	let isShuttingDown = false
-
-	const setupShutdownHandlers = (_logger: LoggerExtension) => {
-		const shutdown = async (_signal: string) => {
-			if (isShuttingDown) {
-				return
-			}
-			isShuttingDown = true
-			process.exit(0)
-		}
-
-		process.on("SIGTERM", () => shutdown("SIGTERM"))
-		process.on("SIGINT", () => shutdown("SIGINT"))
-	}
 
 	return plugin({
 		id: MCP_PLUGIN_ID,
 		name: "MCP Plugin",
-		dependencies: [{ id: "logging", optional: false }],
 
 		setup: async (ctx) => {
-			const projectRoot = await packageDirectory()
-			const pluginContext: PluginContext = {
-				projectRoot,
-				promptsPath:
-					options.promptsDir ?? (projectRoot ? path.join(projectRoot, "prompts") : "prompts"),
-				commands: ctx.subCommands,
-			}
-
-			const serverName = "gunshi-mcp-server"
-			const serverVersion = "1.0.0"
-
+			await packageDirectory()
 			server = new McpServer(
 				{
-					name: serverName,
-					version: serverVersion,
+					name: "gunshi-mcp-server",
+					version: "1.0.0",
 				},
 				{
 					capabilities: {
@@ -83,24 +36,6 @@ export default function createMcpPlugin(
 						prompts: {},
 					},
 				},
-			)
-
-			const logger = ctx.extensions["logging"] as LoggerExtension | undefined
-
-			if (!logger) {
-				throw new Error(
-					"Logging plugin is required. Please add the logging plugin to your application.",
-				)
-			}
-
-			setupShutdownHandlers(logger)
-
-			logger.debug("[gunshi-mcp] MCP server initialized")
-			logger.debug("[gunshi-mcp] Project root:", pluginContext.projectRoot)
-			logger.debug("[gunshi-mcp] Prompts path:", pluginContext.promptsPath)
-			logger.debug(
-				"[gunshi-mcp] Registered commands:",
-				Array.from(pluginContext.commands.keys()).join(", "),
 			)
 
 			ctx.addCommand("mcp", {
@@ -113,9 +48,10 @@ export default function createMcpPlugin(
 					},
 				},
 				run: async (ctx) => {
-					const args = ctx.values
-					const port = (args.port as number | undefined) ?? options.port
-					logger.debug(
+					const args = ctx.values as { port?: number }
+					const port = args.port ?? options.port
+
+					console.log(
 						"[gunshi-mcp] Starting MCP server...",
 						port ? `on port ${port}` : "using stdio",
 					)
@@ -125,26 +61,17 @@ export default function createMcpPlugin(
 					}
 
 					const transport = new StdioServerTransport()
-					logger.debug("Connecting stdio transport...")
 					await server.connect(transport)
-					logger.info("MCP server running...")
+					console.log("MCP server running...")
 				},
 			})
 		},
 
-		extension: (ctx, _cmd) => {
-			const logger = (ctx.extensions as { logging?: LoggerExtension }).logging
-
-			if (!logger) {
-				throw new Error(
-					"Logging plugin is required. Please add the logging plugin to your application.",
-				)
-			}
-
+		extension: (_ctx) => {
 			return {
 				startServer: async (serverOptions?: { port?: number }) => {
 					const port = serverOptions?.port ?? options.port
-					logger.debug(
+					console.log(
 						"[gunshi-mcp] Starting MCP server...",
 						port ? `on port ${port}` : "using stdio",
 					)
@@ -157,8 +84,7 @@ export default function createMcpPlugin(
 					await server.connect(transport)
 				},
 				stopServer: async () => {
-					logger.debug("[gunshi-mcp] Stopping MCP server...")
-					// Server will close when stdio transport ends
+					console.log("[gunshi-mcp] Stopping MCP server...")
 				},
 			}
 		},

@@ -4,22 +4,23 @@ This document compares the two integration approaches and provides recommendatio
 
 ## Executive Summary
 
-| Aspect | Gunshi → MCP | MCP → Gunshi |
-|--------|--------------|--------------|
-| **Primary audience** | Existing CLI developers | AI-first tool developers |
-| **Schema definition** | Gunshi args | Zod schemas |
-| **Type richness** | Limited (string, number, boolean, positional, custom) | Full Zod expressiveness |
-| **Conversion direction** | Gunshi args → Zod | Zod → Gunshi args |
-| **Conversion fidelity** | High (Gunshi is simpler) | Medium (lossy for complex types) |
-| **Extension access** | Native | Via ToolContext wrapper |
-| **Structured output** | Requires detection | First-class |
-| **CLI ergonomics** | Native (short flags, positional) | Requires `cli` overrides |
+| Aspect                   | Gunshi → MCP                                          | MCP → Gunshi                     |
+| ------------------------ | ----------------------------------------------------- | -------------------------------- |
+| **Primary audience**     | Existing CLI developers                               | AI-first tool developers         |
+| **Schema definition**    | Gunshi args                                           | Zod schemas                      |
+| **Type richness**        | Limited (string, number, boolean, positional, custom) | Full Zod expressiveness          |
+| **Conversion direction** | Gunshi args → Zod                                     | Zod → Gunshi args                |
+| **Conversion fidelity**  | High (Gunshi is simpler)                              | Medium (lossy for complex types) |
+| **Extension access**     | Native                                                | Via ToolContext wrapper          |
+| **Structured output**    | Requires detection                                    | First-class                      |
+| **CLI ergonomics**       | Native (short flags, positional)                      | Requires `cli` overrides         |
 
 ## Detailed Comparison
 
 ### Schema Definition
 
 **Gunshi → MCP**
+
 ```typescript
 args: {
   env: { type: 'string', required: true, short: 'e' },
@@ -29,6 +30,7 @@ args: {
 ```
 
 **MCP → Gunshi**
+
 ```typescript
 inputSchema: {
   env: z.string(),
@@ -42,11 +44,13 @@ inputSchema: {
 ### Conversion Fidelity
 
 **Gunshi → MCP**: ✅ High fidelity
+
 - All Gunshi types map cleanly to Zod
 - `positional` becomes optional string (slight semantic loss)
 - `custom` becomes string with runtime parsing
 
 **MCP → Gunshi**: ⚠️ Medium fidelity
+
 - Complex types (arrays, objects) require custom parsers
 - Enum values not enforced at CLI level
 - Unions and intersections have no CLI equivalent
@@ -55,6 +59,7 @@ inputSchema: {
 ### Extension Access
 
 **Gunshi → MCP**: Native
+
 ```typescript
 run: ctx => {
   ctx.extensions[loggerId].log('message')
@@ -62,6 +67,7 @@ run: ctx => {
 ```
 
 **MCP → Gunshi**: Via wrapper
+
 ```typescript
 handler: async (args, ctx) => {
   ctx.extensions[loggerId].log('message')
@@ -73,6 +79,7 @@ Both approaches provide full extension access. The Gunshi approach is more direc
 ### Output Handling
 
 **Gunshi → MCP**: Requires conversion
+
 ```typescript
 // Gunshi commands typically console.log
 run: ctx => {
@@ -84,6 +91,7 @@ run: ctx => {
 ```
 
 **MCP → Gunshi**: Native structured output
+
 ```typescript
 handler: async (args) => ({
   content: [{ type: 'text', text: 'Deployed' }],
@@ -98,12 +106,14 @@ handler: async (args) => ({
 ### CLI Ergonomics
 
 **Gunshi → MCP**: ✅ Native CLI design
+
 - Short flags (`-f`, `-e`)
 - Positional arguments
 - Help generation
 - Validation messages
 
 **MCP → Gunshi**: ⚠️ Requires overrides
+
 ```typescript
 cli: {
   args: {
@@ -118,12 +128,14 @@ cli: {
 ### Implementation Complexity
 
 **Gunshi → MCP**
+
 - Schema conversion: Simple (5 type mappings)
 - Output capture: Complex (stdout interception)
 - Context building: Simple (pass through)
 - Registration: Simple (iterate subCommands)
 
 **MCP → Gunshi**
+
 - Schema conversion: Complex (Zod introspection, many type variants)
 - Output handling: Simple (extract text from result)
 - Context building: Medium (wrap extensions)
@@ -169,23 +181,23 @@ Rather than choosing one direction, implement **bidirectional support** with a s
 interface UnifiedDefinition<TSchema, TExtensions> {
   name: string
   description: string
-  
+
   // Canonical schema (Zod)
   schema: z.ZodObject<TSchema>
-  
+
   // Handler receives typed args + extensions
   handler: (
     args: z.infer<z.ZodObject<TSchema>>,
     ctx: { extensions: TExtensions }
   ) => Promise<HandlerResult>
-  
+
   // CLI-specific configuration
   cli?: {
     positional?: (keyof TSchema)[]
     shorts?: Partial<Record<keyof TSchema, string>>
     hidden?: (keyof TSchema)[]
   }
-  
+
   // MCP-specific configuration
   mcp?: {
     title?: string
@@ -202,7 +214,7 @@ interface HandlerResult {
   // For MCP
   content: Array<{ type: 'text', text: string } | { type: 'image', ... }>
   structuredContent?: unknown
-  
+
   // For CLI (optional, falls back to content text)
   exitCode?: number
 }
@@ -211,6 +223,7 @@ interface HandlerResult {
 ### Entry Points
 
 **For CLI developers (Gunshi-style)**
+
 ```typescript
 import { defineCommand } from 'gunshi-mcp'
 
@@ -228,6 +241,7 @@ export const deploy = defineCommand({
 ```
 
 **For AI-first developers (MCP-style)**
+
 ```typescript
 import { defineTool } from 'gunshi-mcp'
 
@@ -240,7 +254,7 @@ export const deploy = defineTool({
   cli: { shorts: { env: 'e', force: 'f' } },
   handler: async (args, ctx) => {
     ctx.extensions[loggerId].log(`Deploying to ${args.env}`)
-    return { 
+    return {
       content: [{ type: 'text', text: 'Deployed successfully' }],
       structuredContent: { success: true }
     }
@@ -255,6 +269,7 @@ Both produce the same internal model and can be used interchangeably.
 ### Phase 1: MCP → Gunshi (Recommended First)
 
 **Rationale**:
+
 1. MCP is the "harder" direction (Zod introspection)
 2. Solving MCP first means Zod is the canonical schema
 3. Gunshi args can be generated from Zod
@@ -262,6 +277,7 @@ Both produce the same internal model and can be used interchangeably.
 5. AI-first aligns with MCP's purpose
 
 **Deliverables**:
+
 - `defineTool()` API
 - Zod → Gunshi args conversion
 - Dual registration in plugin
@@ -270,11 +286,13 @@ Both produce the same internal model and can be used interchangeably.
 ### Phase 2: Gunshi → MCP
 
 **Rationale**:
+
 1. Simpler conversion (Gunshi → Zod)
 2. Supports existing Gunshi command libraries
 3. Output capture is trickier but solvable
 
 **Deliverables**:
+
 - Auto-discovery of `ctx.subCommands`
 - Gunshi args → Zod conversion
 - Output capture utility
@@ -283,11 +301,13 @@ Both produce the same internal model and can be used interchangeably.
 ### Phase 3: Unified API
 
 **Rationale**:
+
 1. Single mental model
 2. Authors pick their preferred style
 3. Internal model is canonical
 
 **Deliverables**:
+
 - Internal unified model
 - Both entry points produce same model
 - Shared handler result type
@@ -295,14 +315,14 @@ Both produce the same internal model and can be used interchangeably.
 
 ## Decision Matrix
 
-| If you... | Use... |
-|-----------|--------|
+| If you...                     | Use...                           |
+| ----------------------------- | -------------------------------- |
 | Have existing Gunshi commands | PLAN-gunshi (auto-expose as MCP) |
-| Are starting fresh, AI-first | PLAN-mcp (defineTool) |
-| Need complex validation | PLAN-mcp (Zod expressiveness) |
-| Need great CLI UX | PLAN-gunshi (native args) |
-| Want structured output | PLAN-mcp (first-class) |
-| Want both equally | Unified approach (Phase 3) |
+| Are starting fresh, AI-first  | PLAN-mcp (defineTool)            |
+| Need complex validation       | PLAN-mcp (Zod expressiveness)    |
+| Need great CLI UX             | PLAN-gunshi (native args)        |
+| Want structured output        | PLAN-mcp (first-class)           |
+| Want both equally             | Unified approach (Phase 3)       |
 
 ## Files Structure (Unified)
 
@@ -332,12 +352,14 @@ src/
 ## Conclusion
 
 **Start with MCP → Gunshi (PLAN-mcp)** because:
+
 1. Zod as canonical schema is more expressive
 2. Structured output is cleaner
 3. AI-first aligns with project goals
 4. Gunshi arg generation is deterministic
 
 Then add **Gunshi → MCP (PLAN-gunshi)** for:
+
 1. Backward compatibility with existing commands
 2. CLI developers who think in args first
 
