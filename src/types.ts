@@ -7,9 +7,20 @@ export interface McpExtension {
 }
 
 export interface ToolResult {
-	content: Array<{ type: string; text: string }>
-	structuredContent?: unknown
+	type: "tool_result"
+	toolUseId: string
+	content: Array<{
+		type: "text"
+		text: string
+		annotations?: {
+			audience?: "assistant" | "user"
+			priority?: number
+			lastModified?: string
+		}
+	}>
 	isError?: boolean
+	_meta?: Record<string, unknown>
+	structuredContent?: unknown
 }
 
 export interface ToolContext<E = {}> {

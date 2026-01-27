@@ -1,8 +1,10 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js"
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js"
 import { plugin } from "gunshi/plugin"
-import type { ToolDefinition, ToolContext, ToolResult, GunshiArg } from "./types.js"
+import type { ToolDefinition, GunshiArg } from "./types.js"
+import { buildToolContext } from "./context.js"
 import { zodSchemaToGunshiArgs } from "./zod-to-gunshi.js"
+import { formatResult } from "./output.js"
 
 export const MCP_NEW_PLUGIN_ID = "gunshi-mcp:mcp" as const
 export type McpNewPluginId = typeof MCP_NEW_PLUGIN_ID
@@ -13,43 +15,9 @@ export interface McpNewPluginOptions {
 	version?: string
 }
 
-interface McpToolExtra {
-	requestId?: string
-}
-
-function buildToolContext<E>(extensions: E, mcpExtra?: McpToolExtra): ToolContext<E> {
-	return {
-		extensions,
-		log: {
-			info: (msg: string, ...args: unknown[]) => console.log(msg, ...args),
-			warn: (msg: string, ...args: unknown[]) => console.warn(msg, ...args),
-			error: (msg: string, ...args: unknown[]) => console.error(msg, ...args),
-			debug: (msg: string, ...args: unknown[]) => console.debug(msg, ...args),
-			trace: (msg: string, ...args: unknown[]) => console.trace(msg, ...args),
-			fatal: (msg: string, ...args: unknown[]) => console.error(msg, ...args),
-		},
-		meta: {
-			requestId: mcpExtra?.requestId,
-		},
-	}
-}
-
-function extractText(result: ToolResult): string {
-	return result.content
-		.filter((c) => c.type === "text")
-		.map((c) => c.text)
-		.join("\n")
-}
-
-function formatResult(result: ToolResult, format?: "text" | "json"): string {
-	if (format === "json" && result.structuredContent) {
-		return JSON.stringify(result.structuredContent, null, 2)
-	}
-	return extractText(result)
-}
-
 export function createMcpPlugin(options: McpNewPluginOptions = {}) {
 	let server: McpServer | undefined
+	const toolDefinitions: ToolDefinition[] = []
 
 	return plugin({
 		id: MCP_NEW_PLUGIN_ID,
@@ -72,7 +40,9 @@ export function createMcpPlugin(options: McpNewPluginOptions = {}) {
 				},
 			)
 
-			for (const tool of options.tools ?? []) {
+			toolDefinitions.push(...(options.tools ?? []))
+
+			for (const tool of toolDefinitions) {
 				const convertedArgs = zodSchemaToGunshiArgs(
 					tool.inputSchema as Record<string, unknown>,
 					tool.cli?.args as Record<string, Partial<GunshiArg>> | undefined,
@@ -120,7 +90,36 @@ export function createMcpPlugin(options: McpNewPluginOptions = {}) {
 			})
 		},
 
-		extension: (_ctx) => {
+		extension: (ctx) => {
+			for (const tool of toolDefinitions) {
+				server?.registerTool(
+					tool.name,
+					{
+						title: tool.title,
+						description: tool.description,
+						inputSchema: tool.inputSchema as any,
+						outputSchema: tool.outputSchema as any,
+					},
+					async (inputArgs: any, extra: any) => {
+						const toolCtx = buildToolContext(ctx.extensions as any, {
+							requestId: extra?.requestId,
+						})
+						const result = await tool.handler(inputArgs as any, toolCtx)
+						return {
+							type: "tool_result",
+							toolUseId: tool.name,
+							content: [
+								{
+									type: "text",
+									text: formatResult(result),
+									annotations: extra?.annotations as any,
+								},
+							],
+						} as any
+					},
+				)
+			}
+
 			return {
 				startServer: async () => {
 					if (!server) {
