@@ -71,6 +71,8 @@ describe("zodSchemaToGunshiArgs - Complex Collisions", () => {
 			}),
 		})
 
-		expect(() => zodSchemaToGunshiArgs(schema, {}, { maxDepth: 1, separator: "-" })).toThrow(/collisions/i)
+		expect(() => zodSchemaToGunshiArgs(schema, {}, { maxDepth: 1, separator: "-" })).toThrow(
+			/collisions/i,
+		)
 	})
 })

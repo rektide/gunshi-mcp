@@ -6,7 +6,7 @@ describe("reconstructNestedValues - Edge Cases", () => {
 		const flat = {
 			"a-b": 1,
 			"a-c-d": 2,
-			"z": 3,
+			z: 3,
 		}
 		const nested = reconstructNestedValues(flat, "-")
 
@@ -23,7 +23,7 @@ describe("reconstructNestedValues - Edge Cases", () => {
 
 	it("should handle arrays in flat values", () => {
 		const flat = {
-			"items": ["a", "b", "c"],
+			items: ["a", "b", "c"],
 			"nested-items": ["x", "y"],
 		}
 		const nested = reconstructNestedValues(flat, "-")
@@ -38,8 +38,8 @@ describe("reconstructNestedValues - Edge Cases", () => {
 
 	it("should handle objects in flat values", () => {
 		const flat = {
-			"config": { timeout: 30, retries: 3 },
-			"name": "test",
+			config: { timeout: 30, retries: 3 },
+			name: "test",
 		}
 		const nested = reconstructNestedValues(flat, "-")
 
@@ -87,7 +87,7 @@ describe("reconstructNestedValues - Edge Cases", () => {
 
 	it("should handle mixed depth reconstruction", () => {
 		const flat = {
-			"a": 1,
+			a: 1,
 			"b-c": 2,
 			"b-d-e": 3,
 			"f-g-h-i": 4,
@@ -114,7 +114,7 @@ describe("reconstructNestedValues - Edge Cases", () => {
 
 	it("should handle empty string as value", () => {
 		const flat = {
-			"name": "",
+			name: "",
 			"nested-value": "",
 		}
 		const nested = reconstructNestedValues(flat, "-")
@@ -129,7 +129,7 @@ describe("reconstructNestedValues - Edge Cases", () => {
 
 	it("should handle null as value", () => {
 		const flat = {
-			"value": null,
+			value: null,
 			"nested-value": null,
 		}
 		const nested = reconstructNestedValues(flat, "-")
@@ -144,7 +144,7 @@ describe("reconstructNestedValues - Edge Cases", () => {
 
 	it("should handle undefined as value", () => {
 		const flat = {
-			"value": undefined,
+			value: undefined,
 			"nested-value": undefined,
 		}
 		const nested = reconstructNestedValues(flat, "-")
@@ -174,7 +174,7 @@ describe("reconstructNestedValues - Edge Cases", () => {
 
 	it("should handle special characters in keys", () => {
 		const flat = {
-			"field_name": "underscore",
+			field_name: "underscore",
 			"field-name": "hyphen",
 			"field.name": "dot",
 		}

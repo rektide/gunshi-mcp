@@ -1,6 +1,6 @@
-import { describe, it, expect } from "vitest"
+import { describe, expect, it } from "vitest"
 import { z } from "zod"
-import { zodSchemaToGunshiArgs, reconstructNestedValues } from "../../src/zod-to-gunshi.js"
+import { reconstructNestedValues, zodSchemaToGunshiArgs } from "../../src/zod-to-gunshi.js"
 
 describe("Serialization Round-Trip Tests", () => {
 	/*
@@ -45,7 +45,7 @@ describe("Serialization Round-Trip Tests", () => {
 	})
 
 	it.skip("should round-trip with optional fields", () => {
-		const schema = z.object({
+		const _schema = z.object({
 			required: z.string(),
 			optional: z.string().optional(),
 			optionalNested: z
@@ -255,7 +255,7 @@ describe("Serialization Round-Trip Tests", () => {
 
 		const customParser = (value: string) => value.split(",").map((s) => s.trim())
 
-		const parsed = schema.parse(originalNested)
+		const _parsed = schema.parse(originalNested)
 		const args = zodSchemaToGunshiArgs(
 			schema,
 			{

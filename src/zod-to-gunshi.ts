@@ -5,7 +5,7 @@ import { reconstructNested } from "./cli-args/reconstruct.js"
 import { zodSchemaToGunshiArgs as newImpl } from "./cli-args/index.js"
 
 export { reconstructNested as reconstructNestedValues }
-export type { CliOptions } from "./types.js"
+export type { CliOptions, GunshiArg } from "./types.js"
 
 /**
  * Convert a Zod schema to Gunshi CLI argument definitions.

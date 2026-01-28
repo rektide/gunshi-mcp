@@ -1,7 +1,11 @@
 import { describe, it, expect } from "vitest"
 import { createMcpPlugin } from "../src/mcp-plugin.js"
 import { defineTool } from "../src/define-tool.js"
-import { zodToJsonSchema, reconstructNestedValues, zodSchemaToGunshiArgs } from "../src/zod-to-gunshi.js"
+import {
+	zodToJsonSchema,
+	reconstructNestedValues,
+	zodSchemaToGunshiArgs,
+} from "../src/zod-to-gunshi.js"
 import { z } from "zod"
 
 describe("MCP Plugin", () => {
@@ -360,9 +364,7 @@ describe("MCP Plugin", () => {
 			}
 
 			const separator = testTool.cliOptions?.separator ?? "-"
-			const nestedValues = testTool.input.parse(
-				reconstructNestedValues(flatValues, separator)
-			)
+			const nestedValues = testTool.input.parse(reconstructNestedValues(flatValues, separator))
 
 			expect(nestedValues).toEqual({
 				config: { timeout: 30, retries: 3 },
@@ -411,9 +413,7 @@ describe("MCP Plugin", () => {
 			}
 
 			const separator = testTool.cliOptions?.separator ?? "-"
-			const nestedValues = testTool.input.parse(
-				reconstructNestedValues(flatValues, separator)
-			)
+			const nestedValues = testTool.input.parse(reconstructNestedValues(flatValues, separator))
 
 			expect(nestedValues).toEqual({
 				level1: {
@@ -462,7 +462,9 @@ describe("MCP Plugin", () => {
 				}),
 			})
 
-			expect(() => zodSchemaToGunshiArgs(schema, {}, { separator: "-" })).toThrow(/foo-bar: foo-bar, foo\.bar/)
+			expect(() => zodSchemaToGunshiArgs(schema, {}, { separator: "-" })).toThrow(
+				/foo-bar: foo-bar, foo\.bar/,
+			)
 		})
 	})
 
@@ -707,7 +709,7 @@ describe("MCP Plugin", () => {
 
 		it("should handle reconstruction with overlapping paths", () => {
 			const flat = {
-				"a": { b: 1 },
+				a: { b: 1 },
 				"a-b": 2,
 			}
 			const nested = reconstructNestedValues(flat, "-")
@@ -722,8 +724,8 @@ describe("MCP Plugin", () => {
 		it("should handle separator collision with field names", () => {
 			const schema = z.object({
 				"foo-bar": z.string(),
-				"foo": z.object({
-					"bar": z.string(),
+				foo: z.object({
+					bar: z.string(),
 				}),
 			})
 
@@ -960,7 +962,9 @@ describe("MCP Plugin", () => {
 				}),
 			})
 
-			expect(() => zodSchemaToGunshiArgs(schema, {}, { maxDepth: 1, separator: "-" })).toThrow(/collisions/i)
+			expect(() => zodSchemaToGunshiArgs(schema, {}, { maxDepth: 1, separator: "-" })).toThrow(
+				/collisions/i,
+			)
 		})
 	})
 

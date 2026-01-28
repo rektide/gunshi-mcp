@@ -75,7 +75,7 @@ describe("CLI Args - Error Scenarios", () => {
 
 	it("should handle reconstruction with overlapping paths", () => {
 		const flat = {
-			"a": { b: 1 },
+			a: { b: 1 },
 			"a-b": 2,
 		}
 		const nested = reconstructNestedValues(flat, "-")
@@ -91,8 +91,8 @@ describe("CLI Args - Error Scenarios", () => {
 	it("should handle separator collision with field names", () => {
 		const schema = z.object({
 			"foo-bar": z.string(),
-			"foo": z.object({
-				"bar": z.string(),
+			foo: z.object({
+				bar: z.string(),
 			}),
 		})
 
@@ -112,7 +112,7 @@ describe("CLI Args - Error Scenarios", () => {
 		const flat = {
 			"field with spaces": "value1",
 			"field-with-hyphens": "value2",
-			"field_with_underscores": "value3",
+			field_with_underscores: "value3",
 		}
 		const nested = reconstructNestedValues(flat, "-")
 
