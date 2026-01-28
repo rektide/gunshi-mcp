@@ -45,7 +45,7 @@ describe("Serialization Round-Trip Tests", () => {
 	})
 
 	it.skip("should round-trip with optional fields", () => {
-		const _schema = z.object({
+		const schema = z.object({
 			required: z.string(),
 			optional: z.string().optional(),
 			optionalNested: z
@@ -55,6 +55,13 @@ describe("Serialization Round-Trip Tests", () => {
 				.optional(),
 		})
 
+		const originalNested = {
+			required: "test",
+			optional: "maybe",
+			optionalNested: { value: 42 },
+		}
+
+		const args = zodSchemaToGunshiArgs(schema, {}, { separator: "-" })
 		const flatValues: Record<string, unknown> = {}
 		for (const [key] of Object.keys(args)) {
 			const parts = key.split("-")

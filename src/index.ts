@@ -4,6 +4,7 @@ export {
 	ToolResult,
 	ToolContext,
 	ToolDefinition,
+	Tool,
 	GunshiArg,
 	MCP_NEW_PLUGIN_ID,
 	McpExtension,
@@ -13,7 +14,7 @@ export {
 	type CliOptions,
 } from "./types.js"
 export { defineTool } from "./define-tool.js"
-export { zodSchemaToGunshiArgs, zodToJsonSchema, reconstructNestedValues } from "./zod-to-gunshi.js"
+export { zodSchemaToGunshiArgs, reconstructNestedValues } from "./zod-to-gunshi.js"
 export { buildToolContext } from "./context.js"
 export { extractText, formatResult } from "./output.js"
 export {

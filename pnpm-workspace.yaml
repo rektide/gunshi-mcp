@@ -1,0 +1,3 @@
+overrides:
+  "@modelcontextprotocol/hono": link:../../archive/mcp-ts-sdk/packages/middleware/hono
+  "@modelcontextprotocol/server": link:../../archive/mcp-ts-sdk/packages/server

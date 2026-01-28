@@ -35,7 +35,7 @@
 		"build": "concurrently \"npm:typecheck\" \"npm:lint\" \"npm:format:check\" \"npm:test\""
 	},
 	"dependencies": {
-		"@modelcontextprotocol/sdk": "*",
+		"@modelcontextprotocol/server": "link:../../archive/mcp-ts-sdk/packages/server",
 		"gunshi": "*",
 		"package-directory": "*",
 		"pino": "^10.1.0",

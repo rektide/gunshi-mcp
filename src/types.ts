@@ -1,11 +1,12 @@
 import type { z } from "zod"
 import type { CliOptions } from "./cli-args/types.js"
 import type { ArgSchema } from "gunshi"
-import type { CallToolResult } from "@modelcontextprotocol/sdk/types.js"
+import type { CallToolResult, Tool } from "@modelcontextprotocol/server"
 
 export type { CliOptions } from "./cli-args/types.js"
 export type GunshiArg = ArgSchema
 export type ToolResult = CallToolResult
+export type { Tool } from "@modelcontextprotocol/server"
 
 export const MCP_NEW_PLUGIN_ID = "gunshi-mcp:mcp" as const
 export type McpNewPluginId = typeof MCP_NEW_PLUGIN_ID

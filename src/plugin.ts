@@ -1,5 +1,4 @@
-import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js"
-import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js"
+import { McpServer, StdioServerTransport } from "@modelcontextprotocol/server"
 import { packageDirectory } from "package-directory"
 import { plugin } from "gunshi/plugin"
 

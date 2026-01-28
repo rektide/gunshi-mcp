@@ -1,9 +1,8 @@
-import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js"
-import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js"
+import { McpServer, StdioServerTransport } from "@modelcontextprotocol/server"
 import { plugin } from "gunshi/plugin"
 import type { ToolDefinition, GunshiArg } from "./types.js"
 import { buildToolContext } from "./context.js"
-import { zodSchemaToGunshiArgs, zodToJsonSchema, reconstructNestedValues } from "./zod-to-gunshi.js"
+import { zodSchemaToGunshiArgs, reconstructNestedValues } from "./zod-to-gunshi.js"
 import { formatResult } from "./output.js"
 
 export const MCP_NEW_PLUGIN_ID = "gunshi-mcp:mcp" as const
@@ -95,23 +94,13 @@ export function createMcpPlugin(options: McpNewPluginOptions = {}) {
 
 		extension: (ctx) => {
 			for (const tool of toolDefinitions) {
-				const outputSchema = tool.output
-					? (function tryConvertToJSONSchema(schema: any): object | undefined {
-							try {
-								return zodToJsonSchema(schema as any)
-							} catch {
-								return undefined
-							}
-						})(tool.output)
-					: undefined
-
 				server?.registerTool(
 					tool.name,
 					{
 						title: tool.title,
 						description: tool.description,
-						inputSchema: zodToJsonSchema(tool.input) as any,
-						outputSchema: outputSchema as any,
+						inputSchema: tool.input,
+						outputSchema: tool.output,
 					},
 					async (inputArgs: any, extra: any) => {
 						const toolCtx = buildToolContext(ctx.extensions, {
