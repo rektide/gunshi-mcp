@@ -2,7 +2,6 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js"
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js"
 import { plugin } from "gunshi/plugin"
 import type { ToolDefinition, GunshiArg } from "./types.js"
-import { assertToolInput } from "./types.js"
 import { buildToolContext } from "./context.js"
 import { zodSchemaToGunshiArgs } from "./zod-to-gunshi.js"
 import { formatResult } from "./output.js"
@@ -11,14 +10,14 @@ export const MCP_NEW_PLUGIN_ID = "gunshi-mcp:mcp" as const
 export type McpNewPluginId = typeof MCP_NEW_PLUGIN_ID
 
 export interface McpNewPluginOptions {
-	tools?: ToolDefinition[]
+	tools?: ToolDefinition<any, any>[]
 	name?: string
 	version?: string
 }
 
 export function createMcpPlugin(options: McpNewPluginOptions = {}) {
 	let server: McpServer | undefined
-	const toolDefinitions: ToolDefinition[] = []
+	const toolDefinitions: ToolDefinition<any, any>[] = []
 
 	return plugin({
 		id: MCP_NEW_PLUGIN_ID,
@@ -44,7 +43,7 @@ export function createMcpPlugin(options: McpNewPluginOptions = {}) {
 			toolDefinitions.push(...(options.tools ?? []))
 
 			for (const tool of toolDefinitions) {
-				const convertedArgs = zodSchemaToGunshiArgs(tool.inputSchema, tool.cli?.args)
+				const convertedArgs = zodSchemaToGunshiArgs(tool.input, tool.cli?.args)
 				const args: Record<string, GunshiArg> = {}
 
 				for (const [name, field] of Object.entries(convertedArgs)) {
@@ -62,8 +61,8 @@ export function createMcpPlugin(options: McpNewPluginOptions = {}) {
 					run: async (cmdCtx) => {
 						const mcpExtension = cmdCtx.extensions?.[MCP_NEW_PLUGIN_ID]
 						const toolCtx = buildToolContext(mcpExtension as Record<string, unknown>)
-						const toolInput = assertToolInput<typeof tool.inputSchema>(cmdCtx.values)
-						const result = await tool.handler(toolInput, toolCtx)
+						const parsed = tool.input.parse(cmdCtx.values)
+						const result = await tool.handler(parsed, toolCtx)
 						const format = cmdCtx.values.format as "text" | "json" | undefined
 						console.log(formatResult(result, format))
 					},
@@ -98,14 +97,15 @@ export function createMcpPlugin(options: McpNewPluginOptions = {}) {
 					{
 						title: tool.title,
 						description: tool.description,
-						inputSchema: tool.inputSchema as any,
-						outputSchema: tool.outputSchema as any,
+						inputSchema: tool.input as any,
+						outputSchema: tool.output as any,
 					},
 					async (inputArgs: any, extra: any) => {
 						const toolCtx = buildToolContext(ctx.extensions, {
 							requestId: extra?.requestId,
 						})
-						const result = await tool.handler(inputArgs, toolCtx)
+						const parsed = tool.input.parse(inputArgs)
+						const result = await tool.handler(parsed, toolCtx)
 						return {
 							type: "tool_result" as const,
 							toolUseId: tool.name,

@@ -1,7 +1,7 @@
-import type { ToolDefinition } from "./types.js"
+import type { ToolDefinition, ZodShape } from "./types.js"
 
 export function defineTool<TExtensions = {}>() {
-	return <TSchema extends Record<string, unknown>>(
-		definition: ToolDefinition<TSchema, TExtensions>,
-	): ToolDefinition<TSchema, TExtensions> => definition
+	return <const Shape extends ZodShape>(
+		definition: ToolDefinition<Shape, TExtensions>,
+	): ToolDefinition<Shape, TExtensions> => definition
 }

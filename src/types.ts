@@ -1,5 +1,10 @@
+import type { z } from "zod"
+
 export const MCP_NEW_PLUGIN_ID = "gunshi-mcp:mcp" as const
 export type McpNewPluginId = typeof MCP_NEW_PLUGIN_ID
+
+export type ZodShape = z.ZodRawShape
+export type ZodInput<Shape extends ZodShape> = z.infer<z.ZodObject<Shape>>
 
 export interface McpExtension {
 	startServer: (options?: { port?: number }) => Promise<void>
@@ -30,20 +35,23 @@ export interface ToolContext<E = {}> {
 }
 
 export interface ToolDefinition<
-	TSchema extends Record<string, unknown> = Record<string, unknown>,
+	Shape extends ZodShape = ZodShape,
 	TExtensions = {},
 > {
 	name: string
 	title?: string
 	description: string
-	inputSchema: TSchema
-	outputSchema?: Record<string, unknown>
+	input: z.ZodObject<Shape>
+	output?: z.ZodTypeAny
 
 	cli?: {
-		args?: Partial<Record<keyof TSchema, Partial<GunshiArg>>>
+		args?: Partial<Record<keyof Shape, Partial<GunshiArg>>>
 	}
 
-	handler: (args: TSchema, ctx: ToolContext<TExtensions>) => Promise<ToolResult>
+	handler: (
+		args: ZodInput<Shape>,
+		ctx: ToolContext<TExtensions>,
+	) => Promise<ToolResult>
 }
 
 export interface GunshiArg {
@@ -55,30 +63,8 @@ export interface GunshiArg {
 	parse?: (value: string) => unknown
 }
 
-export interface McpNewPluginOptions {
-	tools?: ToolDefinition[]
-	name?: string
-	version?: string
-}
+export type AnyToolDefinition = ToolDefinition<any, any>
 
 export interface McpToolExtra {
 	requestId?: string
-}
-
-/**
- * Helper to assert Gunshi command context values match expected tool schema type.
- * This is a type assertion that validates at compile time that values
- * structurally match the expected schema.
- *
- * Note: This uses a type assertion (`as TSchema`) because runtime values
- * from Gunshi are typed as `Record<string, unknown>` while tools expect
- * their specific schema type. The cast is safe because Gunshi's argument
- * parsing ensures values match the arg schema we provided.
- *
- * @internal
- */
-export function assertToolInput<TSchema extends Record<string, unknown>>(
-	values: Record<string, unknown>,
-): TSchema {
-	return values as TSchema
 }

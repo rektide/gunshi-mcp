@@ -8,7 +8,6 @@ export {
 	MCP_NEW_PLUGIN_ID,
 	McpExtension,
 	type McpNewPluginId,
-	type McpNewPluginOptions,
 	McpToolExtra,
 } from "./types.ts"
 export { defineTool } from "./define-tool.ts"

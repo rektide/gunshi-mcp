@@ -1,4 +1,5 @@
-import type { GunshiArg } from "./types.js"
+import type { GunshiArg, ZodShape } from "./types.js"
+import type { z } from "zod"
 
 interface ZodFieldInfo {
 	type: "string" | "number" | "boolean" | "array" | "object" | "enum"
@@ -109,17 +110,18 @@ function introspectZodField(schema: unknown): ZodFieldInfo {
  * Convert Zod schema to Gunshi argument definitions.
  * This function handles type-safe conversion from Zod schemas to Gunshi's arg format.
  *
- * @param schema - The Zod schema as a record of fields
+ * @param schema - The Zod schema object
  * @param overrides - Optional override for specific arguments (CLI configuration)
  * @returns Gunshi argument definitions
  */
-export function zodSchemaToGunshiArgs(
-	schema: Record<string, unknown>,
-	overrides?: Partial<Record<string, Partial<GunshiArg>>>,
-): Record<string, GunshiArg> {
-	const args: Record<string, GunshiArg> = {}
+export function zodSchemaToGunshiArgs<const Shape extends ZodShape>(
+	schema: z.ZodObject<Shape>,
+	overrides?: Partial<Record<keyof Shape, Partial<GunshiArg>>>,
+): Record<keyof Shape, GunshiArg> {
+	const args: Record<keyof Shape, GunshiArg> = {} as Record<keyof Shape, GunshiArg>
 
-	for (const [name, field] of Object.entries(schema)) {
+	for (const name in schema.shape) {
+		const field = schema.shape[name]
 		const info = introspectZodField(field)
 		const override = overrides?.[name] ?? {}
 

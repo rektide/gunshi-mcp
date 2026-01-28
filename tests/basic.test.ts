@@ -20,10 +20,10 @@ describe("MCP Plugin", () => {
 			const testTool = defineTool()({
 				name: "test-tool",
 				description: "A test tool",
-				inputSchema: {
+				input: z.object({
 					message: z.string().describe("A message"),
 					count: z.number().default(1),
-				} as Record<string, unknown>,
+				}),
 				handler: async (_args) => ({
 					type: "tool_result",
 					toolUseId: "test-tool",
@@ -39,10 +39,10 @@ describe("MCP Plugin", () => {
 			const testTool = defineTool()({
 				name: "optional-tool",
 				description: "Tool with optional fields",
-				inputSchema: {
+				input: z.object({
 					required: z.string(),
 					optional: z.string().optional(),
-				} as Record<string, unknown>,
+				}),
 				handler: async (_args) => ({
 					type: "tool_result",
 					toolUseId: "optional-tool",
@@ -58,9 +58,9 @@ describe("MCP Plugin", () => {
 			const testTool = defineTool()({
 				name: "enum-tool",
 				description: "Tool with enum",
-				inputSchema: {
+				input: z.object({
 					format: z.enum(["json", "text", "yaml"]).default("text"),
-				} as Record<string, unknown>,
+				}),
 				handler: async (_args) => ({
 					type: "tool_result",
 					toolUseId: "enum-tool",
@@ -76,9 +76,9 @@ describe("MCP Plugin", () => {
 			const testTool = defineTool()({
 				name: "cli-tool",
 				description: "Tool with CLI config",
-				inputSchema: {
+				input: z.object({
 					value: z.string(),
-				} as Record<string, unknown>,
+				}),
 				cli: {
 					args: {
 						value: {
@@ -103,7 +103,7 @@ describe("MCP Plugin", () => {
 			const tool1 = defineTool()({
 				name: "tool1",
 				description: "First tool",
-				inputSchema: { input: z.string() } as Record<string, unknown>,
+				input: z.object({ input: z.string() }),
 				handler: async (_args) => ({
 					type: "tool_result",
 					toolUseId: "tool1",
@@ -114,7 +114,7 @@ describe("MCP Plugin", () => {
 			const tool2 = defineTool()({
 				name: "tool2",
 				description: "Second tool",
-				inputSchema: { input: z.number() } as Record<string, unknown>,
+				input: z.object({ input: z.number() }),
 				handler: async (_args) => ({
 					type: "tool_result",
 					toolUseId: "tool2",
@@ -130,9 +130,9 @@ describe("MCP Plugin", () => {
 			const testTool = defineTool()({
 				name: "array-tool",
 				description: "Tool with array field",
-				inputSchema: {
+				input: z.object({
 					items: z.array(z.string()).default([]),
-				} as Record<string, unknown>,
+				}),
 				cli: {
 					args: {
 						items: {
@@ -156,7 +156,7 @@ describe("MCP Plugin", () => {
 			const testTool = defineTool()({
 				name: "no-input-tool",
 				description: "Tool with no input",
-				inputSchema: {},
+				input: z.object({}),
 				handler: async () => ({
 					type: "tool_result",
 					toolUseId: "no-input-tool",
@@ -172,10 +172,10 @@ describe("MCP Plugin", () => {
 			const testTool = defineTool()({
 				name: "bool-tool",
 				description: "Tool with boolean",
-				inputSchema: {
+				input: z.object({
 					flag: z.boolean().default(false),
 					enabled: z.boolean(),
-				} as Record<string, unknown>,
+				}),
 				handler: async (_args) => ({
 					type: "tool_result",
 					toolUseId: "bool-tool",
@@ -186,4 +186,31 @@ describe("MCP Plugin", () => {
 			const mcpPlugin = createMcpPlugin({ tools: [testTool] })
 			expect(mcpPlugin).toBeDefined()
 		})
+
+		it("should infer correct types for handler args", () => {
+			const testTool = defineTool()({
+				name: "typed-tool",
+				description: "Tool with typed handler args",
+				input: z.object({
+					message: z.string(),
+					count: z.number(),
+					flag: z.boolean(),
+				}),
+				handler: async (args) => {
+					// TypeScript should infer correct types
+					expectType<string>(args.message)
+					expectType<number>(args.count)
+					expectType<boolean>(args.flag)
+					return {
+						type: "tool_result",
+						toolUseId: "typed-tool",
+						content: [{ type: "text", text: "Done" }],
+					}
+				},
+			})
+
+			const mcpPlugin = createMcpPlugin({ tools: [testTool] })
+			expect(mcpPlugin).toBeDefined()
+		})
+	})
 })
