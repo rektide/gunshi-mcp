@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest"
 import { createMcpPlugin } from "../src/mcp-plugin.js"
 import { defineTool } from "../src/define-tool.js"
-import { zodToJsonSchema, reconstructNestedValues } from "../src/zod-to-gunshi.js"
+import { zodToJsonSchema, reconstructNestedValues, zodSchemaToGunshiArgs } from "../src/zod-to-gunshi.js"
 import { z } from "zod"
 
 describe("MCP Plugin", () => {
@@ -423,6 +423,320 @@ describe("MCP Plugin", () => {
 					},
 				},
 			})
+		})
+	})
+
+	describe("zodSchemaToGunshiArgs - Basic Types", () => {
+		it("should handle basic types", () => {
+			const schema = z.object({
+				name: z.string(),
+				age: z.number(),
+				active: z.boolean(),
+			})
+
+			const args = zodSchemaToGunshiArgs(schema)
+
+			expect(args.name.type).toBe("string")
+			expect(args.age.type).toBe("number")
+			expect(args.active.type).toBe("boolean")
+		})
+	})
+
+	describe("zodSchemaToGunshiArgs - Collision Detection", () => {
+		it("should detect collisions", () => {
+			const schema = z.object({
+				"foo-bar": z.string(),
+				foo: z.object({
+					bar: z.string(),
+				}),
+			})
+
+			expect(() => zodSchemaToGunshiArgs(schema, {}, { separator: "-" })).toThrow(/collisions/i)
+		})
+
+		it("should show consistent dot paths in collision message", () => {
+			const schema = z.object({
+				"foo-bar": z.string(),
+				foo: z.object({
+					bar: z.string(),
+				}),
+			})
+
+			expect(() => zodSchemaToGunshiArgs(schema, {}, { separator: "-" })).toThrow(/foo-bar: foo-bar, foo\.bar/)
+		})
+	})
+
+	describe("zodSchemaToGunshiArgs - Flattening", () => {
+		it("should handle nested objects with flattening", () => {
+			const schema = z.object({
+				config: z.object({
+					timeout: z.number(),
+					retries: z.number(),
+				}),
+				name: z.string(),
+			})
+
+			const args = zodSchemaToGunshiArgs(schema, {}, { separator: "-" })
+
+			expect(args["config-timeout"]).toBeDefined()
+			expect(args["config-timeout"].type).toBe("number")
+			expect(args["config-retries"]).toBeDefined()
+			expect(args["config-retries"].type).toBe("number")
+			expect(args.name).toBeDefined()
+			expect(args.name.type).toBe("string")
+		})
+
+		it("should respect depth limit", () => {
+			const schema = z.object({
+				a: z.object({
+					b: z.object({
+						c: z.object({
+							d: z.string(),
+						}),
+					}),
+				}),
+			})
+
+			const args = zodSchemaToGunshiArgs(schema, {}, { maxDepth: 2, separator: "-" })
+
+			expect(args["a-b-c"]).toBeDefined()
+			expect(args["a-b-c"].type).toBe("custom")
+		})
+	})
+
+	describe("reconstructNestedValues", () => {
+		it("should reconstruct nested values from flat keys", () => {
+			const flat = { "config-timeout": 30, "config-retries": 3, name: "test" }
+			const nested = reconstructNestedValues(flat, "-")
+
+			expect(nested).toEqual({
+				config: { timeout: 30, retries: 3 },
+				name: "test",
+			})
+		})
+
+		it("should handle deeply nested values", () => {
+			const flat = { "a-b-c": 42, "a-b-d": "hello", x: true }
+			const nested = reconstructNestedValues(flat, "-")
+
+			expect(nested).toEqual({
+				a: { b: { c: 42, d: "hello" } },
+				x: true,
+			})
+		})
+
+		it("should handle custom separator", () => {
+			const flat = { "config.timeout": 30, "config.retries": 3 }
+			const nested = reconstructNestedValues(flat, ".")
+
+			expect(nested).toEqual({
+				config: { timeout: 30, retries: 3 },
+			})
+		})
+
+		it("should handle flat-only values", () => {
+			const flat = { name: "test", count: 5 }
+			const nested = reconstructNestedValues(flat, "-")
+
+			expect(nested).toEqual({ name: "test", count: 5 })
+		})
+	})
+
+	describe("zodToJsonSchema - Edge Cases", () => {
+		it("should handle arrays of objects in JSON schema", () => {
+			const schema = z.object({
+				items: z.array(
+					z.object({
+						name: z.string(),
+						value: z.number(),
+					}),
+				),
+			})
+
+			const jsonSchema = zodToJsonSchema(schema)
+
+			expect(jsonSchema).toEqual({
+				type: "object",
+				properties: {
+					items: {
+						type: "array",
+						items: { type: "object" },
+					},
+				},
+				required: ["items"],
+				additionalProperties: false,
+			})
+		})
+
+		it("should handle enum arrays", () => {
+			const schema = z.object({
+				formats: z.array(z.enum(["json", "xml", "yaml"])),
+			})
+
+			const jsonSchema = zodToJsonSchema(schema)
+
+			expect(jsonSchema).toEqual({
+				type: "object",
+				properties: {
+					formats: {
+						type: "array",
+						items: { type: "string" },
+					},
+				},
+				required: ["formats"],
+				additionalProperties: false,
+			})
+		})
+	})
+
+	describe("zodSchemaToGunshiArgs - Wrappers", () => {
+		it("should propagate optional from parent", () => {
+			const schema = z.object({
+				config: z
+					.object({
+						timeout: z.number(),
+					})
+					.optional(),
+			})
+
+			const args = zodSchemaToGunshiArgs(schema, {}, { separator: "-" })
+
+			expect(args["config-timeout"]).toBeDefined()
+			expect(args["config-timeout"].required).toBeUndefined()
+		})
+
+		it("should handle nullable wrapper", () => {
+			const schema = z.object({
+				config: z
+					.object({
+						timeout: z.number(),
+					})
+					.nullable(),
+			})
+
+			const args = zodSchemaToGunshiArgs(schema, {}, { separator: "-" })
+
+			expect(args["config-timeout"]).toBeDefined()
+			expect(args["config-timeout"].required).toBeUndefined()
+		})
+
+		it("should handle default wrapper", () => {
+			const schema = z.object({
+				config: z
+					.object({
+						timeout: z.number(),
+					})
+					.default({ timeout: 30 }),
+			})
+
+			const args = zodSchemaToGunshiArgs(schema, {}, { separator: "-" })
+
+			expect(args["config-timeout"]).toBeDefined()
+			expect(args["config-timeout"].required).toBeUndefined()
+		})
+
+		it("should handle catch wrapper", () => {
+			const schema = z.object({
+				config: z
+					.object({
+						timeout: z.number(),
+					})
+					.catch({ timeout: 30 }),
+			})
+
+			const args = zodSchemaToGunshiArgs(schema, {}, { separator: "-" })
+
+			expect(args["config-timeout"]).toBeDefined()
+			expect(args["config-timeout"].required).toBeUndefined()
+		})
+
+		it("should handle multiple nested wrappers", () => {
+			const schema = z.object({
+				config: z
+					.object({
+						timeout: z.number(),
+					})
+					.optional()
+					.default({ timeout: 30 }),
+			})
+
+			const args = zodSchemaToGunshiArgs(schema, {}, { separator: "-" })
+
+			expect(args["config-timeout"]).toBeDefined()
+			expect(args["config-timeout"].required).toBeUndefined()
+		})
+	})
+
+	describe("zodSchemaToGunshiArgs - Error Scenarios", () => {
+		it("should handle malformed flat values for reconstruction", () => {
+			const flat: Record<string, unknown> = {}
+			const nested = reconstructNestedValues(flat, "-")
+			expect(nested).toEqual({})
+		})
+
+		it("should handle parse function errors", () => {
+			const schema = z.object({
+				custom: z.string(),
+			})
+
+			const args = zodSchemaToGunshiArgs(schema, {
+				custom: {
+					parse: (_value: string) => {
+						throw new Error("Parse error")
+					},
+				},
+			})
+
+			expect(() => args.custom?.parse?.("test")).toThrow("Parse error")
+		})
+
+		it("should handle parse function returning invalid type", () => {
+			const schema = z.object({
+				count: z.number(),
+			})
+
+			const args = zodSchemaToGunshiArgs(schema, {
+				count: {
+					parse: (_value: string) => "not a number",
+				},
+			})
+
+			const result = args.count?.parse?.("123")
+			expect(result).toBe("not a number")
+		})
+
+		it("should handle reconstruction with overlapping paths", () => {
+			const flat = {
+				"a": { b: 1 },
+				"a-b": 2,
+			}
+			const nested = reconstructNestedValues(flat, "-")
+
+			expect(nested).toEqual({
+				a: {
+					b: 2,
+				},
+			})
+		})
+
+		it("should handle separator collision with field names", () => {
+			const schema = z.object({
+				"foo-bar": z.string(),
+				"foo": z.object({
+					"bar": z.string(),
+				}),
+			})
+
+			expect(() => zodSchemaToGunshiArgs(schema, {}, { separator: "-" })).toThrow(/collisions/i)
+		})
+
+		it("should handle very long nested paths", () => {
+			const flat = {
+				"a-b-c-d-e-f-g-h-i-j-k-l-m-n-o-p-q-r-s-t-u-v-w-x-y-z": "deep",
+			}
+			const nested = reconstructNestedValues(flat, "-")
+
+			expect((nested as any).a.b.c.d.e.f.g.h.i.j.k.l.m.n.o.p.q.r.s.t.u.v.w.x.y.z).toBe("deep")
 		})
 	})
 })
