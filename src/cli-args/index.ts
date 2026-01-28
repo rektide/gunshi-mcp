@@ -5,7 +5,7 @@ import { flattenSchema } from "./flatten.js"
 import { checkCollisions } from "./collision.js"
 import { analyzeArray } from "./arrays.js"
 import { buildGunshiArg } from "./overrides.js"
-import { isZodObject, getZodObjectShape } from "./introspect.js"
+import { isZodObject, getZodObjectShape, unwrapZodWrappers } from "./introspect.js"
 
 export type { CliOptions } from "./types.js"
 
@@ -56,10 +56,11 @@ function lookupField(schema: z.ZodObject<any>, flatKey: string, separator: strin
 	for (let i = 0; i < parts.length - 1; i++) {
 		const part = parts[i]
 		const field = shape[part]
-		if (!isZodObject(field)) {
+		const unwrappedField = unwrapZodWrappers(field)
+		if (!isZodObject(unwrappedField)) {
 			return undefined
 		}
-		shape = getZodObjectShape(field)
+		shape = getZodObjectShape(unwrappedField)
 	}
 
 	return shape[parts[parts.length - 1]]

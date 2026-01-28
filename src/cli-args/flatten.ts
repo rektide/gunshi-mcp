@@ -1,6 +1,6 @@
 import type { z } from "zod"
 import type { FlattenOptions, ZodFieldInfo } from "./types.js"
-import { introspectZodField, isZodObject, getZodObjectShape } from "./introspect.js"
+import { introspectZodField, isZodObject, getZodObjectShape, unwrapZodWrappers } from "./introspect.js"
 
 export interface FlattenedArg {
 	info: ZodFieldInfo
@@ -37,16 +37,19 @@ function walk(
 ) {
 	for (const [key, field] of Object.entries(shape)) {
 		const flatKey = currentPrefix ? `${currentPrefix}${separator}${key}` : key
+		const unwrappedField = unwrapZodWrappers(field)
 		const info = introspectZodField(field)
 		const isOptional = parentOptional || !info.required
 		const path = currentPrefix ? `${currentPrefix}${separator}${key}` : key
 
-		if (info.type === "object" && isZodObject(field)) {
+		if (info.type === "object" && isZodObject(unwrappedField)) {
 			if (depth >= maxDepth) {
 				context.args[flatKey] = { info, depth: depth + 1, optional: isOptional }
 			} else {
-				const innerShape = getZodObjectShape(field)
-				walk(innerShape, flatKey, depth + 1, isOptional, context, separator, maxDepth)
+				const innerShape = getZodObjectShape(unwrappedField)
+				if (innerShape) {
+					walk(innerShape, flatKey, depth + 1, isOptional, context, separator, maxDepth)
+				}
 			}
 		} else {
 			if (context.args[flatKey]) {

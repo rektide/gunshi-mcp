@@ -94,3 +94,42 @@ export function isZodObject(schema: unknown): schema is z.ZodObject<any> {
 		typeof (schema as any).shape === "object"
 	)
 }
+
+export function unwrapZodWrappers(schema: unknown): unknown {
+	let inner = schema
+	const maxDepth = 10
+	let depth = 0
+
+	while (depth < maxDepth) {
+		const schemaType = (inner as { type?: string }).type
+
+		if (
+			schemaType === "optional" ||
+			schemaType === "default" ||
+			schemaType === "nullable" ||
+			schemaType === "brand"
+		) {
+			if (typeof (inner as { unwrap?: () => unknown }).unwrap === "function") {
+				inner = (inner as { unwrap: () => unknown }).unwrap()
+			} else if (typeof (inner as { _def?: { innerType: unknown } })._def === "object") {
+				const def = (inner as { _def: { innerType?: unknown } })._def
+				if (def && "innerType" in def) {
+					inner = def.innerType
+				}
+			}
+			depth++
+		} else {
+			break
+		}
+	}
+
+	return inner
+}
+
+export function getZodObjectShape(schema: unknown): z.ZodRawShape | undefined {
+	const unwrapped = unwrapZodWrappers(schema)
+	if (isZodObject(unwrapped)) {
+		return unwrapped.shape
+	}
+	return undefined
+}
