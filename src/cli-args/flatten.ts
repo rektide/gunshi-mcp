@@ -43,11 +43,11 @@ function walk(
 		const path = currentPrefix ? `${currentPrefix}${separator}${key}` : key
 
 		if (info.type === "object" && isZodObject(unwrappedField)) {
-			if (depth >= maxDepth) {
-				context.args[flatKey] = { info, depth: depth + 1, optional: isOptional }
-			} else {
-				const innerShape = getZodObjectShape(unwrappedField)
-				if (innerShape) {
+			const innerShape = getZodObjectShape(unwrappedField)
+			if (innerShape) {
+				if (depth >= maxDepth) {
+					context.args[flatKey] = { info, depth: depth + 1, optional: isOptional }
+				} else {
 					walk(innerShape, flatKey, depth + 1, isOptional, context, separator, maxDepth)
 				}
 			}

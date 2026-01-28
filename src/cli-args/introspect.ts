@@ -23,6 +23,20 @@ export function introspectZodField(schema: unknown): ZodFieldInfo {
 			}
 			depth++
 			continue
+		} else if (schemaType === "nullable") {
+			required = false
+			if (typeof (inner as { unwrap?: () => unknown }).unwrap === "function") {
+				inner = (inner as { unwrap: () => unknown }).unwrap()
+			}
+			depth++
+			continue
+		} else if (schemaType === "catch") {
+			required = false
+			if (typeof (inner as { unwrap?: () => unknown }).unwrap === "function") {
+				inner = (inner as { unwrap: () => unknown }).unwrap()
+			}
+			depth++
+			continue
 		} else if (schemaType === "default") {
 			const def = (inner as { _def?: { defaultValue: unknown } })._def
 			if (def && "defaultValue" in def) {
@@ -107,7 +121,7 @@ export function unwrapZodWrappers(schema: unknown): unknown {
 			schemaType === "optional" ||
 			schemaType === "default" ||
 			schemaType === "nullable" ||
-			schemaType === "brand"
+			schemaType === "catch"
 		) {
 			if (typeof (inner as { unwrap?: () => unknown }).unwrap === "function") {
 				inner = (inner as { unwrap: () => unknown }).unwrap()

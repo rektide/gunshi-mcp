@@ -78,6 +78,67 @@ describe("zodSchemaToGunshiArgs with cli-args module", () => {
 		expect(args["config-timeout"]).toBeDefined()
 		expect(args["config-timeout"].required).toBeUndefined()
 	})
+
+	it("should handle nullable wrapper", () => {
+		const schema = z.object({
+			config: z
+				.object({
+					timeout: z.number(),
+				})
+				.nullable(),
+		})
+
+		const args = zodSchemaToGunshiArgs(schema, {}, { separator: "-" })
+
+		expect(args["config-timeout"]).toBeDefined()
+		expect(args["config-timeout"].required).toBeUndefined()
+	})
+
+	it("should handle default wrapper", () => {
+		const schema = z.object({
+			config: z
+				.object({
+					timeout: z.number(),
+				})
+				.default({ timeout: 30 }),
+		})
+
+		const args = zodSchemaToGunshiArgs(schema, {}, { separator: "-" })
+
+		expect(args["config-timeout"]).toBeDefined()
+		expect(args["config-timeout"].required).toBeUndefined()
+	})
+
+	it("should handle catch wrapper", () => {
+		const schema = z.object({
+			config: z
+				.object({
+					timeout: z.number(),
+				})
+				.catch({ timeout: 30 }),
+		})
+
+		const args = zodSchemaToGunshiArgs(schema, {}, { separator: "-" })
+
+		expect(args["config-timeout"]).toBeDefined()
+		expect(args["config-timeout"].required).toBeUndefined()
+	})
+
+	it("should handle multiple nested wrappers", () => {
+		const schema = z.object({
+			config: z
+				.object({
+					timeout: z.number(),
+				})
+				.optional()
+				.default({ timeout: 30 }),
+		})
+
+		const args = zodSchemaToGunshiArgs(schema, {}, { separator: "-" })
+
+		expect(args["config-timeout"]).toBeDefined()
+		expect(args["config-timeout"].required).toBeUndefined()
+	})
 })
 
 describe("reconstructNestedValues", () => {
