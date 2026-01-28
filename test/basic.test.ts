@@ -382,8 +382,6 @@ describe("MCP Plugin", () => {
 		})
 
 		it("should handle deeply nested CLI → handler flow", async () => {
-			let receivedArgs: any
-
 			const testTool = defineTool()({
 				name: "deeply-nested-tool",
 				description: "Tool with deeply nested schema",
@@ -395,14 +393,11 @@ describe("MCP Plugin", () => {
 						}),
 					}),
 				}),
-				handler: async (args) => {
-					receivedArgs = args
-					return {
-						type: "tool_result",
-						toolUseId: "deeply-nested-tool",
-						content: [{ type: "text", text: "Done" }],
-					}
-				},
+				handler: async (_args) => ({
+					type: "tool_result",
+					toolUseId: "deeply-nested-tool",
+					content: [{ type: "text", text: "Done" }],
+				}),
 			})
 
 			const mcpPlugin = createMcpPlugin({
