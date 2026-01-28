@@ -739,4 +739,360 @@ describe("MCP Plugin", () => {
 			expect((nested as any).a.b.c.d.e.f.g.h.i.j.k.l.m.n.o.p.q.r.s.t.u.v.w.x.y.z).toBe("deep")
 		})
 	})
+
+	describe("zodSchemaToGunshiArgs - Depth Limiting", () => {
+		it("should handle maxDepth 0 (everything as JSON)", () => {
+			const schema = z.object({
+				config: z.object({
+					timeout: z.number(),
+					nested: z.object({
+						value: z.string(),
+					}),
+				}),
+				name: z.string(),
+			})
+
+			const args = zodSchemaToGunshiArgs(schema, {}, { maxDepth: 0 })
+
+			expect(args.config).toBeDefined()
+			expect(args.config.type).toBe("custom")
+			expect(args.name).toBeDefined()
+		})
+
+		it("should handle exactly at max depth boundary", () => {
+			const schema = z.object({
+				a: z.object({
+					b: z.object({
+						c: z.string(),
+					}),
+				}),
+			})
+
+			const args = zodSchemaToGunshiArgs(schema, {}, { maxDepth: 2, separator: "-" })
+
+			expect(args["a-b-c"]).toBeDefined()
+			expect(args["a-b-c"].type).toBe("string")
+		})
+
+		it("should handle maxDepth 1 (one level of nesting)", () => {
+			const schema = z.object({
+				a: z.object({
+					b: z.object({
+						c: z.string(),
+					}),
+				}),
+			})
+
+			const args = zodSchemaToGunshiArgs(schema, {}, { maxDepth: 1, separator: "-" })
+
+			expect(args["a-b"]).toBeDefined()
+			expect(args["a-b"].type).toBe("custom")
+		})
+
+		it("should handle mixed: some nested, some at limit", () => {
+			const schema = z.object({
+				deep: z.object({
+					level1: z.object({
+						level2: z.object({
+							value: z.string(),
+						}),
+					}),
+				}),
+				shallow: z.object({
+					value: z.string(),
+				}),
+			})
+
+			const args = zodSchemaToGunshiArgs(schema, {}, { maxDepth: 2, separator: "-" })
+
+			expect(args["deep-level1-level2"]).toBeDefined()
+			expect(args["deep-level1-level2"].type).toBe("custom")
+
+			expect(args["shallow-value"]).toBeDefined()
+			expect(args["shallow-value"].type).toBe("string")
+		})
+
+		it("should handle large maxDepth", () => {
+			const schema = z.object({
+				level1: z.object({
+					level2: z.object({
+						level3: z.string(),
+					}),
+				}),
+			})
+
+			const args = zodSchemaToGunshiArgs(schema, {}, { maxDepth: 10, separator: "-" })
+
+			expect(args["level1-level2-level3"]).toBeDefined()
+			expect(args["level1-level2-level3"].type).toBe("string")
+		})
+	})
+
+	describe("zodSchemaToGunshiArgs - Separator Edge Cases", () => {
+		it("should handle underscore separator", () => {
+			const schema = z.object({
+				config: z.object({
+					timeout: z.number(),
+				}),
+			})
+
+			const args = zodSchemaToGunshiArgs(schema, {}, { separator: "_" })
+
+			expect(args["config_timeout"]).toBeDefined()
+			expect(args["config_timeout"].type).toBe("number")
+		})
+
+		it("should handle dot separator", () => {
+			const schema = z.object({
+				config: z.object({
+					timeout: z.number(),
+				}),
+			})
+
+			const args = zodSchemaToGunshiArgs(schema, {}, { separator: "." })
+
+			expect(args["config.timeout"]).toBeDefined()
+			expect(args["config.timeout"].type).toBe("number")
+		})
+
+		it("should handle empty string separator", () => {
+			const schema = z.object({
+				config: z.object({
+					timeout: z.number(),
+				}),
+			})
+
+			const args = zodSchemaToGunshiArgs(schema, {}, { separator: "" })
+
+			expect(args["configtimeout"]).toBeDefined()
+			expect(args["configtimeout"].type).toBe("number")
+		})
+
+		it("should handle separator appearing in original field names", () => {
+			const schema = z.object({
+				"config-timeout": z.number(),
+				config: z.object({
+					timeout: z.number(),
+				}),
+			})
+
+			expect(() => zodSchemaToGunshiArgs(schema, {}, { separator: "-" })).toThrow(/collisions/i)
+		})
+
+		it("should handle multi-character separator", () => {
+			const schema = z.object({
+				config: z.object({
+					timeout: z.number(),
+				}),
+			})
+
+			const args = zodSchemaToGunshiArgs(schema, {}, { separator: "__" })
+
+			expect(args["config__timeout"]).toBeDefined()
+			expect(args["config__timeout"].type).toBe("number")
+		})
+	})
+
+	describe("zodSchemaToGunshiArgs - Complex Collisions", () => {
+		it("should detect three-way collisions", () => {
+			const schema = z.object({
+				"foo-bar-baz": z.string(),
+				foo: z.object({
+					"bar-baz": z.string(),
+				}),
+				"foo-bar": z.object({
+					baz: z.string(),
+				}),
+			})
+
+			expect(() => zodSchemaToGunshiArgs(schema, {}, { separator: "-" })).toThrow(/collisions/i)
+		})
+
+		it("should detect collisions at different nesting depths", () => {
+			const schema = z.object({
+				config: z.object({
+					timeout: z.string(),
+				}),
+				"config-timeout": z.string(),
+			})
+
+			expect(() => zodSchemaToGunshiArgs(schema, {}, { separator: "-" })).toThrow(/collisions/i)
+		})
+
+		it("should detect collisions with objects vs primitives", () => {
+			const schema = z.object({
+				"user-config": z.string(),
+				user: z.object({
+					config: z.string(),
+				}),
+			})
+
+			expect(() => zodSchemaToGunshiArgs(schema, {}, { separator: "-" })).toThrow(/collisions/i)
+		})
+
+		it("should detect collisions with optional fields", () => {
+			const schema = z.object({
+				"foo-bar": z.string().optional(),
+				foo: z.object({
+					bar: z.string().optional(),
+				}),
+			})
+
+			expect(() => zodSchemaToGunshiArgs(schema, {}, { separator: "-" })).toThrow(/collisions/i)
+		})
+
+		it("should detect collisions with default values", () => {
+			const schema = z.object({
+				"foo-bar": z.string().default("default"),
+				foo: z.object({
+					bar: z.string().default("default"),
+				}),
+			})
+
+			expect(() => zodSchemaToGunshiArgs(schema, {}, { separator: "-" })).toThrow(/collisions/i)
+		})
+
+		it("should handle collision at depth boundary", () => {
+			const schema = z.object({
+				"a-b": z.string(),
+				a: z.object({
+					b: z.string(),
+				}),
+			})
+
+			expect(() => zodSchemaToGunshiArgs(schema, {}, { maxDepth: 1, separator: "-" })).toThrow(/collisions/i)
+		})
+	})
+
+	describe("zodSchemaToGunshiArgs - Wrapper Combinations", () => {
+		it("should handle optional().default().nullable() chain", () => {
+			const schema = z.object({
+				value: z.string().optional().default("default").nullable(),
+			})
+
+			const args = zodSchemaToGunshiArgs(schema)
+
+			expect(args.value).toBeDefined()
+			expect(args.value.required).toBeUndefined()
+		})
+
+		it("should handle default().optional().nullable() chain", () => {
+			const schema = z.object({
+				value: z.string().default("default").optional().nullable(),
+			})
+
+			const args = zodSchemaToGunshiArgs(schema)
+
+			expect(args.value).toBeDefined()
+			expect(args.value.required).toBeUndefined()
+		})
+
+		it("should handle nullable().optional().default() chain", () => {
+			const schema = z.object({
+				value: z.string().nullable().optional().default("default"),
+			})
+
+			const args = zodSchemaToGunshiArgs(schema)
+
+			expect(args.value).toBeDefined()
+			expect(args.value.required).toBeUndefined()
+		})
+
+		it("should handle wrappers on array fields", () => {
+			const schema = z.object({
+				items: z.array(z.string()).optional(),
+			})
+
+			const args = zodSchemaToGunshiArgs(schema)
+
+			expect(args.items).toBeDefined()
+			expect(args.items.required).toBeUndefined()
+		})
+
+		it("should handle default() on array fields", () => {
+			const schema = z.object({
+				items: z.array(z.string()).default([]),
+			})
+
+			const args = zodSchemaToGunshiArgs(schema)
+
+			expect(args.items).toBeDefined()
+			expect(args.items.required).toBeUndefined()
+		})
+
+		it("should handle nullable() on array fields", () => {
+			const schema = z.object({
+				items: z.array(z.number()).nullable(),
+			})
+
+			const args = zodSchemaToGunshiArgs(schema)
+
+			expect(args.items).toBeDefined()
+			expect(args.items.required).toBeUndefined()
+		})
+
+		it("should handle all three wrappers on array fields", () => {
+			const schema = z.object({
+				items: z.array(z.string()).optional().default([]).nullable(),
+			})
+
+			const args = zodSchemaToGunshiArgs(schema)
+
+			expect(args.items).toBeDefined()
+			expect(args.items.required).toBeUndefined()
+		})
+
+		it("should handle wrappers on nested objects", () => {
+			const schema = z.object({
+				config: z
+					.object({
+						timeout: z.number(),
+					})
+					.optional()
+					.default({ timeout: 30 })
+					.nullable(),
+			})
+
+			const args = zodSchemaToGunshiArgs(schema, {}, { separator: "-" })
+
+			expect(args["config-timeout"]).toBeDefined()
+			expect(args["config-timeout"].required).toBeUndefined()
+		})
+
+		it("should handle catch() combined with other wrappers", () => {
+			const schema = z.object({
+				value: z.string().catch("fallback").optional(),
+			})
+
+			const args = zodSchemaToGunshiArgs(schema)
+
+			expect(args.value).toBeDefined()
+			expect(args.value.required).toBeUndefined()
+		})
+
+		it("should handle wrappers with transformations", () => {
+			const schema = z.object({
+				value: z
+					.string()
+					.transform((val) => val.toUpperCase())
+					.optional(),
+			})
+
+			const args = zodSchemaToGunshiArgs(schema)
+
+			expect(args.value).toBeDefined()
+			expect(args.value.required).toBeUndefined()
+		})
+
+		it("should handle refine() combined with wrappers", () => {
+			const schema = z.object({
+				value: z.string().min(5).optional(),
+			})
+
+			const args = zodSchemaToGunshiArgs(schema)
+
+			expect(args.value).toBeDefined()
+			expect(args.value.required).toBeUndefined()
+		})
+	})
 })
