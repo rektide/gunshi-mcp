@@ -25,7 +25,7 @@ describe("MCP Plugin", () => {
 			const testTool = defineTool()({
 				name: "test-tool",
 				description: "A test tool",
-				input: z.object({
+				inputSchema: z.object({
 					message: z.string().describe("A message"),
 					count: z.number().default(1),
 				}),
@@ -44,7 +44,7 @@ describe("MCP Plugin", () => {
 			const testTool = defineTool()({
 				name: "optional-tool",
 				description: "Tool with optional fields",
-				input: z.object({
+				inputSchema: z.object({
 					required: z.string(),
 					optional: z.string().optional(),
 				}),
@@ -63,7 +63,7 @@ describe("MCP Plugin", () => {
 			const testTool = defineTool()({
 				name: "enum-tool",
 				description: "Tool with enum",
-				input: z.object({
+				inputSchema: z.object({
 					format: z.enum(["json", "text", "yaml"]).default("text"),
 				}),
 				handler: async (_args) => ({
@@ -81,7 +81,7 @@ describe("MCP Plugin", () => {
 			const testTool = defineTool()({
 				name: "cli-tool",
 				description: "Tool with CLI config",
-				input: z.object({
+				inputSchema: z.object({
 					value: z.string(),
 				}),
 				cli: {
@@ -106,7 +106,7 @@ describe("MCP Plugin", () => {
 			const tool1 = defineTool()({
 				name: "tool1",
 				description: "First tool",
-				input: z.object({ input: z.string() }),
+				inputSchema: z.object({ inputSchema: z.string() }),
 				handler: async (_args) => ({
 					type: "tool_result",
 					toolUseId: "tool1",
@@ -117,7 +117,7 @@ describe("MCP Plugin", () => {
 			const tool2 = defineTool()({
 				name: "tool2",
 				description: "Second tool",
-				input: z.object({ input: z.number() }),
+				inputSchema: z.object({ inputSchema: z.number() }),
 				handler: async (_args) => ({
 					type: "tool_result",
 					toolUseId: "tool2",
@@ -133,7 +133,7 @@ describe("MCP Plugin", () => {
 			const testTool = defineTool()({
 				name: "array-tool",
 				description: "Tool with array field",
-				input: z.object({
+				inputSchema: z.object({
 					items: z.array(z.string()).default([]),
 				}),
 				cli: {
@@ -157,7 +157,7 @@ describe("MCP Plugin", () => {
 			const testTool = defineTool()({
 				name: "no-input-tool",
 				description: "Tool with no input",
-				input: z.object({}),
+				inputSchema: z.object({}),
 				handler: async () => ({
 					type: "tool_result",
 					toolUseId: "no-input-tool",
@@ -173,7 +173,7 @@ describe("MCP Plugin", () => {
 			const testTool = defineTool()({
 				name: "bool-tool",
 				description: "Tool with boolean",
-				input: z.object({
+				inputSchema: z.object({
 					flag: z.boolean().default(false),
 					enabled: z.boolean(),
 				}),
@@ -192,7 +192,7 @@ describe("MCP Plugin", () => {
 			const testTool = defineTool()({
 				name: "typed-tool",
 				description: "Tool with typed handler args",
-				input: z.object({
+				inputSchema: z.object({
 					message: z.string(),
 					count: z.number(),
 					flag: z.boolean(),
@@ -335,7 +335,7 @@ describe("MCP Plugin", () => {
 			const testTool = defineTool()({
 				name: "nested-tool",
 				description: "Tool with nested schema",
-				input: z.object({
+				inputSchema: z.object({
 					config: z.object({
 						timeout: z.number(),
 						retries: z.number().default(3),
@@ -364,7 +364,9 @@ describe("MCP Plugin", () => {
 			}
 
 			const separator = testTool.cliOptions?.separator ?? "-"
-			const nestedValues = testTool.input.parse(reconstructNestedValues(flatValues, separator))
+			const nestedValues = testTool.inputSchema.parse(
+				reconstructNestedValues(flatValues, separator),
+			)
 
 			expect(nestedValues).toEqual({
 				config: { timeout: 30, retries: 3 },
@@ -387,7 +389,7 @@ describe("MCP Plugin", () => {
 			const testTool = defineTool()({
 				name: "deeply-nested-tool",
 				description: "Tool with deeply nested schema",
-				input: z.object({
+				inputSchema: z.object({
 					level1: z.object({
 						level2: z.object({
 							value: z.string(),
@@ -413,7 +415,9 @@ describe("MCP Plugin", () => {
 			}
 
 			const separator = testTool.cliOptions?.separator ?? "-"
-			const nestedValues = testTool.input.parse(reconstructNestedValues(flatValues, separator))
+			const nestedValues = testTool.inputSchema.parse(
+				reconstructNestedValues(flatValues, separator),
+			)
 
 			expect(nestedValues).toEqual({
 				level1: {

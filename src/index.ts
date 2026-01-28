@@ -3,7 +3,8 @@ export * from "./mcp-plugin.js"
 export {
 	ToolResult,
 	ToolContext,
-	ToolDefinition,
+	GunshiTool,
+	AnyGunshiTool,
 	Tool,
 	GunshiArg,
 	MCP_NEW_PLUGIN_ID,

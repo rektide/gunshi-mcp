@@ -25,22 +25,20 @@ export interface ToolContext<E = {}> {
 	meta: { requestId?: string }
 }
 
-export interface ToolDefinition<Shape extends ZodShape = ZodShape, TExtensions = {}> {
-	name: string
-	title?: string
-	description: string
-	input: z.ZodObject<Shape>
-	output?: z.ZodTypeAny
+export interface GunshiTool<Shape extends ZodShape = ZodShape, TExtensions = {}> extends Omit<
+	Tool,
+	"inputSchema" | "outputSchema"
+> {
+	inputSchema: z.ZodObject<Shape>
+	outputSchema?: z.ZodTypeAny
 
-	/** CLI argument overrides for individual fields (add shortcuts, custom descriptions, parsers) */
 	cli?: Partial<Record<string, Partial<ArgSchema>>>
-	/** Options for CLI argument generation (separator, depth, array handling) */
 	cliOptions?: CliOptions
 
 	handler: (args: ZodInput<Shape>, ctx: ToolContext<TExtensions>) => Promise<ToolResult>
 }
 
-export type AnyToolDefinition = ToolDefinition<any, any>
+export type AnyGunshiTool = GunshiTool<any, any>
 
 export interface McpToolExtra {
 	requestId?: string

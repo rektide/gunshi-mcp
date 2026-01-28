@@ -8,7 +8,7 @@ describe("MCP Plugin - Per-Tool CLI Options", () => {
 		const tool1 = defineTool()({
 			name: "tool1",
 			description: "Tool with dash separator",
-			input: z.object({
+			inputSchema: z.object({
 				config: z.object({
 					timeout: z.number(),
 				}),
@@ -24,7 +24,7 @@ describe("MCP Plugin - Per-Tool CLI Options", () => {
 		const tool2 = defineTool()({
 			name: "tool2",
 			description: "Tool with dot separator",
-			input: z.object({
+			inputSchema: z.object({
 				config: z.object({
 					timeout: z.number(),
 				}),
@@ -46,7 +46,7 @@ describe("MCP Plugin - Per-Tool CLI Options", () => {
 		const tool1 = defineTool()({
 			name: "shallow-tool",
 			description: "Tool with shallow depth",
-			input: z.object({
+			inputSchema: z.object({
 				config: z.object({
 					timeout: z.number(),
 				}),
@@ -62,7 +62,7 @@ describe("MCP Plugin - Per-Tool CLI Options", () => {
 		const tool2 = defineTool()({
 			name: "deep-tool",
 			description: "Tool with deep depth",
-			input: z.object({
+			inputSchema: z.object({
 				config: z.object({
 					timeout: z.number(),
 				}),
@@ -84,7 +84,7 @@ describe("MCP Plugin - Per-Tool CLI Options", () => {
 		const tool1 = defineTool()({
 			name: "repeated-tool",
 			description: "Tool with repeated array handling",
-			input: z.object({
+			inputSchema: z.object({
 				items: z.array(z.string()),
 			}),
 			cliOptions: { arrayHandling: "repeated" },
@@ -98,7 +98,7 @@ describe("MCP Plugin - Per-Tool CLI Options", () => {
 		const tool2 = defineTool()({
 			name: "json-tool",
 			description: "Tool with JSON array handling",
-			input: z.object({
+			inputSchema: z.object({
 				items: z.array(z.string()),
 			}),
 			cliOptions: { arrayHandling: "json" },
@@ -118,7 +118,7 @@ describe("MCP Plugin - Per-Tool CLI Options", () => {
 		const tool = defineTool()({
 			name: "combined-tool",
 			description: "Tool with all CLI options",
-			input: z.object({
+			inputSchema: z.object({
 				config: z.object({
 					items: z.array(z.string()),
 				}),
@@ -144,7 +144,7 @@ describe("MCP Plugin - Per-Tool CLI Options", () => {
 		const tool = defineTool()({
 			name: "default-tool",
 			description: "Tool with default CLI options",
-			input: z.object({
+			inputSchema: z.object({
 				value: z.string(),
 			}),
 			handler: async () => ({
