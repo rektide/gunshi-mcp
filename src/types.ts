@@ -1,9 +1,11 @@
 import type { z } from "zod"
 import type { CliOptions } from "./cli-args/types.js"
 import type { ArgSchema } from "gunshi"
+import type { CallToolResult } from "@modelcontextprotocol/sdk/types.js"
 
 export type { CliOptions } from "./cli-args/types.js"
 export type GunshiArg = ArgSchema
+export type ToolResult = CallToolResult
 
 export const MCP_NEW_PLUGIN_ID = "gunshi-mcp:mcp" as const
 export type McpNewPluginId = typeof MCP_NEW_PLUGIN_ID
@@ -14,23 +16,6 @@ export type ZodInput<Shape extends ZodShape> = z.infer<z.ZodObject<Shape>>
 export interface McpExtension {
 	startServer: (options?: { port?: number }) => Promise<void>
 	stopServer: () => Promise<void>
-}
-
-export interface ToolResult {
-	type: "tool_result"
-	toolUseId: string
-	content: Array<{
-		type: "text"
-		text: string
-		annotations?: {
-			audience?: "assistant" | "user"
-			priority?: number
-			lastModified?: string
-		}
-	}>
-	isError?: boolean
-	_meta?: Record<string, unknown>
-	structuredContent?: unknown
 }
 
 export interface ToolContext<E = {}> {

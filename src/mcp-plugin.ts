@@ -120,8 +120,6 @@ export function createMcpPlugin(options: McpNewPluginOptions = {}) {
 						const parsed = tool.input.parse(inputArgs)
 						const result = await tool.handler(parsed, toolCtx)
 						return {
-							type: "tool_result" as const,
-							toolUseId: tool.name,
 							content: [
 								{
 									type: "text" as const,
