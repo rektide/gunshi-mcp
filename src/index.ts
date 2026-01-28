@@ -1,5 +1,5 @@
 export * from "./plugin.ts"
-export * from "./mcp-plugin.ts"
+export * from "./mcp-plugin.js"
 export {
 	ToolResult,
 	ToolContext,
@@ -9,9 +9,10 @@ export {
 	McpExtension,
 	type McpNewPluginId,
 	McpToolExtra,
-} from "./types.ts"
-export { defineTool } from "./define-tool.ts"
-export { zodSchemaToGunshiArgs } from "./zod-to-gunshi.ts"
+	type JsonSchema,
+} from "./types.js"
+export { defineTool } from "./define-tool.js"
+export { zodSchemaToGunshiArgs, zodToJsonSchema } from "./zod-to-gunshi.js"
 export { buildToolContext } from "./context.js"
 export { extractText, formatResult } from "./output.js"
 export {

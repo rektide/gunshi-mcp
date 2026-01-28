@@ -9,18 +9,13 @@ interface ZodFieldInfo {
 	enumValues?: string[]
 }
 
-/**
- * Type guard to check if an object has a _def property (Zod schema)
- */
-function hasZodDef(obj: unknown): obj is { _def: Record<string, unknown> } {
-	return typeof obj === "object" && obj !== null && "_def" in obj
-}
-
 function introspectZodField(schema: unknown): ZodFieldInfo {
 	let inner = schema
 	let required = true
 	let defaultValue: unknown
 	let description = undefined as string | undefined
+	let depth = 0
+	const maxDepth = 10
 
 	// Extract description from outer schema if present
 	if (typeof inner === "object" && inner !== null && "description" in inner) {
@@ -28,37 +23,41 @@ function introspectZodField(schema: unknown): ZodFieldInfo {
 	}
 
 	// Walk through Zod wrappers (ZodOptional, ZodDefault, etc.)
-	while (hasZodDef(inner)) {
-		const def = inner._def
+	while (depth < maxDepth) {
+		// Check for type property directly on schema
+		const schemaType = (inner as { type?: string }).type
 
-		if (def.typeName === "ZodOptional") {
+		if (schemaType === "optional") {
 			required = false
-			if (
-				hasZodDef(def) &&
-				"innerType" in def &&
-				typeof def.innerType === "object" &&
-				def.innerType !== null
-			) {
-				inner = def.innerType
+			// Use unwrap() method if available (Zod 3+)
+			if (typeof (inner as { unwrap?: () => unknown }).unwrap === "function") {
+				inner = (inner as { unwrap: () => unknown }).unwrap()
 			}
-		} else if (def.typeName === "ZodDefault") {
-			if ("defaultValue" in def && typeof def.defaultValue === "function") {
-				try {
-					defaultValue = (def.defaultValue as () => unknown)()
-				} catch {
-					// Default value function might fail, that's ok
+			depth++
+			continue
+		} else if (schemaType === "default") {
+			const def = (inner as { _def?: { defaultValue: unknown } })._def
+			if (def && "defaultValue" in def) {
+				if (typeof def.defaultValue === "function") {
+					try {
+						defaultValue = (def.defaultValue as () => unknown)()
+					} catch {
+						// Default value function might fail, that's ok
+					}
+				} else {
+					defaultValue = def.defaultValue
 				}
 			}
-			if (
-				hasZodDef(def) &&
-				"innerType" in def &&
-				typeof def.innerType === "object" &&
-				def.innerType !== null
-			) {
-				inner = def.innerType
+			// Default values make fields optional
+			required = false
+			// Use unwrap() method if available
+			if (typeof (inner as { unwrap?: () => unknown }).unwrap === "function") {
+				inner = (inner as { unwrap: () => unknown }).unwrap()
 			}
+			depth++
+			continue
 		} else {
-			// Found the actual schema type
+			// Found actual schema type
 			break
 		}
 	}
@@ -66,28 +65,34 @@ function introspectZodField(schema: unknown): ZodFieldInfo {
 	// Extract description from inner schema if not found on outer
 	if (
 		!description &&
-		hasZodDef(inner) &&
-		"description" in inner &&
-		typeof inner.description === "string"
+		typeof inner === "object" &&
+		inner !== null &&
+		"description" in inner
 	) {
-		description = inner.description
+		description = inner.description as string | undefined
 	}
 
 	// Determine the base type
-	const typeName =
-		hasZodDef(inner) && typeof inner._def.typeName === "string" ? inner._def.typeName : undefined
+	let typeName: string | undefined
+	if (typeof inner === "object" && inner !== null && "type" in inner) {
+		typeName = (inner as { type?: string }).type
+	}
 
+	// Map Zod types to Gunshi arg types
 	switch (typeName) {
-		case "ZodString":
+		case "string":
 			return { type: "string", required, default: defaultValue, description }
-		case "ZodNumber":
+		case "number":
 			return { type: "number", required, default: defaultValue, description }
-		case "ZodBoolean":
+		case "boolean":
 			return { type: "boolean", required, default: defaultValue, description }
-		case "ZodEnum": {
+		case "enum": {
 			const values =
-				hasZodDef(inner) && "values" in inner._def && Array.isArray(inner._def.values)
-					? (inner._def.values as string[])
+				typeof inner === "object" &&
+				inner !== null &&
+				"enum" in inner &&
+				typeof inner.enum === "object"
+					? Object.values(inner.enum as Record<string, string>)
 					: undefined
 			return {
 				type: "enum",
@@ -97,9 +102,9 @@ function introspectZodField(schema: unknown): ZodFieldInfo {
 				enumValues: values,
 			}
 		}
-		case "ZodArray":
+		case "array":
 			return { type: "array", required, default: defaultValue, description }
-		case "ZodObject":
+		case "object":
 			return { type: "object", required, default: defaultValue, description }
 		default:
 			return { type: "string", required, default: defaultValue, description }
@@ -161,4 +166,68 @@ export function zodSchemaToGunshiArgs<const Shape extends ZodShape>(
 	}
 
 	return args
+}
+
+/**
+ * Convert Zod schema to JSON Schema for MCP tool registration.
+ * This handles subset of Zod types supported by gunshi-mcp.
+ *
+ * @param schema - The Zod schema object
+ * @returns JSON Schema object compatible with MCP protocol
+ */
+export function zodToJsonSchema<const Shape extends ZodShape>(
+	schema: z.ZodObject<Shape>,
+): object {
+	const properties: Record<string, object> = {}
+	const required: string[] = []
+
+	for (const name in schema.shape) {
+		const field = schema.shape[name]
+		const info = introspectZodField(field)
+
+		let jsonType: string
+		switch (info.type) {
+			case "string":
+				jsonType = "string"
+				break
+			case "number":
+				jsonType = "number"
+				break
+			case "boolean":
+				jsonType = "boolean"
+				break
+			case "enum":
+				jsonType = "string"
+				break
+			case "array":
+				jsonType = "array"
+				break
+			case "object":
+				jsonType = "object"
+				break
+			default:
+				jsonType = "string"
+		}
+
+		const property: Record<string, unknown> = {
+			type: jsonType,
+			...(info.description && { description: info.description }),
+			...(info.default !== undefined && { default: info.default }),
+			...(info.type === "array" && { items: { type: "string" } }),
+			...(info.enumValues && { enum: info.enumValues }),
+		}
+
+		properties[name] = property
+
+		if (info.required) {
+			required.push(name)
+		}
+	}
+
+	return {
+		type: "object",
+		properties,
+		...(required.length > 0 && { required }),
+		additionalProperties: false,
+	}
 }

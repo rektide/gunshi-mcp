@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest"
 import { createMcpPlugin } from "../src/mcp-plugin.js"
 import { defineTool } from "../src/define-tool.js"
+import { zodToJsonSchema } from "../src/zod-to-gunshi.js"
 import { z } from "zod"
 
 describe("MCP Plugin", () => {
@@ -198,9 +199,9 @@ describe("MCP Plugin", () => {
 				}),
 				handler: async (args) => {
 					// TypeScript should infer correct types
-					expectType<string>(args.message)
-					expectType<number>(args.count)
-					expectType<boolean>(args.flag)
+					const _messageCheck: string = args.message
+					const _countCheck: number = args.count
+					const _flagCheck: boolean = args.flag
 					return {
 						type: "tool_result",
 						toolUseId: "typed-tool",
@@ -211,6 +212,99 @@ describe("MCP Plugin", () => {
 
 			const mcpPlugin = createMcpPlugin({ tools: [testTool] })
 			expect(mcpPlugin).toBeDefined()
+		})
+	})
+
+	describe("JSON Schema Conversion", () => {
+		it("should convert simple string schema to JSON Schema", () => {
+			const schema = z.object({ message: z.string().describe("A message") })
+			const jsonSchema = zodToJsonSchema(schema)
+
+			expect(jsonSchema).toEqual({
+				type: "object",
+				properties: {
+					message: { type: "string", description: "A message" },
+				},
+				required: ["message"],
+				additionalProperties: false,
+			})
+		})
+
+		it("should convert schema with optional fields", () => {
+			const schema = z.object({
+				required: z.string(),
+				optional: z.string().optional(),
+			})
+			const jsonSchema = zodToJsonSchema(schema)
+
+			expect(jsonSchema).toEqual({
+				type: "object",
+				properties: {
+					required: { type: "string" },
+					optional: { type: "string" },
+				},
+				required: ["required"],
+				additionalProperties: false,
+			})
+		})
+
+		it("should convert schema with default values", () => {
+			const schema = z.object({
+				count: z.number().default(5),
+				flag: z.boolean().default(false),
+			})
+			const jsonSchema = zodToJsonSchema(schema)
+
+			expect(jsonSchema).toEqual({
+				type: "object",
+				properties: {
+					count: { type: "number", default: 5 },
+					flag: { type: "boolean", default: false },
+				},
+				additionalProperties: false,
+			})
+		})
+
+		it("should convert enum schema to JSON Schema", () => {
+			const schema = z.object({
+				format: z.enum(["json", "text", "yaml"]).describe("Output format"),
+			})
+			const jsonSchema = zodToJsonSchema(schema)
+
+			expect(jsonSchema).toEqual({
+				type: "object",
+				properties: {
+					format: { type: "string", description: "Output format", enum: ["json", "text", "yaml"] },
+				},
+				required: ["format"],
+				additionalProperties: false,
+			})
+		})
+
+		it("should convert array schema to JSON Schema", () => {
+			const schema = z.object({
+				items: z.array(z.string()).default([]),
+			})
+			const jsonSchema = zodToJsonSchema(schema)
+
+			expect(jsonSchema).toEqual({
+				type: "object",
+				properties: {
+					items: { type: "array", items: { type: "string" }, default: [] },
+				},
+				additionalProperties: false,
+			})
+		})
+
+		it("should convert empty schema to JSON Schema", () => {
+			const schema = z.object({})
+			const jsonSchema = zodToJsonSchema(schema)
+
+			expect(jsonSchema).toEqual({
+				type: "object",
+				properties: {},
+				additionalProperties: false,
+			})
 		})
 	})
 })

@@ -68,3 +68,10 @@ export type AnyToolDefinition = ToolDefinition<any, any>
 export interface McpToolExtra {
 	requestId?: string
 }
+
+export interface JsonSchema {
+	type: string
+	properties?: Record<string, object>
+	required?: string[]
+	additionalProperties?: boolean
+}
