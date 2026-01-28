@@ -59,6 +59,7 @@ export interface GunshiArg {
 	required?: true
 	default?: string | number | boolean | undefined
 	parse?: (value: string) => unknown
+	choices?: string[]
 }
 
 export type AnyToolDefinition = ToolDefinition<any, any>
