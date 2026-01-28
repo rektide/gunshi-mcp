@@ -8,18 +8,19 @@ The current tool definition system has **critical type safety issues** where `in
 
 ## Type Safety Issues
 
-| Issue | Location | Severity |
-|-------|----------|----------|
-| `TSchema` conflates runtime schema with parsed type | `types.ts#L32-L47` | **Critical** |
-| Handler args typed as schema object, not inferred values | `types.ts#L46` | Critical |
-| `as Record<string, unknown>` required in every tool def | All tool definitions | High |
-| MCP receives `inputSchema as any` (not JSON Schema) | `mcp-plugin.ts#L101-L102` | **Critical (runtime bug)** |
-| `assertToolInput` is unsafe cast masquerading as validation | `types.ts#L80-L83` | High |
-| `McpNewPluginOptions.tools?: ToolDefinition[]` erases generics | `mcp-plugin.ts#L14` | Medium |
+| Issue                                                          | Location                  | Severity                   |
+| -------------------------------------------------------------- | ------------------------- | -------------------------- |
+| `TSchema` conflates runtime schema with parsed type            | `types.ts#L32-L47`        | **Critical**               |
+| Handler args typed as schema object, not inferred values       | `types.ts#L46`            | Critical                   |
+| `as Record<string, unknown>` required in every tool def        | All tool definitions      | High                       |
+| MCP receives `inputSchema as any` (not JSON Schema)            | `mcp-plugin.ts#L101-L102` | **Critical (runtime bug)** |
+| `assertToolInput` is unsafe cast masquerading as validation    | `types.ts#L80-L83`        | High                       |
+| `McpNewPluginOptions.tools?: ToolDefinition[]` erases generics | `mcp-plugin.ts#L14`       | Medium                     |
 
 ### Core Problem: Schema vs Parsed Type Conflation
 
 The `ToolDefinition` interface uses `TSchema` for both:
+
 - The runtime schema object passed around (`{ message: z.string() }`)
 - The handler's parsed input type (`{ message: string }`)
 
@@ -85,6 +86,7 @@ Because `TSchema` is the schema object type, developers cannot discover availabl
 ### 3. Magic `format` Parameter
 
 In `mcp-plugin.ts#L67`:
+
 ```ts
 const format = cmdCtx.values.format as "text" | "json" | undefined
 ```
@@ -162,6 +164,7 @@ const result = await tool.handler(parsed, toolCtx)
 ```
 
 This provides:
+
 - Actual runtime validation
 - Consistent error handling across CLI and MCP
 - Coercion via `z.coerce.*` if needed
@@ -169,6 +172,7 @@ This provides:
 ### Priority 3: Proper JSON Schema for MCP
 
 Options:
+
 1. **Add dependency**: Use `zod-to-json-schema` for reliable conversion
 2. **Build minimal converter**: Extend `zod-to-gunshi.ts` to also emit JSON Schema for the subset of Zod types supported
 
@@ -178,7 +182,7 @@ Example minimal converter approach:
 export function zodToJsonSchema(schema: z.ZodObject<any>): object {
   const properties: Record<string, object> = {}
   const required: string[] = []
-  
+
   for (const [key, field] of Object.entries(schema.shape)) {
     const info = introspectZodField(field)
     properties[key] = {
@@ -189,7 +193,7 @@ export function zodToJsonSchema(schema: z.ZodObject<any>): object {
     }
     if (info.required) required.push(key)
   }
-  
+
   return { type: "object", properties, required }
 }
 ```
@@ -204,6 +208,7 @@ export function zodObjectToGunshiArgs<const Shape extends z.ZodRawShape>(
 ```
 
 Benefits:
+
 - Override keys constrained to schema keys
 - Return type properly keyed
 - Eliminates downcasts
@@ -211,6 +216,7 @@ Benefits:
 ### Priority 5: Standardize Error Handling
 
 Add error mapping from Zod validation errors to:
+
 - User-friendly CLI output
 - MCP tool error responses with `isError: true`
 
@@ -237,8 +243,8 @@ To avoid breaking changes, support both patterns temporarily:
 
 ```ts
 // In registration code:
-const zodSchema = isZodObject(tool.input) 
-  ? tool.input 
+const zodSchema = isZodObject(tool.input)
+  ? tool.input
   : z.object(tool.inputSchema as z.ZodRawShape)
 ```
 
@@ -248,22 +254,22 @@ This allows gradual migration from `inputSchema` record to `input` ZodObject.
 
 Patterns common in similar libraries that are absent here:
 
-| Feature | Status | Priority |
-|---------|--------|----------|
-| Standard error mapping (Zod → CLI/MCP errors) | Missing | High |
-| Output typing / structured output | Partial (`structuredContent?: unknown`) | Medium |
-| Cancellation/abort support | Missing | Low |
-| Shared/global CLI flags | Missing | Medium |
-| First-class `format` option | Ad-hoc | Medium |
-| Streaming tool outputs | Missing | Low |
+| Feature                                       | Status                                  | Priority |
+| --------------------------------------------- | --------------------------------------- | -------- |
+| Standard error mapping (Zod → CLI/MCP errors) | Missing                                 | High     |
+| Output typing / structured output             | Partial (`structuredContent?: unknown`) | Medium   |
+| Cancellation/abort support                    | Missing                                 | Low      |
+| Shared/global CLI flags                       | Missing                                 | Medium   |
+| First-class `format` option                   | Ad-hoc                                  | Medium   |
+| Streaming tool outputs                        | Missing                                 | Low      |
 
 ## Effort Estimate
 
-| Change | Effort |
-|--------|--------|
-| Zod-first type refactor + validation | M (1-3h) |
-| JSON Schema conversion for MCP | S-M (1-2h) |
-| Full implementation with tests | L (1-2d) |
+| Change                               | Effort     |
+| ------------------------------------ | ---------- |
+| Zod-first type refactor + validation | M (1-3h)   |
+| JSON Schema conversion for MCP       | S-M (1-2h) |
+| Full implementation with tests       | L (1-2d)   |
 
 ## Conclusion
 

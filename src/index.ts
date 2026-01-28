@@ -10,9 +10,10 @@ export {
 	type McpNewPluginId,
 	McpToolExtra,
 	type JsonSchema,
+	type CliOptions,
 } from "./types.js"
 export { defineTool } from "./define-tool.js"
-export { zodSchemaToGunshiArgs, zodToJsonSchema } from "./zod-to-gunshi.js"
+export { zodSchemaToGunshiArgs, zodToJsonSchema, reconstructNestedValues } from "./zod-to-gunshi.js"
 export { buildToolContext } from "./context.js"
 export { extractText, formatResult } from "./output.js"
 export {

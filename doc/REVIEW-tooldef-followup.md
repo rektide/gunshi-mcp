@@ -6,12 +6,12 @@ Assessment of the Zod-first refactor and JSON Schema improvements.
 
 ### Priority 1: Zod-First Type Model
 
-| Before | After | Status |
-|--------|-------|--------|
-| `inputSchema: TSchema` (raw record) | `input: z.ZodObject<Shape>` | ✅ Fixed |
-| Handler args typed as schema object | `args: ZodInput<Shape>` via `z.infer` | ✅ Fixed |
-| `as Record<string, unknown>` required | No casts needed | ✅ Fixed |
-| `assertToolInput()` unsafe cast | Removed, using `tool.input.parse()` | ✅ Fixed |
+| Before                                | After                                 | Status   |
+| ------------------------------------- | ------------------------------------- | -------- |
+| `inputSchema: TSchema` (raw record)   | `input: z.ZodObject<Shape>`           | ✅ Fixed |
+| Handler args typed as schema object   | `args: ZodInput<Shape>` via `z.infer` | ✅ Fixed |
+| `as Record<string, unknown>` required | No casts needed                       | ✅ Fixed |
+| `assertToolInput()` unsafe cast       | Removed, using `tool.input.parse()`   | ✅ Fixed |
 
 The core type model is now correct. Handler args are properly inferred:
 
@@ -25,11 +25,11 @@ handler: async (args) => {
 
 ### Priority 2: JSON Schema for MCP
 
-| Before | After | Status |
-|--------|-------|--------|
-| `inputSchema as any` (Zod object) | `zodToJsonSchema(tool.input)` | ✅ Fixed |
-| No JSON Schema conversion | `zodToJsonSchema()` implemented | ✅ Fixed |
-| No tests for schema output | Tests for all basic types | ✅ Fixed |
+| Before                            | After                           | Status   |
+| --------------------------------- | ------------------------------- | -------- |
+| `inputSchema as any` (Zod object) | `zodToJsonSchema(tool.input)`   | ✅ Fixed |
+| No JSON Schema conversion         | `zodToJsonSchema()` implemented | ✅ Fixed |
+| No tests for schema output        | Tests for all basic types       | ✅ Fixed |
 
 ---
 
@@ -52,7 +52,8 @@ if (def && "defaultValue" in def) {
 
 **Risk**: `_def` is Zod internal API, may break on version updates.
 
-**Recommendation**: 
+**Recommendation**:
+
 - Pin Zod version range in peerDependencies
 - Or use `zod-to-json-schema` library for the JSON Schema path (more battle-tested)
 - Add version detection tests that fail if Zod internals change
@@ -133,6 +134,7 @@ const outputSchema = tool.output
 ```
 
 Issues:
+
 - `zodToJsonSchema` expects `z.ZodObject`, but `tool.output` is `z.ZodTypeAny` (could be string, array, etc.)
 - Silent `catch` swallows all errors
 - IIFE pattern is unusual
@@ -224,6 +226,7 @@ const format = cmdCtx.values.format as "text" | "json" | undefined
 Still undocumented implicit behavior.
 
 **Recommendation**: Either:
+
 - Document as a global CLI flag
 - Add to tool schema explicitly where needed
 - Remove if not actually used
@@ -248,17 +251,17 @@ export type ZodInput<Shape extends ZodShape> = z.infer<z.ZodObject<Shape>>
 
 ## Summary
 
-| Area | Status | Notes |
-|------|--------|-------|
-| Zod-first type model | ✅ Done | Core fix complete |
-| Handler arg inference | ✅ Done | Working correctly |
-| No more `as Record<...>` casts | ✅ Done | Clean API |
-| `tool.input.parse()` validation | ✅ Done | Both paths validate |
-| JSON Schema conversion | ⚠️ Partial | Basic types work, nested/arrays incomplete |
-| Error handling | ❌ Missing | ZodError not caught/formatted |
-| Private API usage | ⚠️ Risk | `_def` access still present |
-| Output schema handling | ⚠️ Fragile | Only works for ZodObject |
-| Type exports | ❌ Missing | `ZodShape`, `ZodInput` not exported |
+| Area                            | Status     | Notes                                      |
+| ------------------------------- | ---------- | ------------------------------------------ |
+| Zod-first type model            | ✅ Done    | Core fix complete                          |
+| Handler arg inference           | ✅ Done    | Working correctly                          |
+| No more `as Record<...>` casts  | ✅ Done    | Clean API                                  |
+| `tool.input.parse()` validation | ✅ Done    | Both paths validate                        |
+| JSON Schema conversion          | ⚠️ Partial | Basic types work, nested/arrays incomplete |
+| Error handling                  | ❌ Missing | ZodError not caught/formatted              |
+| Private API usage               | ⚠️ Risk    | `_def` access still present                |
+| Output schema handling          | ⚠️ Fragile | Only works for ZodObject                   |
+| Type exports                    | ❌ Missing | `ZodShape`, `ZodInput` not exported        |
 
 ## Priority Order for Remaining Work
 

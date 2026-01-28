@@ -1,0 +1,96 @@
+import type { z } from "zod"
+import type { ZodFieldInfo } from "./types.js"
+
+export function introspectZodField(schema: unknown): ZodFieldInfo {
+	let inner = schema
+	let required = true
+	let defaultValue: unknown
+	let description = undefined as string | undefined
+	let depth = 0
+	const maxDepth = 10
+
+	if (typeof inner === "object" && inner !== null && "description" in inner) {
+		description = inner.description as string | undefined
+	}
+
+	while (depth < maxDepth) {
+		const schemaType = (inner as { type?: string }).type
+
+		if (schemaType === "optional") {
+			required = false
+			if (typeof (inner as { unwrap?: () => unknown }).unwrap === "function") {
+				inner = (inner as { unwrap: () => unknown }).unwrap()
+			}
+			depth++
+			continue
+		} else if (schemaType === "default") {
+			const def = (inner as { _def?: { defaultValue: unknown } })._def
+			if (def && "defaultValue" in def) {
+				if (typeof def.defaultValue === "function") {
+					try {
+						defaultValue = (def.defaultValue as () => unknown)()
+					} catch {}
+				} else {
+					defaultValue = def.defaultValue
+				}
+			}
+			required = false
+			if (typeof (inner as { unwrap?: () => unknown }).unwrap === "function") {
+				inner = (inner as { unwrap: () => unknown }).unwrap()
+			}
+			depth++
+			continue
+		} else {
+			break
+		}
+	}
+
+	if (!description && typeof inner === "object" && inner !== null && "description" in inner) {
+		description = inner.description as string | undefined
+	}
+
+	let typeName: string | undefined
+	if (typeof inner === "object" && inner !== null && "type" in inner) {
+		typeName = (inner as { type?: string }).type
+	}
+
+	switch (typeName) {
+		case "string":
+			return { type: "string", required, default: defaultValue, description }
+		case "number":
+			return { type: "number", required, default: defaultValue, description }
+		case "boolean":
+			return { type: "boolean", required, default: defaultValue, description }
+		case "enum": {
+			const values =
+				typeof inner === "object" &&
+				inner !== null &&
+				"enum" in inner &&
+				typeof inner.enum === "object"
+					? Object.values(inner.enum as Record<string, string>)
+					: undefined
+			return {
+				type: "enum",
+				required,
+				default: defaultValue,
+				description,
+				enumValues: values,
+			}
+		}
+		case "array":
+			return { type: "array", required, default: defaultValue, description }
+		case "object":
+			return { type: "object", required, default: defaultValue, description }
+		default:
+			return { type: "string", required, default: defaultValue, description }
+	}
+}
+
+export function isZodObject(schema: unknown): schema is z.ZodObject<any> {
+	return (
+		typeof schema === "object" &&
+		schema !== null &&
+		"shape" in schema &&
+		typeof (schema as any).shape === "object"
+	)
+}

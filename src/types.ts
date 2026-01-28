@@ -1,4 +1,7 @@
 import type { z } from "zod"
+import type { CliOptions } from "./cli-args/types.js"
+
+export type { CliOptions } from "./cli-args/types.js"
 
 export const MCP_NEW_PLUGIN_ID = "gunshi-mcp:mcp" as const
 export type McpNewPluginId = typeof MCP_NEW_PLUGIN_ID
@@ -34,24 +37,19 @@ export interface ToolContext<E = {}> {
 	meta: { requestId?: string }
 }
 
-export interface ToolDefinition<
-	Shape extends ZodShape = ZodShape,
-	TExtensions = {},
-> {
+export interface ToolDefinition<Shape extends ZodShape = ZodShape, TExtensions = {}> {
 	name: string
 	title?: string
 	description: string
 	input: z.ZodObject<Shape>
 	output?: z.ZodTypeAny
 
-	cli?: {
-		args?: Partial<Record<keyof Shape, Partial<GunshiArg>>>
-	}
+	/** CLI argument overrides for individual fields (add shortcuts, custom descriptions, parsers) */
+	cli?: Partial<Record<string, Partial<GunshiArg>>>
+	/** Options for CLI argument generation (separator, depth, array handling) */
+	cliOptions?: CliOptions
 
-	handler: (
-		args: ZodInput<Shape>,
-		ctx: ToolContext<TExtensions>,
-	) => Promise<ToolResult>
+	handler: (args: ZodInput<Shape>, ctx: ToolContext<TExtensions>) => Promise<ToolResult>
 }
 
 export interface GunshiArg {

@@ -5,6 +5,7 @@ Planning document for supporting nested objects in tool definitions.
 ## Problem Statement
 
 Currently, nested `z.object()` schemas:
+
 1. Produce incomplete JSON Schema (`{ type: "object" }` with no `properties`)
 2. Have no CLI flag mapping strategy
 
@@ -25,6 +26,7 @@ input: z.object({
 ```
 
 Produces CLI flags:
+
 ```
 --foo-bar <number>
 --foo-baz <string>
@@ -32,6 +34,7 @@ Produces CLI flags:
 ```
 
 And JSON Schema:
+
 ```json
 {
   "type": "object",
@@ -53,14 +56,15 @@ And JSON Schema:
 
 ### 1. Separator Character
 
-| Option | Example | Pros | Cons |
-|--------|---------|------|------|
-| Hyphen `-` | `--foo-bar` | Standard CLI convention | Ambiguous if keys contain hyphens |
-| Dot `.` | `--foo.bar` | Clear hierarchy | Unusual for CLI, shell quoting issues |
-| Colon `:` | `--foo:bar` | Clear hierarchy | Unusual for CLI |
-| Underscore `_` | `--foo_bar` | No ambiguity | Less readable |
+| Option         | Example     | Pros                    | Cons                                  |
+| -------------- | ----------- | ----------------------- | ------------------------------------- |
+| Hyphen `-`     | `--foo-bar` | Standard CLI convention | Ambiguous if keys contain hyphens     |
+| Dot `.`        | `--foo.bar` | Clear hierarchy         | Unusual for CLI, shell quoting issues |
+| Colon `:`      | `--foo:bar` | Clear hierarchy         | Unusual for CLI                       |
+| Underscore `_` | `--foo_bar` | No ambiguity            | Less readable                         |
 
 **Recommendation**: Use hyphen `-` as default (most natural for CLI), but:
+
 - Escape/reject keys that contain hyphens themselves
 - Or allow configurable separator via `cli.separator` option
 
@@ -68,7 +72,8 @@ And JSON Schema:
 
 Unbounded nesting creates unwieldy flags: `--a-b-c-d-e-f`
 
-**Recommendation**: 
+**Recommendation**:
+
 - Default max depth of 3 levels
 - Configurable via `cli.maxDepth`
 - Beyond limit, use JSON string input: `--deeply-nested '{"x":{"y":1}}'`
@@ -86,7 +91,8 @@ z.object({
 
 Both map to `--foo-bar`.
 
-**Recommendation**: 
+**Recommendation**:
+
 - Detect at tool registration time
 - Throw descriptive error with both paths
 - Suggest renaming or using `cli.args` override
@@ -104,6 +110,7 @@ z.object({
 ```
 
 Options:
+
 - A) All nested flags become optional
 - B) Parent optionality doesn't affect children (confusing)
 - C) If any nested flag provided, validate all required children
@@ -120,7 +127,8 @@ z.object({
 })
 ```
 
-**Recommendation**: 
+**Recommendation**:
+
 - Extract defaults from parent default object
 - `--config-timeout` defaults to `30`
 - Document that nested defaults must be complete objects
@@ -141,7 +149,7 @@ function reconstructNested(
   separator = "-"
 ): Record<string, unknown> {
   const result: Record<string, unknown> = {}
-  
+
   for (const [flatKey, value] of Object.entries(flatValues)) {
     const parts = flatKey.split(separator)
     let target = result
@@ -151,7 +159,7 @@ function reconstructNested(
     }
     target[parts[parts.length - 1]] = value
   }
-  
+
   return result
 }
 ```
@@ -171,7 +179,7 @@ function zodToJsonSchema<const Shape extends ZodShape>(
   if (depth > maxDepth) {
     throw new Error(`Schema nesting exceeds max depth ${maxDepth}`)
   }
-  
+
   const properties: Record<string, object> = {}
   const required: string[] = []
 
@@ -253,7 +261,7 @@ function flattenSchemaToGunshiArgs(
           existing.push(`${currentPrefix}.${key}`)
           collisions.set(flatKey, existing)
         }
-        
+
         args[flatKey] = buildGunshiArg(info, overrides?.[flatKey], isOptional)
       }
     }
@@ -319,15 +327,19 @@ z.object({
 })
 ```
 
-**Recommendation**: Use JSON string for array-of-objects:
+**Recommendation**: Use repeated flags, each taking a JSON string:
+
+```
+--server '{"host":"a","port":1}' --server '{"host":"b","port":2}'
+```
+
+JSON array syntax also supported:
+
 ```
 --servers '[{"host":"a","port":1},{"host":"b","port":2}]'
 ```
 
-Or repeated flags with index (complex, maybe later):
-```
---servers-0-host a --servers-0-port 1 --servers-1-host b --servers-1-port 2
-```
+Gunshi automatically collects repeated flag values into an array.
 
 ### Discriminated Unions
 
@@ -351,9 +363,10 @@ z.object({
 })
 ```
 
-**Recommendation**: 
+**Recommendation**:
+
 - Both treated as "not required" for CLI
-- Nullable allows explicit `--value null` 
+- Nullable allows explicit `--value null`
 - Optional is simply omittable
 
 ## Configuration API
@@ -362,7 +375,7 @@ z.object({
 interface CliConfig {
   separator?: string        // Default: "-"
   maxDepth?: number         // Default: 3
-  arrayHandling?: "json" | "indexed" | "repeated"  // Default: "json"
+  arrayHandling?: "json" | "repeated"  // Default: "repeated"
 }
 
 defineTool()({
@@ -403,7 +416,8 @@ defineTool()({
 
 Existing tools using flat schemas: no change required.
 
-New tools with nested schemas: 
+New tools with nested schemas:
+
 - CLI automatically gets flattened flags
 - MCP automatically gets proper JSON Schema
 - Handler receives reconstructed nested objects
@@ -412,7 +426,6 @@ New tools with nested schemas:
 
 1. Should we support `z.record()` (dynamic keys)?
    - Probably not for CLI; use JSON string
-   
 2. Should flattening be opt-in?
    - Default to flatten, allow `cli: { flatten: false }` to require JSON
 

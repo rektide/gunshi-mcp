@@ -81,12 +81,10 @@ describe("MCP Plugin", () => {
 					value: z.string(),
 				}),
 				cli: {
-					args: {
-						value: {
-							type: "string",
-							description: "A custom description",
-							short: "v",
-						},
+					value: {
+						type: "string",
+						description: "A custom description",
+						short: "v",
 					},
 				},
 				handler: async (_args) => ({
@@ -135,11 +133,9 @@ describe("MCP Plugin", () => {
 					items: z.array(z.string()).default([]),
 				}),
 				cli: {
-					args: {
-						items: {
-							type: "custom",
-							parse: (v) => v.split(",").map((s) => s.trim()),
-						},
+					items: {
+						type: "custom",
+						parse: (v) => v.split(",").map((s) => s.trim()),
 					},
 				},
 				handler: async (_args) => ({

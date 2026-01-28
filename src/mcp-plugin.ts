@@ -3,7 +3,7 @@ import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js"
 import { plugin } from "gunshi/plugin"
 import type { ToolDefinition, GunshiArg } from "./types.js"
 import { buildToolContext } from "./context.js"
-import { zodSchemaToGunshiArgs, zodToJsonSchema } from "./zod-to-gunshi.js"
+import { zodSchemaToGunshiArgs, zodToJsonSchema, reconstructNestedValues } from "./zod-to-gunshi.js"
 import { formatResult } from "./output.js"
 
 export const MCP_NEW_PLUGIN_ID = "gunshi-mcp:mcp" as const
@@ -43,7 +43,7 @@ export function createMcpPlugin(options: McpNewPluginOptions = {}) {
 			toolDefinitions.push(...(options.tools ?? []))
 
 			for (const tool of toolDefinitions) {
-				const convertedArgs = zodSchemaToGunshiArgs(tool.input, tool.cli?.args)
+				const convertedArgs = zodSchemaToGunshiArgs(tool.input, tool.cli, tool.cliOptions)
 				const args: Record<string, GunshiArg> = {}
 
 				for (const [name, field] of Object.entries(convertedArgs)) {
@@ -54,6 +54,8 @@ export function createMcpPlugin(options: McpNewPluginOptions = {}) {
 					}
 				}
 
+				const separator = tool.cliOptions?.separator ?? "-"
+
 				ctx.addCommand(tool.name, {
 					name: tool.name,
 					description: tool.description,
@@ -61,7 +63,8 @@ export function createMcpPlugin(options: McpNewPluginOptions = {}) {
 					run: async (cmdCtx) => {
 						const mcpExtension = cmdCtx.extensions?.[MCP_NEW_PLUGIN_ID]
 						const toolCtx = buildToolContext(mcpExtension as Record<string, unknown>)
-						const parsed = tool.input.parse(cmdCtx.values)
+						const nestedValues = reconstructNestedValues(cmdCtx.values, separator)
+						const parsed = tool.input.parse(nestedValues)
 						const result = await tool.handler(parsed, toolCtx)
 						const format = cmdCtx.values.format as "text" | "json" | undefined
 						console.log(formatResult(result, format))

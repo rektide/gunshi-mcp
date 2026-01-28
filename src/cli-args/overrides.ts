@@ -1,0 +1,36 @@
+import type { GunshiArg } from "../types.js"
+import type { ZodFieldInfo } from "./types.js"
+
+export function buildGunshiArg(
+	info: ZodFieldInfo,
+	override: Partial<GunshiArg> = {},
+	parseFunction?: (value: string) => unknown,
+): GunshiArg {
+	const arg: GunshiArg = {
+		type:
+			override.type ??
+			(info.type === "enum"
+				? "string"
+				: info.type === "array" || info.type === "object"
+					? "custom"
+					: info.type),
+		description: override.description ?? info.description,
+		short: override.short,
+		required: (override.required ?? info.required) ? true : undefined,
+		default:
+			override.default ??
+			(typeof info.default === "string" ||
+			typeof info.default === "number" ||
+			typeof info.default === "boolean"
+				? info.default
+				: undefined),
+	}
+
+	if (parseFunction) {
+		arg.parse = parseFunction
+	} else if (override.parse) {
+		arg.parse = override.parse
+	}
+
+	return arg
+}
