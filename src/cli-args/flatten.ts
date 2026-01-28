@@ -20,8 +20,9 @@ export function flattenSchema(
 ): FlattenContext {
 	const { separator = "-", maxDepth = 3, prefix = "" } = options
 	const context: FlattenContext = { args: {}, collisions: new Map() }
+	const firstPaths = new Map<string, string>()
 
-	walk(schema.shape, prefix, 0, false, context, separator, maxDepth)
+	walk(schema.shape, prefix, 0, false, context, separator, maxDepth, firstPaths)
 
 	return context
 }
@@ -34,13 +35,14 @@ function walk(
 	context: FlattenContext,
 	separator: string,
 	maxDepth: number,
+	firstPaths: Map<string, string>,
 ) {
 	for (const [key, field] of Object.entries(shape)) {
 		const flatKey = currentPrefix ? `${currentPrefix}${separator}${key}` : key
 		const unwrappedField = unwrapZodWrappers(field)
 		const info = introspectZodField(field)
 		const isOptional = parentOptional || !info.required
-		const path = currentPrefix ? `${currentPrefix}${separator}${key}` : key
+		const dotPath = currentPrefix ? `${currentPrefix}.${key}` : key
 
 		if (info.type === "object" && isZodObject(unwrappedField)) {
 			const innerShape = getZodObjectShape(unwrappedField)
@@ -48,14 +50,16 @@ function walk(
 				if (depth >= maxDepth) {
 					context.args[flatKey] = { info, depth: depth + 1, optional: isOptional }
 				} else {
-					walk(innerShape, flatKey, depth + 1, isOptional, context, separator, maxDepth)
+					walk(innerShape, flatKey, depth + 1, isOptional, context, separator, maxDepth, firstPaths)
 				}
 			}
 		} else {
 			if (context.args[flatKey]) {
-				const existing = context.collisions.get(flatKey) || [path]
-				existing.push(path)
+				const existing = context.collisions.get(flatKey) ?? [firstPaths.get(flatKey) || dotPath]
+				existing.push(dotPath)
 				context.collisions.set(flatKey, existing)
+			} else {
+				firstPaths.set(flatKey, dotPath)
 			}
 			context.args[flatKey] = { info, depth, optional: isOptional }
 		}

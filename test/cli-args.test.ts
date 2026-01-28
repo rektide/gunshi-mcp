@@ -47,6 +47,17 @@ describe("zodSchemaToGunshiArgs with cli-args module", () => {
 		expect(() => zodSchemaToGunshiArgs(schema, {}, { separator: "-" })).toThrow(/collisions/i)
 	})
 
+	it("should show consistent dot paths in collision message", () => {
+		const schema = z.object({
+			"foo-bar": z.string(),
+			foo: z.object({
+				bar: z.string(),
+			}),
+		})
+
+		expect(() => zodSchemaToGunshiArgs(schema, {}, { separator: "-" })).toThrow(/foo-bar: foo-bar, foo\.bar/)
+	})
+
 	it("should respect depth limit", () => {
 		const schema = z.object({
 			a: z.object({

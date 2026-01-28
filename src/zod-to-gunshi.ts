@@ -1,6 +1,6 @@
 import type { GunshiArg, ZodShape, CliOptions } from "./types.js"
 import type { z } from "zod"
-import { introspectZodField, isZodObject } from "./cli-args/introspect.js"
+import { introspectZodField, isZodObject, getZodArrayElement } from "./cli-args/introspect.js"
 import { reconstructNested } from "./cli-args/reconstruct.js"
 import { zodSchemaToGunshiArgs as newImpl } from "./cli-args/index.js"
 
@@ -67,7 +67,9 @@ export function zodToJsonSchema<const Shape extends ZodShape>(schema: z.ZodObjec
 				...(info.description && { description: info.description }),
 				...(info.default !== undefined && { default: info.default }),
 				...(info.enumValues && { enum: info.enumValues }),
-				...(info.type === "array" && { items: { type: "string" } }),
+				...(info.type === "array" && {
+					items: introspectArrayElement(field),
+				}),
 			}
 
 			properties[name] = property
@@ -83,5 +85,25 @@ export function zodToJsonSchema<const Shape extends ZodShape>(schema: z.ZodObjec
 		properties,
 		...(required.length > 0 && { required }),
 		additionalProperties: false,
+	}
+}
+
+function introspectArrayElement(field: unknown): { type: string } {
+	const element = getZodArrayElement(field)
+	if (!element) {
+		return { type: "string" }
+	}
+	const info = introspectZodField(element)
+	switch (info.type) {
+		case "string":
+			return { type: "string" }
+		case "number":
+			return { type: "number" }
+		case "boolean":
+			return { type: "boolean" }
+		case "object":
+			return { type: "object" }
+		default:
+			return { type: "string" }
 	}
 }

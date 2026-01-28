@@ -147,3 +147,23 @@ export function getZodObjectShape(schema: unknown): z.ZodRawShape | undefined {
 	}
 	return undefined
 }
+
+export function isZodArray(schema: unknown): schema is z.ZodArray<any> {
+	return (
+		typeof schema === "object" &&
+		schema !== null &&
+		"type" in schema &&
+		(schema as { type: string }).type === "array"
+	)
+}
+
+export function getZodArrayElement(schema: unknown): unknown {
+	if (!isZodArray(schema)) {
+		return undefined
+	}
+	const unwrapped = unwrapZodWrappers(schema)
+	if (typeof unwrapped === "object" && unwrapped !== null && "element" in unwrapped) {
+		return (unwrapped as { element: unknown }).element
+	}
+	return undefined
+}

@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest"
 import { createMcpPlugin } from "../src/mcp-plugin.js"
 import { defineTool } from "../src/define-tool.js"
-import { zodToJsonSchema } from "../src/zod-to-gunshi.js"
+import { zodToJsonSchema, reconstructNestedValues } from "../src/zod-to-gunshi.js"
 import { z } from "zod"
 
 describe("MCP Plugin", () => {
@@ -300,6 +300,133 @@ describe("MCP Plugin", () => {
 				type: "object",
 				properties: {},
 				additionalProperties: false,
+			})
+		})
+
+		it("should convert array schema with correct element type", () => {
+			const schema = z.object({
+				strings: z.array(z.string()),
+				numbers: z.array(z.number()),
+				booleans: z.array(z.boolean()),
+			})
+			const jsonSchema = zodToJsonSchema(schema)
+
+			expect(jsonSchema).toEqual({
+				type: "object",
+				properties: {
+					strings: { type: "array", items: { type: "string" } },
+					numbers: { type: "array", items: { type: "number" } },
+					booleans: { type: "array", items: { type: "boolean" } },
+				},
+				required: ["strings", "numbers", "booleans"],
+				additionalProperties: false,
+			})
+		})
+	})
+
+	describe("Nested Schema Integration", () => {
+		it("should handle nested CLI → handler flow", async () => {
+			let receivedArgs: any
+
+			const testTool = defineTool()({
+				name: "nested-tool",
+				description: "Tool with nested schema",
+				input: z.object({
+					config: z.object({
+						timeout: z.number(),
+						retries: z.number().default(3),
+					}),
+					name: z.string(),
+				}),
+				handler: async (args) => {
+					receivedArgs = args
+					return {
+						type: "tool_result",
+						toolUseId: "nested-tool",
+						content: [{ type: "text", text: "Done" }],
+					}
+				},
+			})
+
+			const mcpPlugin = createMcpPlugin({
+				tools: [testTool],
+			})
+
+			expect(mcpPlugin).toBeDefined()
+
+			const flatValues = {
+				"config-timeout": 30,
+				name: "test",
+			}
+
+			const separator = testTool.cliOptions?.separator ?? "-"
+			const nestedValues = testTool.input.parse(
+				reconstructNestedValues(flatValues, separator)
+			)
+
+			expect(nestedValues).toEqual({
+				config: { timeout: 30, retries: 3 },
+				name: "test",
+			})
+
+			await testTool.handler(nestedValues, {
+				extensions: {},
+				log: { debug: () => {}, info: () => {}, warn: () => {}, error: () => {} },
+				meta: {},
+			})
+
+			expect(receivedArgs).toEqual({
+				config: { timeout: 30, retries: 3 },
+				name: "test",
+			})
+		})
+
+		it("should handle deeply nested CLI → handler flow", async () => {
+			let receivedArgs: any
+
+			const testTool = defineTool()({
+				name: "deeply-nested-tool",
+				description: "Tool with deeply nested schema",
+				input: z.object({
+					level1: z.object({
+						level2: z.object({
+							value: z.string(),
+							count: z.number().default(0),
+						}),
+					}),
+				}),
+				handler: async (args) => {
+					receivedArgs = args
+					return {
+						type: "tool_result",
+						toolUseId: "deeply-nested-tool",
+						content: [{ type: "text", text: "Done" }],
+					}
+				},
+			})
+
+			const mcpPlugin = createMcpPlugin({
+				tools: [testTool],
+			})
+
+			expect(mcpPlugin).toBeDefined()
+
+			const flatValues = {
+				"level1-level2-value": "test",
+			}
+
+			const separator = testTool.cliOptions?.separator ?? "-"
+			const nestedValues = testTool.input.parse(
+				reconstructNestedValues(flatValues, separator)
+			)
+
+			expect(nestedValues).toEqual({
+				level1: {
+					level2: {
+						value: "test",
+						count: 0,
+					},
+				},
 			})
 		})
 	})
