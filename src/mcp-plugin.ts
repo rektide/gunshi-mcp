@@ -1,33 +1,30 @@
-import { McpServer, StdioServerTransport } from "@modelcontextprotocol/server";
-import { plugin } from "gunshi/plugin";
-import type { GunshiArg, GunshiTool } from "./types.js";
-import { buildToolContext } from "./context.js";
-import {
-	reconstructNestedValues,
-	zodSchemaToGunshiArgs,
-} from "./zod-to-gunshi.js";
-import { formatResult } from "./output.js";
+import { McpServer, StdioServerTransport } from "@modelcontextprotocol/server"
+import { plugin } from "gunshi/plugin"
+import type { GunshiArg, GunshiTool } from "./types.js"
+import { buildToolContext } from "./context.js"
+import { reconstructNestedValues, zodSchemaToGunshiArgs } from "./zod-to-gunshi.js"
+import { formatResult } from "./output.js"
 
-export const MCP_NEW_PLUGIN_ID = "gunshi-mcp:mcp" as const;
-export type McpNewPluginId = typeof MCP_NEW_PLUGIN_ID;
+export const MCP_NEW_PLUGIN_ID = "gunshi-mcp:mcp" as const
+export type McpNewPluginId = typeof MCP_NEW_PLUGIN_ID
 
 export interface McpNewPluginOptions {
-	tools?: GunshiTool<any, any>[];
-	name?: string;
-	version?: string;
+	tools?: GunshiTool<any, any>[]
+	name?: string
+	version?: string
 }
 
 export function createMcpPlugin(options: McpNewPluginOptions = {}) {
-	let server: McpServer | undefined;
-	const toolDefinitions: GunshiTool<any, any>[] = [];
+	let server: McpServer | undefined
+	const toolDefinitions: GunshiTool<any, any>[] = []
 
 	return plugin({
 		id: MCP_NEW_PLUGIN_ID,
 		name: options.name ?? "MCP Plugin",
 
 		setup: async (ctx) => {
-			const pluginName = options.name ?? "gunshi-mcp";
-			const pluginVersion = options.version ?? "1.0.0";
+			const pluginName = options.name ?? "gunshi-mcp"
+			const pluginVersion = options.version ?? "1.0.0"
 
 			server = new McpServer(
 				{
@@ -40,47 +37,38 @@ export function createMcpPlugin(options: McpNewPluginOptions = {}) {
 						prompts: {},
 					},
 				},
-			);
+			)
 
-			toolDefinitions.push(...(options.tools ?? []));
+			toolDefinitions.push(...(options.tools ?? []))
 
 			for (const tool of toolDefinitions) {
-				const convertedArgs = zodSchemaToGunshiArgs(
-					tool.inputSchema,
-					tool.cli,
-					tool.cliOptions,
-				);
-				const args: Record<string, GunshiArg> = {};
+				const convertedArgs = zodSchemaToGunshiArgs(tool.inputSchema, tool.cli, tool.cliOptions)
+				const args: Record<string, GunshiArg> = {}
 
 				for (const [name, field] of Object.entries(convertedArgs)) {
 					if (field.required === true) {
-						args[name] = field;
+						args[name] = field
 					} else {
-						args[name] = { ...field, required: undefined };
+						args[name] = { ...field, required: undefined }
 					}
 				}
 
-				const separator = tool.cliOptions?.separator ?? "-";
+				const separator = tool.cliOptions?.separator ?? "-"
 
 				ctx.addCommand(tool.name, {
 					name: tool.name,
 					description: tool.description,
 					args: args,
 					run: async (cmdCtx) => {
-						const mcpExtension = cmdCtx.extensions?.[MCP_NEW_PLUGIN_ID];
-						const toolCtx = buildToolContext(
-							mcpExtension as Record<string, unknown>,
-						);
-						const nestedValues = reconstructNestedValues(
-							cmdCtx.values,
-							separator,
-						);
-						const parsed = tool.inputSchema.parse(nestedValues);
-						const result = await tool.handler(parsed, toolCtx);
-						const format = cmdCtx.values.format as "text" | "json" | undefined;
-						console.log(formatResult(result, format));
+						const mcpExtension = cmdCtx.extensions?.[MCP_NEW_PLUGIN_ID]
+						const toolCtx = buildToolContext(mcpExtension as Record<string, unknown>)
+						const nestedValues = reconstructNestedValues(cmdCtx.values, separator)
+						const parsed = tool.inputSchema.parse(nestedValues)
+						const result = await tool.handler(parsed, toolCtx)
+						const format = cmdCtx.values.format as "text" | "json" | undefined
+						console.log(formatResult(result, format))
 					},
-				});
+				})
 			}
 
 			ctx.addCommand("mcp", {
@@ -94,14 +82,14 @@ export function createMcpPlugin(options: McpNewPluginOptions = {}) {
 				},
 				run: async () => {
 					if (!server) {
-						throw new Error("MCP server not initialized");
+						throw new Error("MCP server not initialized")
 					}
 
-					const transport = new StdioServerTransport();
-					await server.connect(transport);
-					console.log("MCP server running...");
+					const transport = new StdioServerTransport()
+					await server.connect(transport)
+					console.log("MCP server running...")
 				},
-			});
+			})
 		},
 
 		extension: (ctx) => {
@@ -120,27 +108,27 @@ export function createMcpPlugin(options: McpNewPluginOptions = {}) {
 					async (inputArgs, extra) => {
 						const toolCtx = buildToolContext(ctx.extensions, {
 							requestId: extra.requestId as string,
-						});
-						const parsed = tool.inputSchema.parse(inputArgs);
-						const result = await tool.handler(parsed, toolCtx);
+						})
+						const parsed = tool.inputSchema.parse(inputArgs)
+						const result = await tool.handler(parsed, toolCtx)
 						return {
 							content: [{ type: "text", text: formatResult(result) }],
-						};
+						}
 					},
-				);
+				)
 			}
 
 			return {
 				startServer: async () => {
 					if (!server) {
-						throw new Error("MCP server not initialized");
+						throw new Error("MCP server not initialized")
 					}
 
-					const transport = new StdioServerTransport();
-					await server.connect(transport);
+					const transport = new StdioServerTransport()
+					await server.connect(transport)
 				},
-				stopServer: async () => { },
-			};
+				stopServer: async () => {},
+			}
 		},
-	});
+	})
 }

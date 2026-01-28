@@ -4,11 +4,12 @@
 
 ## Overview
 
-This plugin integrates Gunshi's command system with the Model Context Protocol, allowing LLMs to interact with your CLI commands through a standardized interface. It automatically:
+This plugin integrates Gunshi's command system with the Model Context Protocol, allowing you to:
 
-- Discovers all MCP tools definitions in `src/tools/` (and `tools/`), prompts in `src/prompts/` (and `prompts/`)
-- Creates `mcp stdio` and `mcp http` command to start the mcp server
-- Adds subcommands for each tool definition, to allow them to be ran as a CLI command
+- Define tools using Zod schemas with `defineTool()`
+- Automatically get CLI interfaces for your MCP tools
+- Use the same tool definition for both MCP and CLI execution
+- Get typed, validated input/output with TypeScript
 
 ## Architecture
 
@@ -21,45 +22,78 @@ Gunshi Plugin System
     ↓
 gunshi-mcp Plugin
     ↓
-├─ MCP Server (@modelcontextprotocol/sdk)
-├─ Command Discovery (accesses Gunshi command registry)
-├─ Prompt Loader (reads prompts/ folder)
+├─ MCP Server (@modelcontextprotocol/server)
+├─ Tool Registry (GunshiTool definitions)
+├─ CLI Args Conversion (Zod → Gunshi args)
 └─ Tool Execution Handler
 ```
 
-### Key Responsibilities
+### Key Features
 
-**Plugin Factory**
+**GunshiTool Type**
 
-- Creates Gunshi plugin with `plugin()` function
-- Registers `mcp` command using `ctx.addCommand()`
-- Detects project root via `package-directory`
-- Provides configuration options
+- Extends MCP SDK's `Tool` type
+- Uses Zod schemas for `inputSchema` and `outputSchema`
+- Includes Gunshi CLI configuration (`cli`, `cliOptions`)
+- Type-safe handler with validated arguments
 
-**MCP Server**
+**CLI Args Conversion**
 
-- Initializes `McpServer` instance
-- Configures stdio transport
-- Exposes tools and prompts to MCP clients
+- Sophisticated Zod schema introspection
+- Automatic flattening of nested objects
+- Collision detection and resolution
+- Wrapper unwrapping (optional, nullable, default)
+- Reconstruction of nested values from CLI args
 
-**Command Discovery**
+**Dual Execution**
 
-- Accesses Gunshi command registry (likely via `ctx.env.subCommands`)
-- Maps command arguments to Zod schemas
-- Registers each command as MCP tool with `server.registerTool()`
+- Same tool definition works for MCP and CLI
+- MCP: Direct Zod validation, returns `CallToolResult`
+- CLI: Converted to Gunshi command args, formatted output
 
-**Prompt Loader**
+## Usage
 
-- Scans `prompts/` folder at project root
-- Parses `.md` files for prompt templates
-- Registers prompts with `server.registerPrompt()`
+### Basic Example
 
-**Tool Execution**
+```typescript
+import { defineTool } from "gunshi-mcp"
+import { createMcpPlugin } from "gunshi-mcp/mcp-plugin"
+import { z } from "zod"
 
-- Receives MCP tool calls
-- Parses arguments from MCP request
-- Executes corresponding Gunshi command
-- Returns results in MCP format
+// Define a tool with Zod schema
+const myTool = defineTool()({
+  name: "greet",
+  title: "Greet User",
+  description: "Greets a user with a message",
+  inputSchema: z.object({
+    name: z.string().describe("User name"),
+    age: z.number().optional().describe("User age"),
+  }),
+  cliOptions: {
+    separator: "-",
+  },
+  handler: async (args, ctx) => {
+    return { message: `Hello, ${args.name}!` }
+  },
+})
+
+// Create the MCP plugin
+const mcpPlugin = createMcpPlugin({
+  tools: [myTool],
+  name: "my-mcp-server",
+  version: "1.0.0",
+})
+```
+
+### CLI Usage
+
+```bash
+# Use the tool via CLI
+my-cli greet --name Alice --age 30
+
+# Start MCP server
+my-cli mcp
+```
 
 ## Development Workflow
 
@@ -113,73 +147,69 @@ npm test
 npm test -- --watch
 
 # Run specific test file
-npm test -- tests/fileName.test.ts
+npm test -- test/fileName.test.ts
 ```
 
-### Integration Tests
+### Test Organization
 
-Integration tests will validate:
+Tests are organized by functionality:
 
-- MCP server startup and connection
-- Tool registration from Gunshi commands
-- Prompt loading from prompts/ folder
-- Tool execution and response formatting
+- **`test/zod-to-gunshi.ts`** - Zod schema to Gunshi CLI args conversion
+- **`test/cli-args/`** - CLI args conversion module tests:
+  - `arrays.test.ts` - Array handling
+  - `complex-collisions.test.ts` - Complex naming collision resolution
+  - `depth-limiting.test.ts` - Nested object depth limiting
+  - `documentation-generation.test.ts` - Auto-generated CLI help
+  - `error-scenarios.test.ts` - Error handling
+  - `overrides.test.ts` - CLI arg override configurations
+  - `per-tool-options.test.ts` - Per-tool configuration options
+  - `reconstruction-edge-cases.test.ts` - Nested value reconstruction
+  - `separator-edge-cases.test.ts` - Custom separators
+  - `serialization-round-trip.test.ts` - Round-trip serialization
+  - `wrapper-combinations.test.ts` - Zod wrapper unwrapping
 
 ## Project Structure
 
 ```
 gunshi-mcp/
 ├── src/
-│   └── index.ts              # Main plugin entry point
-├── tests/
-│   ├── index.test.ts          # Plugin tests
-│   ├── mcp-server.test.ts    # MCP server tests
-│   └── integration.test.ts   # End-to-end tests
-├── prompts/                   # Example prompts folder (for users)
-├── package.json              # Package configuration
-├── tsconfig.json            # TypeScript configuration
-└── README.md               # This file
+│   ├── cli-args/              # CLI args conversion module
+│   │   ├── arrays.ts          # Array handling
+│   │   ├── collision.ts       # Naming collision detection
+│   │   ├── flatten.ts         # Schema flattening
+│   │   ├── index.ts           # Module exports
+│   │   ├── introspect.ts      # Zod schema introspection
+│   │   ├── overrides.ts       # CLI arg overrides
+│   │   ├── reconstruct.ts     # Nested value reconstruction
+│   │   └── types.ts           # CLI args types
+│   ├── context.ts             # Tool context building
+│   ├── define-tool.ts         # Tool definition factory
+│   ├── index.ts               # Main exports
+│   ├── mcp-plugin.ts          # New MCP plugin (GunshiTool)
+│   ├── output.ts              # Result formatting
+│   ├── plugin.ts              # Original MCP plugin
+│   ├── types.ts               # Type definitions (GunshiTool)
+│   ├── zod-to-gunshi.ts       # Zod to Gunshi args conversion
+│   └── plugins/               # Plugin-specific code
+│       └── logger.ts          # Logger plugin
+├── test/                      # Test files
+│   ├── zod-to-gunshi.ts       # Conversion tests
+│   └── cli-args/              # CLI args module tests
+├── package.json               # Package configuration
+├── tsconfig.json              # TypeScript configuration
+└── README.md                  # This file
 ```
-
-## Next Steps for Developers
-
-### Immediate Tasks (Ready to Start)
-
-```bash
-# View ready tasks
-bd ready
-
-# Likely next tasks:
-# - gunshi-mcp-ghh: Set up directory structure
-# - gunshi-mcp-k06: Install runtime dependencies
-# - gunshi-mcp-6wm: Install development tooling
-```
-
-### Recommended Starting Point
-
-1. **Set up directory structure** - Create `src/` and `tests/` directories
-2. **Install dependencies** - Run `pnpm install` to get all required packages
-3. **Create plugin factory** - Start with basic Gunshi plugin structure
-4. **Add MCP command** - Register the `mcp` command
-5. **Test basic functionality** - Verify plugin loads without errors
-
-### Technical Research Needed
-
-Before implementing, research:
-
-- **Gunshi command registry access**: How to access all registered commands from a plugin
-- **Command argument schemas**: How Gunshi defines argument types for schema mapping
-- **MCP tool lifecycle**: How tools are called and how to return results
-- **Project root detection**: Using `package-directory` for finding prompts/ folder
 
 ## Dependencies
 
 ### Runtime
 
+- `@modelcontextprotocol/server` - MCP TypeScript SDK (server package)
 - `gunshi` - CLI framework
-- `@modelcontextprotocol/sdk` - MCP TypeScript SDK
 - `package-directory` - Project root detection
-- `zod` - Schema validation
+- `zod` - Schema validation (user-provided)
+- `pino` - Logging
+- `pino-pretty` - Pretty log output
 
 ### Development
 
@@ -189,6 +219,47 @@ Before implementing, research:
 - `oxfmt` - Code formatter
 - `oxlint` - Linter
 - `concurrently` - Run multiple npm scripts in parallel
+
+## Key Implementation Details
+
+### GunshiTool Type
+
+```typescript
+export interface GunshiTool<Shape extends ZodShape = ZodShape, TExtensions = {}>
+	extends Omit<Tool, "inputSchema" | "outputSchema"> {
+	inputSchema: z.ZodObject<Shape>
+	outputSchema?: z.ZodTypeAny
+
+	cli?: Partial<Record<string, Partial<ArgSchema>>>
+	cliOptions?: CliOptions
+
+	handler: (args: ZodInput<Shape>, ctx: ToolContext<TExtensions>) => Promise<ToolResult>
+}
+```
+
+### CLI Args Conversion Flow
+
+1. **Introspection** - Analyze Zod schema structure
+2. **Flattening** - Convert nested objects to flat CLI arg names
+3. **Collision Detection** - Detect and resolve naming conflicts
+4. **Wrapper Unwrapping** - Handle optional, nullable, default wrappers
+5. **Reconstruction** - Rebuild nested objects from CLI args
+
+### MCP vs CLI Execution
+
+**MCP:**
+
+- Zod schema passed directly to `server.registerTool()`
+- SDK handles JSON Schema conversion internally
+- Handler receives parsed Zod args
+- Returns `CallToolResult` with formatted content
+
+**CLI:**
+
+- Zod schema converted to Gunshi CLI args
+- Handler receives raw CLI values
+- Reconstructs nested objects from flat args
+- Formats output for console display
 
 ## Contributing
 
