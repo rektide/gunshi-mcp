@@ -5,7 +5,7 @@ import { flattenSchema } from "./flatten.js"
 import { checkCollisions } from "./collision.js"
 import { analyzeArray } from "./arrays.js"
 import { buildGunshiArg } from "./overrides.js"
-import { isZodObject } from "./introspect.js"
+import { isZodObject, getZodObjectShape } from "./introspect.js"
 
 export type { CliOptions } from "./types.js"
 
@@ -28,7 +28,7 @@ export function zodSchemaToGunshiArgs<const Shape extends ZodShape>(
 
 	const args: Record<string, GunshiArg> = {}
 
-	for (const [flatKey, { info }] of Object.entries(context.args)) {
+	for (const [flatKey, { info, optional }] of Object.entries(context.args)) {
 		const override = overrides?.[flatKey]
 		const field = lookupField(schema, flatKey, flattenOptions.separator || "-")
 
@@ -43,7 +43,7 @@ export function zodSchemaToGunshiArgs<const Shape extends ZodShape>(
 			parseFunction = (v: string) => JSON.parse(v)
 		}
 
-		args[flatKey] = buildGunshiArg(info, override, parseFunction)
+		args[flatKey] = buildGunshiArg(info, override, parseFunction, optional)
 	}
 
 	return args
@@ -59,11 +59,7 @@ function lookupField(schema: z.ZodObject<any>, flatKey: string, separator: strin
 		if (!isZodObject(field)) {
 			return undefined
 		}
-		const innerSchema = (field as { _def?: { shape: z.ZodRawShape } })._def?.shape
-		if (!innerSchema) {
-			return undefined
-		}
-		shape = innerSchema
+		shape = getZodObjectShape(field)
 	}
 
 	return shape[parts[parts.length - 1]]

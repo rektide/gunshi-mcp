@@ -1,9 +1,16 @@
 import type { z } from "zod"
-import type { FlattenOptions } from "./types.js"
-import { introspectZodField, isZodObject } from "./introspect.js"
+import type { FlattenOptions, ZodFieldInfo } from "./types.js"
+import { introspectZodField, isZodObject, getZodObjectShape } from "./introspect.js"
+
+export interface FlattenedArg {
+	info: ZodFieldInfo
+	depth: number
+	/** Whether this field is optional (including inherited from optional parent) */
+	optional: boolean
+}
 
 export interface FlattenContext {
-	args: Record<string, { info: ReturnType<typeof introspectZodField>; depth: number }>
+	args: Record<string, FlattenedArg>
 	collisions: Map<string, string[]>
 }
 
@@ -32,23 +39,22 @@ function walk(
 		const flatKey = currentPrefix ? `${currentPrefix}${separator}${key}` : key
 		const info = introspectZodField(field)
 		const isOptional = parentOptional || !info.required
+		const path = currentPrefix ? `${currentPrefix}${separator}${key}` : key
 
 		if (info.type === "object" && isZodObject(field)) {
 			if (depth >= maxDepth) {
-				context.args[flatKey] = { info, depth: depth + 1 }
+				context.args[flatKey] = { info, depth: depth + 1, optional: isOptional }
 			} else {
-				const innerSchema = (field as { _def?: { shape: z.ZodRawShape } })._def?.shape
-				if (innerSchema && typeof innerSchema === "object") {
-					walk(innerSchema, flatKey, depth + 1, isOptional, context, separator, maxDepth)
-				}
+				const innerShape = getZodObjectShape(field)
+				walk(innerShape, flatKey, depth + 1, isOptional, context, separator, maxDepth)
 			}
 		} else {
 			if (context.args[flatKey]) {
-				const existing = context.collisions.get(flatKey) || [flatKey]
-				existing.push(`${currentPrefix}.${key}`)
+				const existing = context.collisions.get(flatKey) || [path]
+				existing.push(path)
 				context.collisions.set(flatKey, existing)
 			}
-			context.args[flatKey] = { info, depth }
+			context.args[flatKey] = { info, depth, optional: isOptional }
 		}
 	}
 }
