@@ -8,6 +8,12 @@ import { formatResult } from "./output.js"
 export const MCP_NEW_PLUGIN_ID = "gunshi-mcp:mcp" as const
 export type McpNewPluginId = typeof MCP_NEW_PLUGIN_ID
 
+export interface McpExtension {
+	registerTools: (tools: GunshiTool<any, any>[]) => void
+	startServer: () => Promise<void>
+	stopServer: () => Promise<void>
+}
+
 export interface McpNewPluginOptions {
 	tools?: GunshiTool<any, any>[]
 	name?: string
@@ -16,13 +22,43 @@ export interface McpNewPluginOptions {
 
 export function createMcpPlugin(options: McpNewPluginOptions = {}) {
 	let server: McpServer | undefined
-	const toolDefinitions: GunshiTool<any, any>[] = []
+	let pluginExtensions: Record<string, unknown> | undefined
 
-	return plugin({
+	const registerTools = (tools: GunshiTool<any, any>[]) => {
+		if (!server || !pluginExtensions) {
+			throw new Error("MCP plugin not initialized")
+		}
+
+		for (const tool of tools) {
+			server.registerTool(
+				tool.name,
+				{
+					title: tool.title,
+					description: tool.description,
+					inputSchema: tool.inputSchema,
+					outputSchema: tool.outputSchema,
+					annotations: tool.annotations,
+				},
+				async (inputArgs, extra) => {
+					const toolCtx = buildToolContext(pluginExtensions, {
+						requestId: extra.requestId as string,
+					})
+					const parsed = tool.inputSchema.parse(inputArgs)
+					const result = await tool.handler(parsed, toolCtx)
+					return {
+						content: [{ type: "text", text: formatResult(result) }],
+					}
+				},
+			)
+		}
+	}
+
+	return plugin<{}, McpNewPluginId, [], McpExtension>({
 		id: MCP_NEW_PLUGIN_ID,
 		name: options.name ?? "MCP Plugin",
 
 		setup: async (ctx) => {
+
 			const pluginName = options.name ?? "gunshi-mcp"
 			const pluginVersion = options.version ?? "1.0.0"
 
@@ -39,7 +75,7 @@ export function createMcpPlugin(options: McpNewPluginOptions = {}) {
 				},
 			)
 
-			toolDefinitions.push(...(options.tools ?? []))
+			const toolDefinitions = options.tools ?? []
 
 			for (const tool of toolDefinitions) {
 				const convertedArgs = zodSchemaToGunshiArgs(tool.inputSchema, tool.cli, tool.cliOptions)
@@ -60,8 +96,10 @@ export function createMcpPlugin(options: McpNewPluginOptions = {}) {
 					description: tool.description,
 					args: args,
 					run: async (cmdCtx) => {
-						const mcpExtension = cmdCtx.extensions?.[MCP_NEW_PLUGIN_ID]
-						const toolCtx = buildToolContext(mcpExtension as Record<string, unknown>)
+						const mcpExtension = cmdCtx.extensions?.[MCP_NEW_PLUGIN_ID] as McpExtension
+						const toolCtx = buildToolContext({
+							mcp: mcpExtension,
+						})
 						const nestedValues = reconstructNestedValues(cmdCtx.values, separator)
 						const parsed = tool.inputSchema.parse(nestedValues)
 						const result = await tool.handler(parsed, toolCtx)
@@ -80,54 +118,27 @@ export function createMcpPlugin(options: McpNewPluginOptions = {}) {
 						description: "Port for MCP server (optional, defaults to stdio)",
 					},
 				},
-				run: async () => {
-					if (!server) {
-						throw new Error("MCP server not initialized")
-					}
-
-					const transport = new StdioServerTransport()
-					await server.connect(transport)
-					console.log("MCP server running...")
+				run: async (cmdCtx) => {
+					const mcpExtension = cmdCtx.extensions?.[MCP_NEW_PLUGIN_ID] as McpExtension
+					registerTools(toolDefinitions)
+					await mcpExtension.startServer()
 				},
 			})
 		},
 
 		extension: (ctx) => {
-			// TODO: extension is meant to populate context, to return something. not to do things!
-			// TODO: we also want other plugins: a mcp server that can start the mcp srever, a hono server below that
-			for (const tool of toolDefinitions) {
-				server?.registerTool(
-					tool.name,
-					{
-						title: tool.title,
-						description: tool.description,
-						inputSchema: tool.inputSchema,
-						outputSchema: tool.outputSchema,
-						annotations: tool.annotations,
-					},
-					async (inputArgs, extra) => {
-						const toolCtx = buildToolContext(ctx.extensions, {
-							requestId: extra.requestId as string,
-						})
-						const parsed = tool.inputSchema.parse(inputArgs)
-						const result = await tool.handler(parsed, toolCtx)
-						return {
-							content: [{ type: "text", text: formatResult(result) }],
-						}
-					},
-				)
-			}
-
+			pluginExtensions = (ctx as any).extensions
 			return {
+				registerTools,
 				startServer: async () => {
 					if (!server) {
 						throw new Error("MCP server not initialized")
 					}
-
 					const transport = new StdioServerTransport()
 					await server.connect(transport)
 				},
-				stopServer: async () => {},
+				stopServer: async () => {
+				},
 			}
 		},
 	})
