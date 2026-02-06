@@ -1,5 +1,6 @@
 import { cli, define } from "gunshi"
-import { createMcpPlugin, defineTool } from "../src/index.js"
+import { createMcpPlugin } from "../src/mcp-plugin.js"
+import { defineTool } from "../src/define-tool.js"
 import { z } from "zod"
 
 const greetTool = defineTool()({
