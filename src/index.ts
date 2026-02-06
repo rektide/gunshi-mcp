@@ -1,4 +1,3 @@
-export * from "./plugin.ts"
 export * from "./mcp-plugin.js"
 export {
 	ToolResult,
