@@ -505,25 +505,58 @@ await server.start(new SseTransport())
 
 ## File Structure
 
+Each plugin lives in its own directory. The directory contains both a **general-purpose implementation** (not gunshi-specific) and a **plugin wrapper** that composes it into gunshi's plugin system.
+
+This separation means:
+- The core logic can be used outside of gunshi
+- The plugin is a thin adapter over proven, testable components
+- Complex plugins can be broken into multiple files without cramming everything into one
+
 ```
 src/
-├── plugins/
-│   ├── logging.ts        # createLoggingPlugin
-│   ├── discovery.ts      # createDiscoveryPlugin
-│   ├── registry.ts       # createRegistryPlugin
-│   ├── server.ts         # createServerPlugin
-│   ├── cli.ts            # createCliPlugin
-│   ├── opencode.ts       # createOpenCodePlugin
-│   └── index.ts          # Re-exports all plugin factories
+├── logging/
+│   ├── logger.ts         # Pino logger factory, LoggerExtension interface
+│   ├── plugin.ts         # createLoggingPlugin - wraps logger for gunshi
+│   └── index.ts          # Re-exports
+│
 ├── discovery/
-│   ├── roots.ts          # Root discovery strategies
-│   ├── tools.ts          # Tool discovery strategies
-│   └── types.ts          # RootDiscovery, ToolDiscovery types
+│   ├── roots.ts          # Root discovery strategies (async generators)
+│   ├── tools.ts          # Tool discovery strategies (async generators)
+│   ├── discover.ts       # discoverTools() - general-purpose discovery function
+│   ├── types.ts          # RootDiscovery, ToolDiscovery types
+│   ├── plugin.ts         # createDiscoveryPlugin - wraps discovery for gunshi
+│   └── index.ts          # Re-exports
+│
+├── registry/
+│   ├── registry.ts       # ToolRegistry class - add/remove/list tools
+│   ├── plugin.ts         # createRegistryPlugin - wraps registry for gunshi
+│   └── index.ts          # Re-exports
+│
+├── server/
+│   ├── server.ts         # McpServer factory, transport handling
+│   ├── tools.ts          # Tool registration helpers
+│   ├── plugin.ts         # createServerPlugin - wraps server for gunshi
+│   └── index.ts          # Re-exports
+│
+├── cli/
+│   ├── commands.ts       # Command generation from GunshiTool
+│   ├── args.ts           # Zod-to-gunshi arg conversion (existing cli-args/)
+│   ├── plugin.ts         # createCliPlugin - wraps command gen for gunshi
+│   └── index.ts          # Re-exports
+│
+├── opencode/
+│   ├── detection.ts      # Environment detection (TBD)
+│   ├── exposure.ts       # Tool exposure to opencode
+│   ├── plugin.ts         # createOpenCodePlugin - wraps for gunshi
+│   └── index.ts          # Re-exports
+│
 ├── builder.ts            # gunshiMcp() builder
 ├── define-tool.ts        # defineTool() helper
-├── types.ts              # GunshiTool, ToolContext, etc.
+├── types.ts              # GunshiTool, ToolContext, shared types
 └── index.ts              # Main exports
 ```
+
+**Goal:** Each `plugin.ts` should be a thin wrapper. The real work happens in sibling files that have no gunshi dependency. This makes the core logic reusable, testable in isolation, and easier to understand.
 
 ---
 
