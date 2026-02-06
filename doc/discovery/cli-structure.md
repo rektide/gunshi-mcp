@@ -4,7 +4,7 @@
 
 gunshi-mcp converts Zod schemas into multiple output formats:
 - **Gunshi CLI arguments** - flags with types, descriptions, defaults
-- **MCP tool schemas** - JSON Schema for Model Context Protocol
+- **MCP tool schemas** - the `@modelcontextprotocol/server` library accepts either Zod schemas or JSON Schema directly; we prefer passing raw Zod
 - **OpenCode tool definitions** - schema format TBD
 
 The current `cli-args/` directory handles Zod-to-gunshi conversion with reasonable decomposition:
@@ -213,11 +213,13 @@ Zod Schema
 ZodFieldInfo[]
     ↓ [schema plugin: flatten]
 FlattenedField[]
-    ↓ [cli plugin: toGunshiArgs]    ↓ [server plugin: toJsonSchema]
-GunshiArg[]                        JSON Schema
-    ↓ [cli plugin: toCommand]       ↓ [server plugin: registerTool]
-Gunshi Command                     MCP Tool
+    ↓ [cli plugin: toGunshiArgs]         ↓ [server plugin: pass-through]
+GunshiArg[]                           Zod Schema (unchanged)
+    ↓ [cli plugin: toCommand]            ↓ [server plugin: registerTool]
+Gunshi Command                        MCP Tool
 ```
+
+Note: The MCP server path is simpler because `@modelcontextprotocol/server` accepts Zod schemas directly. The schema plugin's introspect/flatten is primarily for CLI, but remains available for other consumers that need structured field information.
 
 This makes the system understandable: there's a shared analysis phase, then consumer-specific output phases. Users who want to customize can intervene at any stage.
 
@@ -329,10 +331,10 @@ const cliPipeline = pipeline(
   cliPlugin.applyOverrides,     // → GunshiArg[] (with user overrides)
 )
 
+// MCP pipeline is simpler - pass Zod directly
 const mcpPipeline = pipeline(
-  schemaPlugin.introspect,      // Zod → ZodFieldInfo[]
-  serverPlugin.toJsonSchema,    // → JSON Schema
-  serverPlugin.addAnnotations,  // → JSON Schema (with MCP annotations)
+  (tool) => tool.inputSchema,   // Zod schema pass-through
+  serverPlugin.registerTool,    // McpServer accepts Zod directly
 )
 ```
 
@@ -454,12 +456,18 @@ schemaExt.registerTypeHandler("ZodBranded", handler)
 
 **Question:** Does JSON Schema generation belong in schema/ or server/?
 
-**Proposed answer:** Schema plugin provides a general `toJsonSchema()` transform. Server plugin may add MCP-specific annotations on top. This allows JSON Schema to be used elsewhere (documentation, validation, etc.).
+**Proposed answer:** The `@modelcontextprotocol/server` library accepts Zod schemas directly (it handles conversion internally), so we prefer passing raw Zod schemas to MCP rather than converting ourselves. This means:
+
+- **Server plugin does NOT need JSON Schema conversion** - pass Zod directly to McpServer
+- **Schema plugin may still provide `toJsonSchema()`** for other consumers (documentation, OpenAPI, external validation)
+- **Annotations stay in server/** - MCP-specific metadata like `annotations` field
 
 ```
-schema/json-schema.ts        → General Zod → JSON Schema
-server/schema/annotations.ts → Add MCP-specific metadata
+schema/json-schema.ts        → General Zod → JSON Schema (optional utility)
+server/                      → Pass raw Zod to McpServer.registerTool()
 ```
+
+This simplifies the server plugin significantly - it just passes the tool's `inputSchema` (Zod) directly to MCP.
 
 ### 6. Runtime Value Reconstruction
 
