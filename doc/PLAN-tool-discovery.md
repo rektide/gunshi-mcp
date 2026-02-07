@@ -7,6 +7,7 @@
 Tool discovery finds and loads GunshiTool definitions at runtime. The system is modular: library consumers can replace either discovery strategy or use their own entirely.
 
 Two composable async generators:
+
 1. **Root Discovery** - yields directories to search for tools
 2. **Tool Discovery** - yields tools found within each directory
 
@@ -104,7 +105,7 @@ export function globToolDiscovery(options: GlobToolDiscoveryOptions = {}): ToolD
 
   return async function* (rootDir: string) {
     const files = await glob(patterns, { cwd: rootDir, ignore, absolute: true })
-    
+
     for (const file of files) {
       const mod = await import(pathToFileURL(file).href)
       const tools = extractTools(mod)
@@ -118,21 +119,21 @@ export function globToolDiscovery(options: GlobToolDiscoveryOptions = {}): ToolD
 /** Extracts GunshiTool instances from a module */
 function extractTools(mod: unknown): GunshiTool[] {
   const tools: GunshiTool[] = []
-  
+
   if (!mod || typeof mod !== "object") return tools
-  
+
   // Check default export
   if ("default" in mod && isGunshiTool(mod.default)) {
     tools.push(mod.default)
   }
-  
+
   // Check named exports
   for (const [key, value] of Object.entries(mod)) {
     if (key !== "default" && isGunshiTool(value)) {
       tools.push(value)
     }
   }
-  
+
   return tools
 }
 
@@ -156,15 +157,15 @@ function isGunshiTool(value: unknown): value is GunshiTool {
 export async function discoverTools(options: DiscoveryOptions = {}): Promise<GunshiTool[]> {
   const rootDiscovery = options.roots ?? defaultRootDiscovery
   const toolDiscovery = options.tools ?? globToolDiscovery()
-  
+
   const tools: GunshiTool[] = []
-  
+
   for await (const rootDir of rootDiscovery()) {
     for await (const tool of toolDiscovery(rootDir)) {
       tools.push(tool)
     }
   }
-  
+
   return tools
 }
 
@@ -172,7 +173,7 @@ export async function discoverTools(options: DiscoveryOptions = {}): Promise<Gun
 export async function* discoverToolsStream(options: DiscoveryOptions = {}): AsyncGenerator<GunshiTool> {
   const rootDiscovery = options.roots ?? defaultRootDiscovery
   const toolDiscovery = options.tools ?? globToolDiscovery()
-  
+
   for await (const rootDir of rootDiscovery()) {
     yield* toolDiscovery(rootDir)
   }
@@ -187,7 +188,7 @@ export interface McpPluginOptions {
   tools?: GunshiTool[]
   name?: string
   version?: string
-  
+
   // New
   discovery?: DiscoveryOptions | false
 }
@@ -197,13 +198,13 @@ export function createMcpPlugin(options: McpPluginOptions = {}) {
     // ...
     setup: async (ctx) => {
       let tools = options.tools ?? []
-      
+
       // Auto-discover unless explicitly disabled
       if (options.discovery !== false) {
         const discovered = await discoverTools(options.discovery)
         tools = [...tools, ...discovered]
       }
-      
+
       // Register tools...
     },
   })
@@ -307,6 +308,7 @@ src/
 ## Dependencies
 
 Add to package.json:
+
 ```json
 {
   "dependencies": {
@@ -327,6 +329,7 @@ Add to package.json:
 ### Error Handling
 
 When a tool file fails to import or validate:
+
 - Log warning with file path and error
 - Continue discovering other tools
 - Optionally: `strict: true` option to throw on first error
@@ -334,12 +337,14 @@ When a tool file fails to import or validate:
 ### Caching
 
 For performance in long-running processes:
+
 - Optional caching of discovered tools
 - File watcher integration for hot reload (future)
 
 ### Deduplication
 
 If same tool discovered from multiple roots:
+
 - Later discovery overwrites earlier (or configurable)
 - Warn on name collision
 
@@ -352,6 +357,7 @@ The design above focuses on discovery as a utility. This addendum reframes disco
 ### Discovery as a Plugin
 
 Following gunshi's plugin patterns, discovery becomes its own plugin that:
+
 1. Runs during `setup` phase to discover tools
 2. Exposes a `DiscoveryExtension` for other plugins to access discovered tools
 3. Can depend on other plugins (e.g., logging) for error reporting
@@ -389,7 +395,7 @@ export function createDiscoveryPlugin(options: DiscoveryPluginOptions = {}) {
   const runDiscovery = async (): Promise<GunshiTool[]> => {
     const rootDiscovery = options.roots ?? defaultRootDiscovery
     const toolDiscovery = options.tools ?? globToolDiscovery()
-    
+
     const tools: GunshiTool[] = []
     for await (const rootDir of rootDiscovery()) {
       for await (const tool of toolDiscovery(rootDir)) {
@@ -479,7 +485,7 @@ export function createMcpPlugin(options: McpPluginOptions = {}) {
         run: async (cmdCtx) => {
           const discovery = cmdCtx.extensions[DISCOVERY_PLUGIN_ID]
           const mcp = cmdCtx.extensions[MCP_PLUGIN_ID]
-          
+
           // Combine discovered tools with explicit tools
           const allTools = [...discovery.tools, ...(options.tools ?? [])]
           mcp.registerTools(allTools)
@@ -491,7 +497,7 @@ export function createMcpPlugin(options: McpPluginOptions = {}) {
     extension: (ctx) => {
       // Access discovery extension during extension creation
       const discovery = ctx.extensions[DISCOVERY_PLUGIN_ID]
-      
+
       return {
         registerTools: (tools) => {
           for (const tool of tools) {
@@ -573,7 +579,7 @@ export function createDiscoveryPlugin(options: DiscoveryPluginOptions = {}) {
 
     extension: (ctx) => {
       const logger = ctx.extensions[LOGGING_PLUGIN_ID]
-      
+
       return {
         // ... extension methods can use logger
       }

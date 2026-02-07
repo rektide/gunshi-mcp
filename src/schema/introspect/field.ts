@@ -168,9 +168,7 @@ export function getZodArrayElement(schema: unknown): unknown {
 	return undefined
 }
 
-export function introspectSchema<T extends z.ZodRawShape>(
-	schema: z.ZodObject<T>,
-): ZodFieldInfo[] {
+export function introspectSchema<T extends z.ZodRawShape>(schema: z.ZodObject<T>): ZodFieldInfo[] {
 	const fields: ZodFieldInfo[] = []
 	const shape = schema.shape
 

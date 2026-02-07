@@ -1,6 +1,11 @@
 import type { z } from "zod"
 import type { FlattenedField, FlattenOptions } from "../types.ts"
-import { introspectZodField, isZodObject, getZodObjectShape, unwrapZodWrappers } from "../introspect/field.ts"
+import {
+	introspectZodField,
+	isZodObject,
+	getZodObjectShape,
+	unwrapZodWrappers,
+} from "../introspect/field.ts"
 
 export interface FlattenContext {
 	fields: FlattenedField[]

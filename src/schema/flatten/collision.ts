@@ -11,7 +11,5 @@ export function checkCollisions(collisions: Map<string, string[]>): void {
 export function formatCollisions(collisions: Map<string, string[]>): string {
 	if (collisions.size === 0) return ""
 
-	return [...collisions.entries()]
-		.map(([key, paths]) => `  ${key}: ${paths.join(", ")}`)
-		.join("\n")
+	return [...collisions.entries()].map(([key, paths]) => `  ${key}: ${paths.join(", ")}`).join("\n")
 }

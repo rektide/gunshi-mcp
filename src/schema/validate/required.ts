@@ -4,7 +4,9 @@ export interface ValidationResult {
 	missing: string[]
 }
 
-export function validateRequiredFields(flattenedFields: { key: string; optional: boolean }[]): ValidationResult {
+export function validateRequiredFields(
+	flattenedFields: { key: string; optional: boolean }[],
+): ValidationResult {
 	const missing: string[] = []
 	const required: string[] = []
 

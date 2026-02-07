@@ -1,8 +1,8 @@
 export default {
-  test: {
-    globals: true,
-    environment: "node",
-    include: ["test/**/*.test.ts", "src/**/*.test.ts"],
-    transformMode: "esm",
-  },
+	test: {
+		globals: true,
+		environment: "node",
+		include: ["test/**/*.test.ts", "src/**/*.test.ts"],
+		transformMode: "esm",
+	},
 }

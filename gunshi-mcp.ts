@@ -28,10 +28,7 @@ export type {
 	LoggingContext,
 	LoggingPluginOptions,
 } from "./src/plugins/logger.ts"
-export {
-	createSchemaPlugin,
-	SCHEMA_PLUGIN_ID,
-} from "./src/schema/plugin.ts"
+export { createSchemaPlugin, SCHEMA_PLUGIN_ID } from "./src/schema/plugin.ts"
 export type {
 	SchemaExtension,
 	SchemaPluginOptions,
@@ -50,10 +47,7 @@ export type {
 	RegistryPluginOptions,
 	RegistryPluginId,
 } from "./src/registry/types.ts"
-export {
-	createDiscoveryPlugin,
-	DISCOVERY_PLUGIN_ID,
-} from "./src/discovery/plugin.ts"
+export { createDiscoveryPlugin, DISCOVERY_PLUGIN_ID } from "./src/discovery/plugin.ts"
 export type {
 	DiscoveryExtension,
 	DiscoveryPluginOptions,

@@ -58,7 +58,6 @@ export function createMcpPlugin(options: McpNewPluginOptions = {}) {
 		name: options.name ?? "MCP Plugin",
 
 		setup: async (ctx) => {
-
 			const pluginName = options.name ?? "gunshi-mcp"
 			const pluginVersion = options.version ?? "1.0.0"
 
@@ -137,8 +136,7 @@ export function createMcpPlugin(options: McpNewPluginOptions = {}) {
 					const transport = new StdioServerTransport()
 					await server.connect(transport)
 				},
-				stopServer: async () => {
-				},
+				stopServer: async () => {},
 			}
 		},
 	})

@@ -4,7 +4,7 @@
 
 Define a tool once with `defineTool()`, expose it everywhere - MCP server, CLI commands, OpenCode - via composable gunshi plugins.
 
-gunshi-mcp is a toolkit for building tools. You're building a CLI application. Your application does things - it fetches data, transforms files, deploys infrastructure, manages resources. These capabilities are *tools*. gunshi-mcp helps you define these tools once and expose them through multiple interfaces: as CLI commands your users type, as MCP tools that AI assistants can invoke, as OpenCode custom tools for agentic workflows.
+gunshi-mcp is a toolkit for building tools. You're building a CLI application. Your application does things - it fetches data, transforms files, deploys infrastructure, manages resources. These capabilities are _tools_. gunshi-mcp helps you define these tools once and expose them through multiple interfaces: as CLI commands your users type, as MCP tools that AI assistants can invoke, as OpenCode custom tools for agentic workflows.
 
 One definition. Multiple surfaces. No duplication.
 
@@ -14,7 +14,7 @@ Modern developer tools need to be accessible in multiple ways. A user might invo
 
 ### What gunshi-mcp Provides
 
-gunshi-mcp is a library for people who are *making* tools - not using them. It's infrastructure for tool authors.
+gunshi-mcp is a library for people who are _making_ tools - not using them. It's infrastructure for tool authors.
 
 You describe your tool's purpose, its inputs (via Zod schemas), and its behavior (a handler function). gunshi-mcp takes that single definition and makes it available wherever it needs to be:
 
@@ -32,11 +32,11 @@ You compose these plugins to match your needs:
 
 ```typescript
 import { cli } from "gunshi"
-import { 
+import {
   createDiscoveryPlugin,
   createRegistryPlugin,
   createServerPlugin,
-  createCliPlugin 
+  createCliPlugin
 } from "gunshi-mcp"
 
 await cli(args, command, {
@@ -120,6 +120,7 @@ flowchart TB
 ### Problem Statement
 
 gunshi-mcp converts Zod schemas into multiple output formats:
+
 - **Gunshi CLI arguments** - flags with types, descriptions, defaults
 - **MCP tool schemas** - the `@modelcontextprotocol/server` library accepts either Zod schemas or JSON Schema directly; we prefer passing raw Zod
 - **OpenCode tool definitions** - schema format TBD
@@ -128,7 +129,7 @@ The Zod introspection, flattening, and schema analysis capabilities serve all co
 
 ### Schema Plugin: Shared Infrastructure for Zod Analysis
 
-The core insight is that Zod schema analysis is *infrastructure*, not an implementation detail of any single plugin. When you define a tool with a Zod schema, multiple consumers need to understand that schema:
+The core insight is that Zod schema analysis is _infrastructure_, not an implementation detail of any single plugin. When you define a tool with a Zod schema, multiple consumers need to understand that schema:
 
 - **CLI** needs to flatten nested objects into flags, handle arrays, generate help text
 - **MCP Server** needs JSON Schema representation with proper types and descriptions
@@ -230,19 +231,19 @@ export const SCHEMA_PLUGIN_ID = "gunshi-mcp:schema" as const
 export interface SchemaExtension {
   /** Introspect a Zod schema, returning field information */
   introspect: <T extends z.ZodRawShape>(schema: z.ZodObject<T>) => ZodFieldInfo[]
-  
+
   /** Flatten nested schema to flat keys with collision detection */
   flatten: <T extends z.ZodRawShape>(
     schema: z.ZodObject<T>,
     options?: FlattenOptions
   ) => FlattenedField[]
-  
+
   /** Get cached analysis or compute fresh */
   analyze: <T extends z.ZodRawShape>(
     schema: z.ZodObject<T>,
     options?: AnalyzeOptions
   ) => SchemaAnalysis
-  
+
   /** Register custom type handler for extension */
   registerTypeHandler: (typeName: string, handler: TypeHandler) => void
 }
@@ -302,6 +303,7 @@ The Schema Plugin provides several benefits:
 **Factory:** `createLoggingPlugin(options?)`
 
 **Extension:**
+
 ```typescript
 interface LoggerExtension {
   info: (msg: string, ...args: unknown[]) => void
@@ -327,6 +329,7 @@ interface LoggerExtension {
 **Factory:** `createDiscoveryPlugin(options?)`
 
 **Extension:**
+
 ```typescript
 interface DiscoveryExtension {
   readonly tools: readonly GunshiTool[]
@@ -339,6 +342,7 @@ interface DiscoveryExtension {
 **Dependencies:** `logging` (optional)
 
 **Options:**
+
 ```typescript
 interface DiscoveryPluginOptions {
   roots?: RootDiscovery
@@ -361,6 +365,7 @@ interface DiscoveryPluginOptions {
 **Factory:** `createRegistryPlugin(options?)`
 
 **Extension:**
+
 ```typescript
 interface RegistryExtension {
   register: (tool: GunshiTool) => void
@@ -376,6 +381,7 @@ interface RegistryExtension {
 **Dependencies:** `discovery` (optional) - auto-registers discovered tools
 
 **Options:**
+
 ```typescript
 interface RegistryPluginOptions {
   tools?: GunshiTool[]
@@ -385,6 +391,7 @@ interface RegistryPluginOptions {
 ```
 
 **Why separate from Discovery?**
+
 - Registry manages the canonical tool collection
 - Discovery is one source; explicit tools, remote registries are others
 - Registry can exist without discovery (explicit tools only)
@@ -405,6 +412,7 @@ interface RegistryPluginOptions {
 **Dependencies:** `logging` (optional)
 
 **Options:**
+
 ```typescript
 interface SchemaPluginOptions {
   typeHandlers?: Record<string, TypeHandler>
@@ -413,6 +421,7 @@ interface SchemaPluginOptions {
 ```
 
 **Why Schema as a separate plugin?**
+
 - Provides shared infrastructure for CLI, Server, and OpenCode plugins
 - Eliminates duplication of Zod introspection logic
 - Caches schema analysis results for performance
@@ -430,6 +439,7 @@ interface SchemaPluginOptions {
 **Factory:** `createServerPlugin(options?)`
 
 **Extension:**
+
 ```typescript
 interface ServerExtension {
   readonly server: McpServer
@@ -445,6 +455,7 @@ interface ServerExtension {
 **Dependencies:** `logging` (optional), `registry` (optional), `schema` (required)
 
 **Options:**
+
 ```typescript
 interface ServerPluginOptions {
   name?: string
@@ -466,6 +477,7 @@ interface ServerPluginOptions {
 **Factory:** `createCliPlugin(options?)`
 
 **Extension:**
+
 ```typescript
 interface CliExtension {
   readonly commands: readonly string[]
@@ -476,6 +488,7 @@ interface CliExtension {
 **Dependencies:** `registry`, `schema`
 
 **Options:**
+
 ```typescript
 interface CliPluginOptions {
   prefix?: string
@@ -485,6 +498,7 @@ interface CliPluginOptions {
 ```
 
 **Behavior:**
+
 - During `setup`, reads tools from registry
 - Calls `ctx.addCommand()` for each tool
 - Uses schema plugin's `flatten` for arg conversion
@@ -502,6 +516,7 @@ interface CliPluginOptions {
 **Factory:** `createOpenCodePlugin(options?)`
 
 **Extension:**
+
 ```typescript
 interface OpenCodeExtension {
   readonly isOpenCodeEnvironment: boolean
@@ -513,6 +528,7 @@ interface OpenCodeExtension {
 **Dependencies:** `registry`, `schema`
 
 **Options:**
+
 ```typescript
 interface OpenCodePluginOptions {
   include?: string[]
@@ -522,6 +538,7 @@ interface OpenCodePluginOptions {
 ```
 
 **Open Question:** Detection of opencode environment
+
 - Need a reliable way to detect we're running inside opencode
 - Could be env var, process inspection, or opencode-provided API
 - **Not solving now** - note as required capability from opencode
@@ -555,17 +572,17 @@ interface OpenCodePluginOptions {
 flowchart TB
   logging["logging"]
   schema["schema"]
-  
+
   logging -.->|optional| discovery
   logging -.->|optional| registry
   logging -.->|optional| schema
-  
+
   discovery -.->|optional| registry
-  
+
   schema --> cli
   schema --> server
   schema --> opencode
-  
+
   registry --> cli
   registry --> opencode
   registry -.->|optional| server
@@ -597,16 +614,16 @@ await cli(args, command, { plugins })
 
 ### Builder Methods
 
-| Method | Plugin Created | Dependencies |
-|--------|----------------|--------------|
-| `.withLogging(opts?)` | `createLoggingPlugin` | None |
-| `.withDiscovery(opts?)` | `createDiscoveryPlugin` | Logging (optional) |
-| `.withRegistry(opts?)` | `createRegistryPlugin` | Discovery (optional) |
-| `.withSchema(opts?)` | `createSchemaPlugin` | Logging (optional) |
-| `.withServer(opts?)` | `createServerPlugin` | Schema (required), Registry (optional) |
-| `.withCli(opts?)` | `createCliPlugin` | Schema (required), Registry |
-| `.withOpenCode(opts?)` | `createOpenCodePlugin` | Schema (required), Registry |
-| `.build()` | Returns `Plugin[]` | - |
+| Method                  | Plugin Created          | Dependencies                           |
+| ----------------------- | ----------------------- | -------------------------------------- |
+| `.withLogging(opts?)`   | `createLoggingPlugin`   | None                                   |
+| `.withDiscovery(opts?)` | `createDiscoveryPlugin` | Logging (optional)                     |
+| `.withRegistry(opts?)`  | `createRegistryPlugin`  | Discovery (optional)                   |
+| `.withSchema(opts?)`    | `createSchemaPlugin`    | Logging (optional)                     |
+| `.withServer(opts?)`    | `createServerPlugin`    | Schema (required), Registry (optional) |
+| `.withCli(opts?)`       | `createCliPlugin`       | Schema (required), Registry            |
+| `.withOpenCode(opts?)`  | `createOpenCodePlugin`  | Schema (required), Registry            |
+| `.build()`              | Returns `Plugin[]`      | -                                      |
 
 ### Builder Integration with Schema Plugin
 
@@ -749,6 +766,7 @@ await server.start(new SseTransport())
 Each plugin lives in its own directory. The directory contains both a **general-purpose implementation** (not gunshi-specific) and a **plugin wrapper** that composes it into gunshi's plugin system.
 
 This separation means:
+
 - The core logic can be used outside of gunshi
 - The plugin is a thin adapter over proven, testable components
 - Complex plugins can be broken into multiple files without cramming everything into one
@@ -849,17 +867,17 @@ src/
 
 ## Benefits Summary
 
-| Capability | With gunshi-mcp |
-|------------|-----------------|
-| Use MCP without CLI | ✅ `server` plugin only |
-| Use CLI without MCP | ✅ `cli` + `registry` + `schema` plugins |
-| Use OpenCode without MCP | ✅ `opencode` + `registry` + `schema` plugins |
-| Custom tool sources | ✅ Replace `discovery` or use `registry` directly |
-| Dynamic tool registration | ✅ `registry.register()` at runtime |
-| Multiple transports | ✅ `server` plugin options |
-| Shared schema infrastructure | ✅ `schema` plugin |
-| Testability | ✅ Mock individual plugins |
-| Tree-shaking | ✅ Import only what you need |
+| Capability                   | With gunshi-mcp                                   |
+| ---------------------------- | ------------------------------------------------- |
+| Use MCP without CLI          | ✅ `server` plugin only                           |
+| Use CLI without MCP          | ✅ `cli` + `registry` + `schema` plugins          |
+| Use OpenCode without MCP     | ✅ `opencode` + `registry` + `schema` plugins     |
+| Custom tool sources          | ✅ Replace `discovery` or use `registry` directly |
+| Dynamic tool registration    | ✅ `registry.register()` at runtime               |
+| Multiple transports          | ✅ `server` plugin options                        |
+| Shared schema infrastructure | ✅ `schema` plugin                                |
+| Testability                  | ✅ Mock individual plugins                        |
+| Tree-shaking                 | ✅ Import only what you need                      |
 
 ---
 
@@ -908,10 +926,12 @@ src/cli/
 ```
 
 **Pros:**
+
 - Minimal change, already works
 - Clear ownership: cli/ owns everything CLI-related
 
 **Cons:**
+
 - `args/` name doesn't reflect that it's really "zod-to-gunshi"
 - Zod introspection buried inside CLI, not reusable
 - Other plugins will duplicate introspection logic
@@ -946,11 +966,13 @@ src/cli/
 ```
 
 **Pros:**
+
 - Clear separation of concerns
 - Easier to understand data flow
 - `schema/` could potentially be lifted out later
 
 **Cons:**
+
 - More directories
 - Still CLI-centric organization
 - Duplication if server/ needs same schema logic
@@ -987,11 +1009,13 @@ src/
 ```
 
 **Pros:**
+
 - Reusable Zod utilities
 - Cleaner plugin modules
 - Clear shared foundation
 
 **Cons:**
+
 - Cross-module dependencies
 - `zod-schema/` naming is generic
 - No plugin for the shared schema logic
@@ -1016,11 +1040,13 @@ src/cli/
 ```
 
 **Pros:**
+
 - Functional, composable
 - Easy to test each transform
 - Pipeline is explicit
 
 **Cons:**
+
 - Might be too abstract
 - Still CLI-only
 - "transforms" is vague
@@ -1103,7 +1129,8 @@ This simplifies the server plugin significantly - it just passes the tool's `inp
 
 **Question:** How do we handle schema analysis errors (unsupported types, collisions)?
 
-**Answer:** 
+**Answer:**
+
 - Return errors in the analysis result rather than throwing
 - Provide a `strict` mode that throws on first error
 - Collisions return a warning by default, error in strict mode
@@ -1119,9 +1146,10 @@ interface SchemaAnalysis {
 
 ### 8. Plugin vs Utility
 
-**Question:** Does schema *need* to be a plugin, or could it just be utility functions?
+**Question:** Does schema _need_ to be a plugin, or could it just be utility functions?
 
 **Answer:** Plugin provides benefits:
+
 - Caching across command invocations
 - Extension registration persists
 - Other plugins can declare dependency
@@ -1143,6 +1171,7 @@ schemaExt.analyze(mySchema)
 **Question:** Is "schema" the right name? Alternatives: "zod", "types", "analysis"
 
 **Answer:** "Schema" is correct because:
+
 - It's the domain (schema analysis)
 - It's not Zod-specific in concept (even if implementation uses Zod)
 - "analysis" is a verb, "types" is too generic
@@ -1156,6 +1185,7 @@ Plugin ID: `gunshi-mcp:schema`
 The Schema Plugin approach introduces shared infrastructure for Zod schema analysis, with explicit pipelines that transform schema data into consumer-specific outputs. Each plugin (CLI, Server, OpenCode) has its own `schema/` subdirectory for consumer-specific transformations.
 
 This approach:
+
 - Makes the pipeline concept explicit and user-facing
 - Eliminates duplication of Zod analysis logic
 - Follows gunshi's plugin architecture

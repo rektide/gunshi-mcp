@@ -21,7 +21,9 @@ export async function discoverTools(options: DiscoveryOptions = {}): Promise<Gun
 	return tools
 }
 
-export async function* discoverToolsStream(options: DiscoveryOptions = {}): AsyncGenerator<GunshiTool> {
+export async function* discoverToolsStream(
+	options: DiscoveryOptions = {},
+): AsyncGenerator<GunshiTool> {
 	const rootDiscovery = options.roots ?? defaultRootDiscovery
 	const toolDiscovery = options.tools ?? globToolDiscovery()
 

@@ -15,10 +15,7 @@ export interface GlobToolDiscoveryOptions {
 	ignore?: string[]
 }
 
-export const DEFAULT_PATTERNS = [
-	"tools/**/*.{js,ts}",
-	"src/tools/**/*.{js,ts}",
-]
+export const DEFAULT_PATTERNS = ["tools/**/*.{js,ts}", "src/tools/**/*.{js,ts}"]
 
 export const DEFAULT_IGNORE = [
 	"**/*.test.{js,ts}",
