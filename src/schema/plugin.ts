@@ -15,7 +15,7 @@ import { introspectSchema } from "./introspect/field.ts"
 import { flattenSchemaWithContext } from "./flatten/flatten.ts"
 import { checkCollisions, formatCollisions } from "./flatten/collision.ts"
 import { validateRequiredFields } from "./validate/required.ts"
-import { getCachedAnalysis, setCachedAnalysis } from "./cache.ts"
+import { schemaCache } from "./cache.ts"
 import { SCHEMA_PLUGIN_ID } from "./types.ts"
 
 export function createSchemaPlugin(options: SchemaPluginOptions = {}) {
@@ -44,7 +44,7 @@ export function createSchemaPlugin(options: SchemaPluginOptions = {}) {
 					options: AnalyzeOptions = {},
 				): SchemaAnalysis {
 					if (cache) {
-						const cached = getCachedAnalysis(schema)
+						const cached = schemaCache.get(schema)
 						if (cached) {
 							return cached
 						}
@@ -84,7 +84,7 @@ export function createSchemaPlugin(options: SchemaPluginOptions = {}) {
 					}
 
 					if (cache) {
-						setCachedAnalysis(schema, analysis)
+						schemaCache.set(schema, analysis)
 					}
 
 					return analysis
