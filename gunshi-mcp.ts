@@ -50,3 +50,27 @@ export type {
 	RegistryPluginOptions,
 	RegistryPluginId,
 } from "./src/registry/types.ts"
+export {
+	createDiscoveryPlugin,
+	DISCOVERY_PLUGIN_ID,
+} from "./src/discovery/plugin.ts"
+export type {
+	DiscoveryExtension,
+	DiscoveryPluginOptions,
+	DiscoveryPluginId,
+} from "./src/discovery/plugin.ts"
+export type {
+	RootDiscovery,
+	ToolDiscovery,
+	GlobToolDiscoveryOptions,
+} from "./src/discovery/types.ts"
+export {
+	discoverTools,
+	discoverToolsStream,
+	defaultRootDiscovery,
+	explicitRoots,
+	chainRoots,
+	globToolDiscovery,
+	extractTools,
+	isGunshiTool,
+} from "./src/discovery/discover.ts"
