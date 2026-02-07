@@ -1,9 +1,5 @@
-export type { FlattenedField, FlattenOptions } from "../types.js"
-export { FlattenedField } from "../types.js"
-
 import type { z } from "zod"
-import type { FlattenOptions } from "../types.js"
-import type { FlattenedField } from "../types.js"
+import type { FlattenedField, FlattenOptions } from "../types.js"
 import { introspectZodField, isZodObject, getZodObjectShape, unwrapZodWrappers } from "../introspect/field.js"
 
 export interface FlattenContext {
@@ -49,6 +45,10 @@ function walk(
 	maxDepth: number,
 	firstPaths: Map<string, string>,
 ) {
+	if (maxDepth <= 0) {
+		return
+	}
+
 	for (const [key, field] of Object.entries(shape)) {
 		const flatKey = currentPrefix ? `${currentPrefix}${separator}${key}` : key
 		const unwrappedField = unwrapZodWrappers(field)

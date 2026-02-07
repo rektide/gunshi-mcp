@@ -1,9 +1,8 @@
-import type { Plugin } from "gunshi"
+import { plugin } from "gunshi/plugin"
 import type { z } from "zod"
 import type {
 	AnalyzeOptions,
 	SchemaAnalysis,
-	SchemaExtension,
 	TypeHandler,
 	ZodFieldInfo,
 	FlattenedField,
@@ -11,12 +10,7 @@ import type {
 	SchemaWarning,
 	SchemaError,
 } from "./types.js"
-import {
-	introspectSchema,
-	isZodObject,
-	getZodObjectShape,
-	unwrapZodWrappers,
-} from "./introspect/field.js"
+import { introspectSchema } from "./introspect/field.js"
 import { flattenSchemaWithContext } from "./flatten/flatten.js"
 import { checkCollisions, formatCollisions } from "./flatten/collision.js"
 import { validateRequiredFields } from "./validate/required.js"
@@ -28,14 +22,15 @@ export interface SchemaPluginOptions {
 	cache?: boolean
 }
 
-export function createSchemaPlugin(options: SchemaPluginOptions = {}): Plugin {
+export function createSchemaPlugin(options: SchemaPluginOptions = {}) {
 	const { typeHandlers = {}, cache = true } = options
 	const customHandlers = new Map<string, TypeHandler>(Object.entries(typeHandlers))
 
-	return {
+	return plugin({
 		id: SCHEMA_PLUGIN_ID,
-		setup(ctx) {
-			const extension: SchemaExtension = {
+		name: "Schema Plugin",
+		extension: () => {
+			return {
 				introspect<T extends z.ZodRawShape>(schema: z.ZodObject<T>): ZodFieldInfo[] {
 					return introspectSchema(schema)
 				},
@@ -103,8 +98,6 @@ export function createSchemaPlugin(options: SchemaPluginOptions = {}): Plugin {
 					customHandlers.set(typeName, handler)
 				},
 			}
-
-			ctx.setExtension(SCHEMA_PLUGIN_ID, extension)
 		},
-	}
+	})
 }

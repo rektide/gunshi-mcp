@@ -1,7 +1,7 @@
 import type { z } from "zod"
 import type { SchemaAnalysis } from "./types.js"
 
-const schemaCache = new WeakMap<z.ZodObject<any>, SchemaAnalysis>()
+let schemaCache = new WeakMap<z.ZodObject<any>, SchemaAnalysis>()
 
 export function getCachedAnalysis<T extends z.ZodRawShape>(
 	schema: z.ZodObject<T>,
@@ -17,7 +17,7 @@ export function setCachedAnalysis<T extends z.ZodRawShape>(
 }
 
 export function clearCache(): void {
-	;(schemaCache as WeakMap<object, unknown>).clear()
+	schemaCache = new WeakMap<z.ZodObject<any>, SchemaAnalysis>()
 }
 
 export function hasCache<T extends z.ZodRawShape>(schema: z.ZodObject<T>): boolean {

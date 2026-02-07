@@ -1,4 +1,4 @@
-export type { z } from "zod"
+import type { z } from "zod"
 
 export interface ZodFieldInfo {
 	type: "string" | "number" | "boolean" | "array" | "object" | "enum"

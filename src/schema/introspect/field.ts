@@ -1,4 +1,5 @@
-export type { ZodFieldInfo } from "../types.js"
+import type { z } from "zod"
+import type { ZodFieldInfo } from "../types.js"
 
 export function introspectZodField(schema: unknown): ZodFieldInfo {
 	let inner = schema
@@ -173,7 +174,7 @@ export function introspectSchema<T extends z.ZodRawShape>(
 	const fields: ZodFieldInfo[] = []
 	const shape = schema.shape
 
-	for (const [name, fieldSchema] of Object.entries(shape)) {
+	for (const [_name, fieldSchema] of Object.entries(shape)) {
 		const info = introspectZodField(fieldSchema)
 		fields.push(info)
 	}
