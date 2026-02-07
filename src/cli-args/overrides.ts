@@ -1,5 +1,5 @@
-import type { GunshiArg } from "../types.js"
-import type { ZodFieldInfo } from "./types.js"
+import type { GunshiArg } from "../types.ts"
+import type { ZodFieldInfo } from "./types.ts"
 
 /**
  * Build a GunshiArg from introspected field info and optional overrides.

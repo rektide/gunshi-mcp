@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest"
 import { z } from "zod"
-import { reconstructNestedValues, zodSchemaToGunshiArgs } from "../../src/zod-to-gunshi.js"
+import { reconstructNestedValues, zodSchemaToGunshiArgs } from "../../src/zod-to-gunshi.ts"
 
 describe("Serialization Round-Trip Tests", () => {
 	/*

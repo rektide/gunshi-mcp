@@ -1,4 +1,4 @@
-export * from "./src/mcp-plugin.js"
+export * from "./src/mcp-plugin.ts"
 export {
 	ToolResult,
 	ToolContext,
@@ -12,26 +12,26 @@ export {
 	McpToolExtra,
 	type JsonSchema,
 	type CliOptions,
-} from "./src/types.js"
-export { defineTool } from "./src/define-tool.js"
-export { zodSchemaToGunshiArgs, reconstructNestedValues } from "./src/zod-to-gunshi.js"
-export { buildToolContext } from "./src/context.js"
-export { extractText, formatResult } from "./src/output.js"
+} from "./src/types.ts"
+export { defineTool } from "./src/define-tool.ts"
+export { zodSchemaToGunshiArgs, reconstructNestedValues } from "./src/zod-to-gunshi.ts"
+export { buildToolContext } from "./src/context.ts"
+export { extractText, formatResult } from "./src/output.ts"
 export {
 	default as createLoggingPlugin,
 	LOGGING_PLUGIN_ID,
 	type LoggingPluginId,
-} from "./src/plugins/logger.js"
+} from "./src/plugins/logger.ts"
 export type {
 	LoggerExtension,
 	LoggerOptions,
 	LoggingContext,
 	LoggingPluginOptions,
-} from "./src/plugins/logger.js"
+} from "./src/plugins/logger.ts"
 export {
 	createSchemaPlugin,
 	SCHEMA_PLUGIN_ID,
-} from "./src/schema/plugin.js"
+} from "./src/schema/plugin.ts"
 export type {
 	SchemaExtension,
 	SchemaPluginOptions,
@@ -43,4 +43,10 @@ export type {
 	SchemaWarning,
 	SchemaError,
 	TypeHandler,
-} from "./src/schema/types.js"
+} from "./src/schema/types.ts"
+export { createRegistryPlugin, ToolRegistry, REGISTRY_PLUGIN_ID } from "./src/registry/plugin.ts"
+export type {
+	RegistryExtension,
+	RegistryPluginOptions,
+	RegistryPluginId,
+} from "./src/registry/types.ts"

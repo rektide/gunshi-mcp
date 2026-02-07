@@ -1,1 +1,1 @@
-export { validateRequiredFields, type ValidationResult } from "./required.js"
+export { validateRequiredFields, type ValidationResult } from "./required.ts"

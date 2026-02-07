@@ -1,4 +1,4 @@
-import type { GunshiTool, ZodShape } from "./types.js"
+import type { GunshiTool, ZodShape } from "./types.ts"
 
 export function defineTool<TExtensions = {}>() {
 	return <const Shape extends ZodShape>(

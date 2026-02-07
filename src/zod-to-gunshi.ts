@@ -1,11 +1,11 @@
-import type { GunshiArg, ZodShape, CliOptions } from "./types.js"
+import type { GunshiArg, ZodShape, CliOptions } from "./types.ts"
 import type { z } from "zod"
-import { introspectZodField, isZodObject, getZodArrayElement } from "./cli-args/introspect.js"
-import { reconstructNested } from "./cli-args/reconstruct.js"
-import { zodSchemaToGunshiArgs as newImpl } from "./cli-args/converter.js"
+import { introspectZodField, isZodObject, getZodArrayElement } from "./cli-args/introspect.ts"
+import { reconstructNested } from "./cli-args/reconstruct.ts"
+import { zodSchemaToGunshiArgs as newImpl } from "./cli-args/converter.ts"
 
 export { reconstructNested as reconstructNestedValues }
-export type { CliOptions, GunshiArg } from "./types.js"
+export type { CliOptions, GunshiArg } from "./types.ts"
 
 /**
  * Convert a Zod schema to Gunshi CLI argument definitions.

@@ -1,11 +1,11 @@
 import type { z } from "zod"
-import type { FlattenOptions, ZodFieldInfo } from "./types.js"
+import type { FlattenOptions, ZodFieldInfo } from "./types.ts"
 import {
 	introspectZodField,
 	isZodObject,
 	getZodObjectShape,
 	unwrapZodWrappers,
-} from "./introspect.js"
+} from "./introspect.ts"
 
 export interface FlattenedArg {
 	info: ZodFieldInfo

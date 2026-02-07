@@ -1,5 +1,5 @@
 import type { z } from "zod"
-import type { ZodFieldInfo } from "../types.js"
+import type { ZodFieldInfo } from "../types.ts"
 
 export function introspectZodField(schema: unknown): ZodFieldInfo {
 	let inner = schema

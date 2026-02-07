@@ -1,4 +1,4 @@
-import type { ToolContext, McpToolExtra } from "./types.js"
+import type { ToolContext, McpToolExtra } from "./types.ts"
 
 export function buildToolContext<E>(extensions: E, mcpExtra?: McpToolExtra): ToolContext<E> {
 	return {

@@ -1,4 +1,4 @@
-import { isZodObject, isZodArray, getZodArrayElement } from "./introspect.js"
+import { isZodObject, isZodArray, getZodArrayElement } from "./introspect.ts"
 
 export interface ArrayHandlerInfo {
 	shouldUseRepeated: boolean

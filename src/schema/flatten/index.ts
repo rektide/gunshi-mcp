@@ -1,2 +1,2 @@
-export { flattenSchema, flattenSchemaWithContext, type FlattenContext } from "./flatten.js"
-export { checkCollisions, formatCollisions } from "./collision.js"
+export { flattenSchema, flattenSchemaWithContext, type FlattenContext } from "./flatten.ts"
+export { checkCollisions, formatCollisions } from "./collision.ts"

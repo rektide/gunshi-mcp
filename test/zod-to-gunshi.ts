@@ -1,11 +1,11 @@
 import { describe, it, expect } from "vitest"
-import { createMcpPlugin } from "../src/mcp-plugin.js"
-import { defineTool } from "../src/define-tool.js"
+import { createMcpPlugin } from "../src/mcp-plugin.ts"
+import { defineTool } from "../src/define-tool.ts"
 import {
 	zodToJsonSchema,
 	reconstructNestedValues,
 	zodSchemaToGunshiArgs,
-} from "../src/zod-to-gunshi.js"
+} from "../src/zod-to-gunshi.ts"
 import { z } from "zod"
 
 describe("MCP Plugin", () => {

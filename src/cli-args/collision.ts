@@ -1,4 +1,4 @@
-import type { FlattenContext } from "./flatten.js"
+import type { FlattenContext } from "./flatten.ts"
 
 export function checkCollisions(context: FlattenContext): void {
 	if (context.collisions.size === 0) return

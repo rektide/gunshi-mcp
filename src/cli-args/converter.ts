@@ -1,13 +1,13 @@
-import type { GunshiArg, ZodShape } from "../types.js"
+import type { GunshiArg, ZodShape } from "../types.ts"
 import type { z } from "zod"
-import type { CliOptions } from "./types.js"
-import { flattenSchema } from "./flatten.js"
-import { checkCollisions } from "./collision.js"
-import { analyzeArray } from "./arrays.js"
-import { buildGunshiArg } from "./overrides.js"
-import { isZodObject, getZodObjectShape, unwrapZodWrappers } from "./introspect.js"
+import type { CliOptions } from "./types.ts"
+import { flattenSchema } from "./flatten.ts"
+import { checkCollisions } from "./collision.ts"
+import { analyzeArray } from "./arrays.ts"
+import { buildGunshiArg } from "./overrides.ts"
+import { isZodObject, getZodObjectShape, unwrapZodWrappers } from "./introspect.ts"
 
-export type { CliOptions } from "./types.js"
+export type { CliOptions } from "./types.ts"
 
 /**
  * Convert a Zod schema to Gunshi CLI argument definitions.

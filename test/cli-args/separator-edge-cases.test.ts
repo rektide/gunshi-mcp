@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest"
 import { z } from "zod"
-import { zodSchemaToGunshiArgs } from "../../src/zod-to-gunshi.js"
+import { zodSchemaToGunshiArgs } from "../../src/zod-to-gunshi.ts"
 
 describe("zodSchemaToGunshiArgs - Separator Edge Cases", () => {
 	it("should handle underscore separator", () => {

@@ -6,4 +6,4 @@ export {
 	isZodArray,
 	getZodArrayElement,
 	introspectSchema,
-} from "./field.js"
+} from "./field.ts"

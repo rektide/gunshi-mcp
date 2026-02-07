@@ -10,13 +10,13 @@ import type {
 	FlattenOptions,
 	SchemaWarning,
 	SchemaError,
-} from "./types.js"
-import { introspectSchema } from "./introspect/field.js"
-import { flattenSchemaWithContext } from "./flatten/flatten.js"
-import { checkCollisions, formatCollisions } from "./flatten/collision.js"
-import { validateRequiredFields } from "./validate/required.js"
-import { getCachedAnalysis, setCachedAnalysis } from "./cache.js"
-import { SCHEMA_PLUGIN_ID } from "./types.js"
+} from "./types.ts"
+import { introspectSchema } from "./introspect/field.ts"
+import { flattenSchemaWithContext } from "./flatten/flatten.ts"
+import { checkCollisions, formatCollisions } from "./flatten/collision.ts"
+import { validateRequiredFields } from "./validate/required.ts"
+import { getCachedAnalysis, setCachedAnalysis } from "./cache.ts"
+import { SCHEMA_PLUGIN_ID } from "./types.ts"
 
 export function createSchemaPlugin(options: SchemaPluginOptions = {}) {
 	const { typeHandlers = {}, cache = true } = options

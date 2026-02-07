@@ -1,4 +1,4 @@
-import type { ToolResult } from "./types.js"
+import type { ToolResult } from "./types.ts"
 
 export function extractText(result: ToolResult): string {
 	return result.content

@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest"
 import { z } from "zod"
-import { zodSchemaToGunshiArgs, reconstructNestedValues } from "../../src/zod-to-gunshi.js"
+import { zodSchemaToGunshiArgs, reconstructNestedValues } from "../../src/zod-to-gunshi.ts"
 
 describe("CLI Args - Error Scenarios", () => {
 	it.skip("should handle invalid Zod schemas gracefully", () => {

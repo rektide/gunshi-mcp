@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest"
-import { reconstructNestedValues } from "../../src/zod-to-gunshi.js"
+import { reconstructNestedValues } from "../../src/zod-to-gunshi.ts"
 
 describe("reconstructNestedValues - Edge Cases", () => {
 	it("should handle empty intermediate objects", () => {

@@ -1,9 +1,9 @@
 import type { z } from "zod"
-import type { CliOptions } from "./cli-args/types.js"
+import type { CliOptions } from "./cli-args/types.ts"
 import type { ArgSchema } from "gunshi"
 import type { CallToolResult, Tool } from "@modelcontextprotocol/server"
 
-export type { CliOptions } from "./cli-args/types.js"
+export type { CliOptions } from "./cli-args/types.ts"
 export type GunshiArg = ArgSchema
 export type ToolResult = CallToolResult
 export type { Tool } from "@modelcontextprotocol/server"

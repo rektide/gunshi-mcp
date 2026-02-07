@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest"
 import { z } from "zod"
-import { defineTool } from "../../src/define-tool.js"
-import { createMcpPlugin } from "../../src/mcp-plugin.js"
+import { defineTool } from "../../src/define-tool.ts"
+import { createMcpPlugin } from "../../src/mcp-plugin.ts"
 
 describe("MCP Plugin - Per-Tool CLI Options", () => {
 	it("should handle different tools with different separators", () => {

@@ -1,5 +1,5 @@
 import type { z } from "zod"
-import type { SchemaAnalysis } from "./types.js"
+import type { SchemaAnalysis } from "./types.ts"
 
 let schemaCache = new WeakMap<z.ZodObject<any>, SchemaAnalysis>()
 

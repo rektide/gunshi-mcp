@@ -1,9 +1,9 @@
 import { McpServer, StdioServerTransport } from "@modelcontextprotocol/server"
 import { plugin } from "gunshi/plugin"
-import type { GunshiArg, GunshiTool } from "./types.js"
-import { buildToolContext } from "./context.js"
-import { reconstructNestedValues, zodSchemaToGunshiArgs } from "./zod-to-gunshi.js"
-import { formatResult } from "./output.js"
+import type { GunshiArg, GunshiTool } from "./types.ts"
+import { buildToolContext } from "./context.ts"
+import { reconstructNestedValues, zodSchemaToGunshiArgs } from "./zod-to-gunshi.ts"
+import { formatResult } from "./output.ts"
 
 export const MCP_NEW_PLUGIN_ID = "gunshi-mcp:mcp" as const
 export type McpNewPluginId = typeof MCP_NEW_PLUGIN_ID
