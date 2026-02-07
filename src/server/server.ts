@@ -1,6 +1,15 @@
 import { McpServer, StdioServerTransport } from "@modelcontextprotocol/server"
 import type { ServerOptions } from "./types.ts"
-import type { CallToolResult } from "@modelcontextprotocol/server"
+import type {
+	AnySchema,
+	PromptCallback,
+	ReadResourceCallback,
+	ResourceMetadata,
+	ServerCapabilities,
+	ToolAnnotations,
+	ToolCallback,
+	ZodRawShapeCompat,
+} from "@modelcontextprotocol/server"
 
 export class ManagedMcpServer {
 	private server: McpServer
@@ -16,11 +25,7 @@ export class ManagedMcpServer {
 				version: serverVersion,
 			},
 			{
-				capabilities: {
-					tools: options.capabilities?.tools ?? {},
-					prompts: options.capabilities?.prompts ?? {},
-					resources: options.capabilities?.resources ?? {},
-				},
+				capabilities: options.capabilities ?? ({} as Partial<ServerCapabilities>),
 			},
 		)
 	}
@@ -56,34 +61,33 @@ export class ManagedMcpServer {
 	}
 
 	registerTool(
-		tool: {
-			name: string
+		name: string,
+		config: {
 			title?: string
 			description?: string
-			inputSchema: unknown
-			outputSchema?: unknown
-			annotations?: unknown
+			inputSchema?: AnySchema
+			outputSchema?: AnySchema
+			annotations?: ToolAnnotations
 		},
-		handler: (args: unknown, extra: unknown) => Promise<CallToolResult>,
+		handler: ToolCallback<AnySchema>,
 	): void {
-		this.server.registerTool(
-			tool.name,
-			{
-				title: tool.title,
-				description: tool.description,
-				inputSchema: tool.inputSchema as any,
-				outputSchema: tool.outputSchema as any,
-				annotations: tool.annotations as any,
-			},
-			handler,
-		)
+		this.server.registerTool(name, config, handler)
 	}
 
-	registerPrompt(name: string, config: unknown, callback: unknown): void {
-		this.server.registerPrompt(name, config as any, callback as any)
+	registerPrompt(
+		name: string,
+		config: { title?: string; description?: string; argsSchema?: ZodRawShapeCompat },
+		callback: PromptCallback<ZodRawShapeCompat>,
+	): void {
+		this.server.registerPrompt(name, config, callback)
 	}
 
-	registerResource(name: string, uriOrTemplate: string, config: unknown, callback: unknown): void {
-		this.server.registerResource(name, uriOrTemplate, config as any, callback as any)
+	registerResource(
+		name: string,
+		uriOrTemplate: string,
+		config: unknown,
+		callback: ReadResourceCallback,
+	): void {
+		this.server.registerResource(name, uriOrTemplate, config as ResourceMetadata, callback)
 	}
 }

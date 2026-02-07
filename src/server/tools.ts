@@ -1,16 +1,25 @@
 import type { GunshiTool } from "../types.ts"
 import { buildToolContext } from "../context.ts"
 import { formatResult } from "../output.ts"
-import type { CallToolResult } from "@modelcontextprotocol/server"
+import type {
+	AnySchema,
+	ToolAnnotations,
+	ToolCallback,
+} from "@modelcontextprotocol/server"
 
-export type ToolHandler = (args: unknown, extra: unknown) => Promise<CallToolResult>
+export type ToolHandler = (
+	args: unknown,
+	extra: {
+		requestId: string | number
+	},
+) => Promise<{ content: Array<{ type: string; text: string }> }>
 
 export function createToolHandler(
 	pluginExtensions: Record<string, unknown>,
 ): (tool: GunshiTool) => ToolHandler {
 	return (tool) => async (args, extra) => {
 		const toolCtx = buildToolContext(pluginExtensions, {
-			requestId: (extra as any).requestId as string,
+			requestId: String(extra.requestId),
 		})
 
 		const parsed = tool.inputSchema.parse(args)
@@ -18,36 +27,36 @@ export function createToolHandler(
 
 		return {
 			content: [{ type: "text", text: formatResult(result) }],
-		} as any
+		}
 	}
 }
 
 export function registerGunshiTool(
 	managedServer: {
-		registerTool: (
-			tool: {
-				name: string
+		registerTool: <OutputArgs extends AnySchema, InputArgs extends AnySchema>(
+			name: string,
+			config: {
 				title?: string
 				description?: string
-				inputSchema: unknown
-				outputSchema?: unknown
-				annotations?: unknown
+				inputSchema?: InputArgs
+				outputSchema?: OutputArgs
+				annotations?: ToolAnnotations
 			},
-			handler: (args: unknown, extra: unknown) => Promise<CallToolResult>,
+			handler: ToolCallback<InputArgs>,
 		) => void
 	},
 	tool: GunshiTool,
 	handler: ToolHandler,
 ): void {
 	managedServer.registerTool(
+		tool.name,
 		{
-			name: tool.name,
 			title: tool.title,
 			description: tool.description,
-			inputSchema: tool.inputSchema as any,
-			outputSchema: tool.outputSchema as any,
-			annotations: tool.annotations as any,
+			inputSchema: tool.inputSchema as AnySchema,
+			outputSchema: tool.outputSchema as AnySchema,
+			annotations: tool.annotations as ToolAnnotations,
 		},
-		handler,
+		handler as ToolCallback<AnySchema>,
 	)
 }

@@ -1,41 +1,67 @@
 import type { GunshiTool } from "../types.ts"
-
-export interface ServerToolRegistration {
-	name: string
-	tool: unknown
-	handler: (args: unknown, extra: unknown) => Promise<unknown>
-}
+import type {
+	McpServer,
+	PromptCallback,
+	ReadResourceCallback,
+	ServerCapabilities,
+	ZodRawShapeCompat,
+} from "@modelcontextprotocol/server"
 
 export interface ServerOptions {
 	name?: string
 	version?: string
-	capabilities?: {
-		tools?: Record<string, unknown>
-		prompts?: Record<string, unknown>
-		resources?: Record<string, unknown>
-	}
+	capabilities?: Partial<ServerCapabilities>
 	transport?: "stdio" | "sse"
 }
 
-export interface ToolHandlerExtra {
-	requestId?: string
-}
-
-export type ToolHandler = (
-	args: unknown,
-	extra: ToolHandlerExtra,
-	tool: GunshiTool,
-) => Promise<unknown>
-
 export interface ServerExtension {
-	readonly server: unknown
+	readonly server: McpServer
 	readonly isRunning: boolean
 	start: (transport?: "stdio" | "sse") => Promise<void>
 	stop: () => Promise<void>
 	registerTool: (tool: GunshiTool) => void
 	registerTools: (tools: GunshiTool[]) => void
-	registerPrompt: (prompt: unknown) => void
-	registerResource: (resource: unknown) => void
+	registerPrompt: (
+		name: string,
+		config: { title?: string; description?: string; argsSchema?: ZodRawShapeCompat },
+		callback: PromptCallback<ZodRawShapeCompat>,
+	) => void
+	registerResource: (
+		name: string,
+		uriOrTemplate: string,
+		config: unknown,
+		callback: ReadResourceCallback,
+	) => void
+}
+
+export interface ServerPluginOptions extends ServerOptions {
+	autoRegister?: boolean
+	tools?: GunshiTool[]
+}
+
+export interface ServerExtension {
+	readonly server: McpServer
+	readonly isRunning: boolean
+	start: (transport?: "stdio" | "sse") => Promise<void>
+	stop: () => Promise<void>
+	registerTool: (tool: GunshiTool) => void
+	registerTools: (tools: GunshiTool[]) => void
+	registerPrompt: (
+		name: string,
+		config: { title?: string; description?: string; argsSchema?: ZodRawShapeCompat },
+		callback: PromptCallback<ZodRawShapeCompat>,
+	) => void
+	registerResource: (
+		name: string,
+		uriOrTemplate: string,
+		config: unknown,
+		callback: ReadResourceCallback,
+	) => void
+}
+
+export interface ServerPluginOptions extends ServerOptions {
+	autoRegister?: boolean
+	tools?: GunshiTool[]
 }
 
 export interface ServerPluginOptions extends ServerOptions {
