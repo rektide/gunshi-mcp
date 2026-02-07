@@ -17,7 +17,8 @@ import {
 	getZodObjectShape,
 	unwrapZodWrappers,
 } from "./introspect/field.js"
-import { flattenSchemaWithContext, checkCollisions, formatCollisions } from "./flatten/flatten.js"
+import { flattenSchemaWithContext } from "./flatten/flatten.js"
+import { checkCollisions, formatCollisions } from "./flatten/collision.js"
 import { validateRequiredFields } from "./validate/required.js"
 import { getCachedAnalysis, setCachedAnalysis } from "./cache.js"
 import { SCHEMA_PLUGIN_ID } from "./types.js"

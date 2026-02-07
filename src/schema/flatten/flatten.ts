@@ -60,11 +60,7 @@ function walk(
 			const innerShape = getZodObjectShape(unwrappedField)
 			if (innerShape) {
 				context.hasNested = true
-				if (depth >= maxDepth) {
-					context.fields.push({ key: flatKey, info, depth: depth + 1, dotPath, optional: isOptional })
-				} else {
-					walk(innerShape, flatKey, depth + 1, isOptional, context, separator, maxDepth, firstPaths)
-				}
+				walk(innerShape, flatKey, depth + 1, isOptional, context, separator, maxDepth, firstPaths)
 			}
 		} else {
 			if (context.fields.find((f) => f.key === flatKey)) {
