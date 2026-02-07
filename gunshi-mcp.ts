@@ -68,3 +68,6 @@ export {
 	extractTools,
 	isGunshiTool,
 } from "./src/discovery/discover.ts"
+export { createServerPlugin, ManagedMcpServer, SERVER_PLUGIN_ID } from "./src/server/plugin.ts"
+export type { ServerExtension, ServerPluginId, ServerPluginOptions } from "./src/server/plugin.ts"
+export type { ServerOptions } from "./src/server/types.ts"
