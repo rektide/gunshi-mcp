@@ -1,4 +1,4 @@
-export { createSchemaPlugin, type SchemaPluginOptions } from "./plugin.js"
+export { createSchemaPlugin, SCHEMA_PLUGIN_ID } from "./plugin.js"
 export * from "./types.js"
 export * from "./cache.js"
 export * from "./introspect/field.js"

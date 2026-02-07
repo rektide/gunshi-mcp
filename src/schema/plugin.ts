@@ -3,6 +3,7 @@ import type { z } from "zod"
 import type {
 	AnalyzeOptions,
 	SchemaAnalysis,
+	SchemaPluginOptions,
 	TypeHandler,
 	ZodFieldInfo,
 	FlattenedField,
@@ -16,11 +17,6 @@ import { checkCollisions, formatCollisions } from "./flatten/collision.js"
 import { validateRequiredFields } from "./validate/required.js"
 import { getCachedAnalysis, setCachedAnalysis } from "./cache.js"
 import { SCHEMA_PLUGIN_ID } from "./types.js"
-
-export interface SchemaPluginOptions {
-	typeHandlers?: Record<string, TypeHandler>
-	cache?: boolean
-}
 
 export function createSchemaPlugin(options: SchemaPluginOptions = {}) {
 	const { typeHandlers = {}, cache = true } = options
@@ -101,3 +97,5 @@ export function createSchemaPlugin(options: SchemaPluginOptions = {}) {
 		},
 	})
 }
+
+export { SCHEMA_PLUGIN_ID }

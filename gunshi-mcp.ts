@@ -28,3 +28,19 @@ export type {
 	LoggingContext,
 	LoggingPluginOptions,
 } from "./src/plugins/logger.js"
+export {
+	createSchemaPlugin,
+	SCHEMA_PLUGIN_ID,
+} from "./src/schema/plugin.js"
+export type {
+	SchemaExtension,
+	SchemaPluginOptions,
+	ZodFieldInfo,
+	FlattenedField,
+	SchemaAnalysis,
+	FlattenOptions,
+	AnalyzeOptions,
+	SchemaWarning,
+	SchemaError,
+	TypeHandler,
+} from "./src/schema/types.js"

@@ -1,5 +1,10 @@
 import type { z } from "zod"
 
+export interface SchemaPluginOptions {
+	typeHandlers?: Record<string, TypeHandler>
+	cache?: boolean
+}
+
 export interface ZodFieldInfo {
 	type: "string" | "number" | "boolean" | "array" | "object" | "enum"
 	required: boolean
