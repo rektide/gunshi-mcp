@@ -1,70 +1,95 @@
-# Gunshi Plugin Lifecycle Deep Dive
+# Gunshi Lifecycle & Plugin Composition Challenge
 
-This document provides a detailed analysis of the gunshi plugin lifecycle, how our plugins interact with it, and architectural recommendations.
+This document analyzes how the gunshi plugin lifecycle interacts with our composable plugin architecture, identifies a fundamental timing problem, and explores solutions.
 
-## Gunshi Source References
+## Problem Statement
 
-All links reference commit `4b623da` from https://github.com/kazupon/gunshi:
+**PLAN-library.md envisions:**
 
-- [cli/core.ts](https://github.com/kazupon/gunshi/blob/4b623da/packages/gunshi/src/cli/core.ts) - Main CLI execution
-- [context.ts](https://github.com/kazupon/gunshi/blob/4b623da/packages/gunshi/src/context.ts) - CommandContext creation
-- [plugin/core.ts](https://github.com/kazupon/gunshi/blob/4b623da/packages/gunshi/src/plugin/core.ts) - Plugin definition
-- [plugin/context.ts](https://github.com/kazupon/gunshi/blob/4b623da/packages/gunshi/src/plugin/context.ts) - PluginContext API
+```typescript
+await cli(args, command, {
+  plugins: [
+    createDiscoveryPlugin({ patterns: ["tools/**/*.ts"] }),
+    createRegistryPlugin({ autoDiscover: true }),
+    createServerPlugin({ name: "my-app" }),
+    createCliPlugin(),
+  ],
+})
+```
 
----
+The design assumes plugins can depend on each other's extensions:
+- **Discovery** finds tools on the filesystem
+- **Registry** collects tools (from discovery or explicit registration)
+- **CLI Plugin** reads from registry and generates commands
+- **Server Plugin** reads from registry and registers MCP tools
+- **OpenCode Plugin** reads from registry and exposes tools
 
-## Lifecycle Overview
+**The Problem**: Gunshi's lifecycle doesn't support this pattern. By the time a plugin can access another plugin's extension, it's too late to add commands.
 
 ```mermaid
-sequenceDiagram
-    participant User as User
-    participant CLI as cli()
-    participant Core as cliCore()
-    participant Plugins as applyPlugins()
-    participant Resolve as resolveCommandTree()
-    participant Context as createCommandContext()
-    participant Execute as executeCommand()
-
-    User->>CLI: cli(argv, command, options)
-    CLI->>Core: cliCore(argv, entry, options, plugins)
-
-    Note over Core: Phase 1: Plugin Setup
-    Core->>Plugins: applyPlugins(pluginContext, plugins)
-    loop Each plugin (dependency order)
-        Plugins->>Plugins: plugin.setup(pluginContext)
+flowchart LR
+    subgraph "What we want"
+        D1[Discovery finds tools] --> R1[Registry collects tools]
+        R1 --> C1[CLI generates commands]
+        R1 --> S1[Server registers tools]
     end
-    Plugins-->>Core: sortedPlugins
+```
 
-    Note over Core: Phase 2: Command Resolution
-    Core->>Resolve: resolveCommandTree(tokens, entry, options)
-    Resolve-->>Core: {command, callMode, depth, ...}
-
-    Note over Core: Phase 3: Context Creation
-    Core->>Context: createCommandContext({...})
-    loop Each plugin extension
-        Context->>Context: extension.factory(ctx, cmd)
-        Context->>Context: extension.onFactory(ctx, cmd)
+```mermaid
+flowchart LR
+    subgraph "What gunshi allows"
+        D2["setup(): can add commands"] --> X["Command resolution happens"]
+        X --> E2["extension(): can access other plugins"]
     end
-    Context-->>Core: commandContext
-
-    Note over Core: Phase 4: Command Execution
-    Core->>Execute: executeCommand(cmd, ctx, decorators)
-    Execute->>Execute: Apply decorators (LIFO)
-    Execute->>Execute: cmd.run(ctx)
-    Execute-->>Core: result
+    
+    style X fill:#f44,stroke:#333,color:#fff
 ```
 
 ---
 
-## Phase Details
+## Gunshi Lifecycle Deep Dive
 
-### Phase 1: Plugin Setup (`applyPlugins`)
+### Source References
 
-**Source**: [cli/core.ts#L116-L136](https://github.com/kazupon/gunshi/blob/4b623da/packages/gunshi/src/cli/core.ts#L116-L136)
+All links reference the gunshi repository at https://github.com/kazupon/gunshi:
+
+| File | Purpose |
+|------|---------|
+| [cli/core.ts](https://github.com/kazupon/gunshi/blob/main/packages/gunshi/src/cli/core.ts) | Main CLI execution |
+| [context.ts](https://github.com/kazupon/gunshi/blob/main/packages/gunshi/src/context.ts) | CommandContext creation |
+| [plugin/core.ts](https://github.com/kazupon/gunshi/blob/main/packages/gunshi/src/plugin/core.ts) | Plugin definition |
+| [plugin/context.ts](https://github.com/kazupon/gunshi/blob/main/packages/gunshi/src/plugin/context.ts) | PluginContext API |
+
+### The Four Phases
+
+```mermaid
+sequenceDiagram
+    participant CLI as cli()
+    participant Setup as Phase 1: Setup
+    participant Resolve as Phase 2: Resolution
+    participant Ext as Phase 3: Extensions
+    participant Run as Phase 4: Execution
+
+    CLI->>Setup: applyPlugins()
+    Note over Setup: Each plugin.setup(ctx)<br/>ctx.addCommand() works here<br/>NO access to extensions
+    
+    Setup->>Resolve: resolveCommandTree()
+    Note over Resolve: Parse argv<br/>Match against registered commands<br/>Commands must exist already
+    
+    Resolve->>Ext: createCommandContext()
+    Note over Ext: extension.factory() called<br/>onExtension() called<br/>Extensions now available<br/>TOO LATE for addCommand()
+    
+    Ext->>Run: executeCommand()
+    Note over Run: Decorators applied<br/>cmd.run(ctx) executes
+```
+
+### Phase 1: Plugin Setup
+
+**Source**: [cli/core.ts#L116-L136](https://github.com/kazupon/gunshi/blob/main/packages/gunshi/src/cli/core.ts#L116-L136)
 
 ```typescript
-async function applyPlugins<G>(pluginContext, plugins): Promise<Plugin[]> {
-  const sortedPlugins = resolveDependencies(plugins)  // Topological sort
+async function applyPlugins(pluginContext, plugins) {
+  const sortedPlugins = resolveDependencies(plugins)
   for (const plugin of sortedPlugins) {
     await plugin(pluginContext)  // Calls setup()
   }
@@ -72,369 +97,359 @@ async function applyPlugins<G>(pluginContext, plugins): Promise<Plugin[]> {
 }
 ```
 
-During this phase:
+**PluginContext capabilities** ([plugin/context.ts#L39-L142](https://github.com/kazupon/gunshi/blob/main/packages/gunshi/src/plugin/context.ts#L39-L142)):
 
-- Plugins are sorted by dependencies
-- Each plugin's `setup()` function is called with `PluginContext`
-- **This is the ONLY time `addCommand()` and `addGlobalOption()` are effective**
+| Method | Available in setup()? |
+|--------|----------------------|
+| `addCommand(name, cmd)` | ✅ Yes |
+| `addGlobalOption(name, schema)` | ✅ Yes |
+| `decorateCommand(decorator)` | ✅ Yes |
+| Access to other extensions | ❌ No |
 
-**PluginContext API** ([plugin/context.ts#L39-L142](https://github.com/kazupon/gunshi/blob/4b623da/packages/gunshi/src/plugin/context.ts#L39-L142)):
+### Phase 2: Command Resolution
 
-| Method                          | Purpose                    |
-| ------------------------------- | -------------------------- |
-| `addGlobalOption(name, schema)` | Register global CLI option |
-| `addCommand(name, command)`     | Register sub-command       |
-| `hasCommand(name)`              | Check if command exists    |
-| `decorateCommand(decorator)`    | Wrap command execution     |
-| `decorateHeaderRenderer(...)`   | Customize help header      |
-| `decorateUsageRenderer(...)`    | Customize usage output     |
+**Source**: [cli/core.ts#L259-L413](https://github.com/kazupon/gunshi/blob/main/packages/gunshi/src/cli/core.ts#L259-L413)
 
-### Phase 2: Command Resolution (`resolveCommandTree`)
+Gunshi walks the command tree to find which command matches the user's input. **Commands must be registered during Phase 1** to be discoverable.
 
-**Source**: [cli/core.ts#L259-L413](https://github.com/kazupon/gunshi/blob/4b623da/packages/gunshi/src/cli/core.ts#L259-L413)
+### Phase 3: Extension Creation
 
-After plugins are set up, gunshi:
-
-1. Parses argv tokens
-2. Walks the command tree (entry → subcommands)
-3. Resolves which command will run
-
-**Critical insight**: Commands must be registered during Phase 1 to be discoverable here.
-
-### Phase 3: Context Creation (`createCommandContext`)
-
-**Source**: [context.ts#L126-L236](https://github.com/kazupon/gunshi/blob/4b623da/packages/gunshi/src/context.ts#L126-L236)
+**Source**: [context.ts#L214-L228](https://github.com/kazupon/gunshi/blob/main/packages/gunshi/src/context.ts#L214-L228)
 
 ```typescript
-async function createCommandContext({...}) {
-  // Create core context
-  const core = { name, description, values, positionals, ... }
-
-  // Extend with plugin extensions
-  for (const [key, extension] of Object.entries(extensions)) {
-    ext[key] = await extension.factory(core, command)  // Create extension
-    if (extension.onFactory) {
-      await extension.onFactory(core, command)  // Post-creation hook
-    }
+for (const [key, extension] of Object.entries(extensions)) {
+  ext[key] = await extension.factory(core, command)
+  if (extension.onFactory) {
+    await extension.onFactory(core, command)  // onExtension hook
   }
-
-  return deepFreeze(core)
 }
 ```
 
-**Extension creation** ([context.ts#L222-L227](https://github.com/kazupon/gunshi/blob/4b623da/packages/gunshi/src/context.ts#L222-L227)):
+Extensions are created **after** command resolution. Calling `addCommand()` here adds to the internal map but the command won't be reachable.
 
-- `extension.factory()` creates the extension object
-- `extension.onFactory()` (aka `onExtension`) runs immediately after
-
-At this point:
-
-- All plugins' extensions are available via `ctx.extensions[pluginId]`
-- Command tree is already resolved
-- **Too late to add commands**
-
-### Phase 4: Command Execution
-
-**Source**: [cli/core.ts#L440-L481](https://github.com/kazupon/gunshi/blob/4b623da/packages/gunshi/src/cli/core.ts#L440-L481)
-
-Decorators are applied in LIFO order, then `command.run(ctx)` executes.
-
----
-
-## Plugin Hook Timing
+### The Timing Mismatch
 
 ```mermaid
 flowchart TB
-    subgraph "Phase 1: Setup"
-        A[resolveDependencies] --> B[plugin A setup]
-        B --> C[plugin B setup]
-        C --> D[plugin C setup]
+    subgraph "Phase 1: setup()"
+        A[PluginContext available]
+        B[addCommand works]
+        C[NO extension access]
     end
-
+    
     subgraph "Phase 2: Resolution"
-        E[parseArgs] --> F[resolveCommandTree]
-        F --> G[Commands already determined]
+        D[Commands already fixed]
     end
-
-    subgraph "Phase 3: Extensions"
-        H[extension A factory] --> I[extension A onFactory]
-        I --> J[extension B factory]
-        J --> K[extension B onFactory]
-        K --> L[extension C factory]
-        L --> M[extension C onFactory]
+    
+    subgraph "Phase 3: extension()/onExtension()"
+        E[Extensions available]
+        F[Registry.list works]
+        G[addCommand too late]
     end
-
-    subgraph "Phase 4: Execution"
-        N[Apply decorators] --> O[cmd.run]
-    end
-
-    D --> E
-    G --> H
-    M --> N
-
-    style A fill:#4a5,stroke:#333,color:#fff
-    style B fill:#4a5,stroke:#333,color:#fff
-    style C fill:#4a5,stroke:#333,color:#fff
-    style D fill:#4a5,stroke:#333,color:#fff
-    style H fill:#59f,stroke:#333,color:#fff
-    style I fill:#59f,stroke:#333,color:#fff
-    style J fill:#59f,stroke:#333,color:#fff
-    style K fill:#59f,stroke:#333,color:#fff
-    style L fill:#59f,stroke:#333,color:#fff
-    style M fill:#59f,stroke:#333,color:#fff
-```
-
-**Key insight**: `setup()` runs before command resolution. `extension()` and `onExtension()` run after.
-
----
-
-## Plugin Structure (from `plugin()`)
-
-**Source**: [plugin/core.ts#L389-L447](https://github.com/kazupon/gunshi/blob/4b623da/packages/gunshi/src/plugin/core.ts#L389-L447)
-
-```typescript
-plugin({
-  id: 'my-plugin',           // Unique identifier
-  name: 'My Plugin',         // Human-readable name
-  dependencies: ['other'],   // Plugin IDs this depends on
-
-  setup: (ctx: PluginContext) => {
-    // Phase 1: Called during applyPlugins()
-    // - ctx.addCommand(), ctx.addGlobalOption()
-    // - ctx.decorateCommand(), etc.
-    // - NO access to other extensions yet
-  },
-
-  extension: (ctx: CommandContextCore, cmd: Command) => {
-    // Phase 3: Creates the extension object
-    // - ctx.extensions contains previous plugins' extensions
-    // - Return value becomes ctx.extensions[id]
-    return { myMethod: () => {} }
-  },
-
-  onExtension: (ctx: CommandContext, cmd: Command) => {
-    // Phase 3: Called immediately after extension()
-    // - All previous plugins' extensions available
-    // - Can perform initialization that needs full context
-    // - TOO LATE to add commands
-  },
-})
+    
+    A --> B --> C --> D --> E --> F --> G
+    
+    style C fill:#f94,stroke:#333,color:#fff
+    style D fill:#f44,stroke:#333,color:#fff
+    style G fill:#f44,stroke:#333,color:#fff
 ```
 
 ---
 
-## Analysis: gunshi-mcp Plugins
+## Current Implementation Analysis
 
-### ✅ mcp-plugin.ts (Correct Pattern)
-
-**File**: [src/mcp-plugin.ts](../../../src/mcp-plugin.ts)
-
-```mermaid
-flowchart LR
-    subgraph "setup()"
-        A[Create McpServer] --> B[For each tool]
-        B --> C[zodSchemaToGunshiArgs]
-        C --> D[ctx.addCommand]
-        D --> E[Add 'mcp' command]
-    end
-
-    subgraph "extension()"
-        F[Store extensions ref] --> G[Return McpExtension]
-    end
-
-    A -.->|tools from options| B
-
-    style A fill:#4a5,stroke:#333,color:#fff
-    style D fill:#4a5,stroke:#333,color:#fff
-    style E fill:#4a5,stroke:#333,color:#fff
-```
-
-**Why this works**:
-
-- Tools are passed via `options.tools` (not from registry extension)
-- Commands are added during `setup()` (Phase 1)
-- No dependency on other plugin extensions during setup
+### CLI Plugin (src/cli/plugin.ts)
 
 ```typescript
-// mcp-plugin.ts#L60-L109
-setup: async (ctx) => {
-  server = new McpServer(...)
-
-  const toolDefinitions = options.tools ?? []  // ✅ Tools from options
-
-  for (const tool of toolDefinitions) {
-    ctx.addCommand(tool.name, {...})  // ✅ During setup phase
-  }
-
-  ctx.addCommand("mcp", {...})  // ✅ During setup phase
-},
-```
-
-### ⚠️ cli/plugin.ts (Problematic Pattern)
-
-**File**: [src/cli/plugin.ts](../../../src/cli/plugin.ts)
-
-```mermaid
-flowchart LR
-    subgraph "setup()"
-        A[Store pluginCtxRef]
-    end
-
-    subgraph "extension()"
-        B[Return CliExtension]
-    end
-
-    subgraph "onExtension()"
-        C[Get schema extension] --> D[Get registry extension]
-        D --> E[generateCommands]
-        E --> F[ctx.addCommand ???]
-    end
-
-    style A fill:#f94,stroke:#333,color:#fff
-    style F fill:#f44,stroke:#333,color:#fff
-```
-
-**Problem**: Commands are generated in `onExtension()`, which runs **after** command resolution.
-
-```typescript
-// cli/plugin.ts#L48-L63
-onExtension: (cmdCtx) => {
-  const schemaExt = cmdCtx.extensions[SCHEMA_PLUGIN_ID]
-  const registryExt = cmdCtx.extensions[REGISTRY_PLUGIN_ID]  // Need registry
-
-  if (schemaExt && registryExt && pluginCtxRef) {
-    registeredCommands = generateCommands({
-      extensions: extensionsRef,
-      options,
-      addCommand: pluginCtxRef.addCommand.bind(pluginCtxRef),  // ⚠️ Too late!
-    })
-  }
-},
-```
-
-**Why this is problematic**:
-
-1. `registryExt.list()` returns tools, but only available in `onExtension()`
-2. `addCommand()` during `onExtension()` adds to PluginContext's internal map
-3. But `resolveCommandTree()` already ran in Phase 2
-4. Commands exist but aren't discoverable on first run
-
----
-
-## Recommendations
-
-### Option A: Pass Tools Directly (Like mcp-plugin.ts)
-
-```typescript
-export interface CliPluginOptions {
-  tools?: GunshiTool[]  // Pass tools at construction time
-  // ...
-}
-
-export function createCliPlugin(options: CliPluginOptions = {}) {
+export function createCliPlugin(options = {}) {
   return plugin({
     id: CLI_PLUGIN_ID,
-    dependencies: [SCHEMA_PLUGIN_ID],  // Only schema needed
-
+    dependencies: [SCHEMA_PLUGIN_ID, REGISTRY_PLUGIN_ID],
+    
     setup: (ctx) => {
-      const { tools = [] } = options
-
-      for (const tool of tools) {
-        const args = generateArgsFromTool(tool, schemaHelpers)
-        ctx.addCommand(tool.name, {
-          name: tool.name,
-          description: tool.description,
-          args,
-          run: createToolRunner(tool),
-        })
-      }
+      pluginCtxRef = ctx  // Store for later... but later is too late
     },
-
-    extension: () => ({
-      get commands() { return options.tools?.map(t => t.name) ?? [] },
-    }),
+    
+    onExtension: (cmdCtx) => {
+      const registryExt = cmdCtx.extensions[REGISTRY_PLUGIN_ID]
+      // Now we have registry, but...
+      registeredCommands = generateCommands({
+        addCommand: pluginCtxRef.addCommand,  // ⚠️ Too late!
+      })
+    },
   })
 }
 ```
 
-### Option B: Synchronous Discovery Before Plugin
+**Problem**: We need registry tools to generate commands, but registry extension isn't available until after command resolution.
+
+### Server Plugin (src/server/plugin.ts)
 
 ```typescript
-// In user code:
-const tools = await discoverTools({ patterns: ['tools/**/*.ts'] })
+export function createServerPlugin(options = {}) {
+  return plugin({
+    setup: async (ctx) => {
+      ctx.addCommand("mcp", {...})  // ✅ This works
+    },
+    
+    extension: (ctx) => {
+      if (options.autoRegister) {
+        const registry = ctx.extensions[REGISTRY_PLUGIN_ID]
+        // Register tools with MCP server - this works because
+        // we're not adding commands, just registering MCP tools
+      }
+    },
+  })
+}
+```
+
+**This works** because registering MCP tools doesn't require `addCommand()`. The "mcp" command is static.
+
+### Discovery Plugin (src/discovery/plugin.ts)
+
+```typescript
+export function createDiscoveryPlugin(options = {}) {
+  return plugin({
+    setup: async (ctx) => {
+      discoveredTools = await runDiscovery()  // ✅ Runs during setup
+      ctx.addCommand("tools", {...})  // ✅ Static command works
+    },
+  })
+}
+```
+
+**This works** because discovery runs synchronously during setup. But other plugins can't access `discoveredTools` until Phase 3.
+
+---
+
+## Solution Space
+
+### Option A: Pre-Discovery Pattern
+
+Run discovery before calling `cli()`, pass results explicitly:
+
+```typescript
+// Discovery happens BEFORE gunshi
+const tools = await discoverTools({ patterns: ["tools/**/*.ts"] })
 
 await cli(args, command, {
   plugins: [
+    createRegistryPlugin({ tools }),      // Tools passed directly
+    createCliPlugin({ tools }),           // Tools passed directly
+    createServerPlugin({ tools }),        // Tools passed directly
+  ],
+})
+```
+
+```mermaid
+flowchart LR
+    A[discoverTools] --> B[tools array]
+    B --> C[createRegistryPlugin]
+    B --> D[createCliPlugin]
+    B --> E[createServerPlugin]
+    C & D & E --> F[cli]
+```
+
+**Pros:**
+- Simple, explicit
+- Each plugin has tools during setup
+- No lifecycle gymnastics
+
+**Cons:**
+- Breaks the "composable plugins" vision
+- User must wire tools to each plugin manually
+- Registry becomes redundant
+
+### Option B: Builder Orchestration
+
+The builder handles tool passing internally:
+
+```typescript
+const plugins = await gunshiMcp()
+  .withDiscovery({ patterns: ["tools/**/*.ts"] })
+  .withRegistry({ autoDiscover: true })
+  .withCli()
+  .withServer()
+  .build()
+
+await cli(args, command, { plugins })
+```
+
+Internally, `build()` does:
+
+```typescript
+async build() {
+  // Run discovery first
+  const tools = await discoverTools(this.config.discovery)
+  
+  // Pass tools to each plugin
+  return [
     createRegistryPlugin({ tools }),
-    createCliPlugin({ tools }),  // Pass same tools
+    createCliPlugin({ tools }),
+    createServerPlugin({ tools }),
+  ]
+}
+```
+
+```mermaid
+flowchart TB
+    subgraph "Builder.build()"
+        A[Run discovery] --> B[Get tools array]
+        B --> C[Create registry with tools]
+        B --> D[Create CLI with tools]
+        B --> E[Create server with tools]
+    end
+    
+    C & D & E --> F[Return plugins array]
+```
+
+**Pros:**
+- Maintains fluent API
+- User doesn't see the wiring
+- Plugins remain focused
+
+**Cons:**
+- Builder becomes load-bearing
+- Discovery must be synchronous relative to plugin creation
+- Registry plugin becomes a facade
+
+### Option C: Lazy Command Pattern
+
+Don't generate per-tool commands. Use a single dispatcher:
+
+```typescript
+setup: (ctx) => {
+  ctx.addCommand("run", {
+    name: "run",
+    description: "Run a tool by name",
+    args: {
+      tool: { type: "string", required: true },
+      // Generic args passed through
+    },
+    run: async (cmdCtx) => {
+      const registry = cmdCtx.extensions[REGISTRY_PLUGIN_ID]
+      const tool = registry.get(cmdCtx.values.tool)
+      // Parse remaining args and execute
+    },
+  })
+}
+```
+
+Usage: `mycli run fetch-data --url=...` instead of `mycli fetch-data --url=...`
+
+**Pros:**
+- Works with current lifecycle
+- No timing issues
+- Dynamic tool list
+
+**Cons:**
+- Worse UX (extra "run" subcommand)
+- No per-tool help generation
+- Feels like a workaround
+
+### Option D: Two-Phase CLI
+
+Run gunshi twice: first for discovery, second for execution:
+
+```typescript
+// Phase 1: Discovery run
+const { tools } = await cli(args, discoveryCommand, {
+  plugins: [createDiscoveryPlugin()],
+})
+
+// Phase 2: Full run with tools
+await cli(args, mainCommand, {
+  plugins: [
+    createRegistryPlugin({ tools }),
+    createCliPlugin({ tools }),
     createServerPlugin({ tools }),
   ],
 })
 ```
 
-### Option C: Lazy Command Wrapper
+**Pros:**
+- Clean separation
+- Each phase is simple
 
-Add a single entry command that lazily generates sub-commands:
+**Cons:**
+- Startup overhead
+- Complex to implement correctly
+- Confusing mental model
+
+### Option E: Gunshi Enhancement
+
+Propose a new lifecycle hook to gunshi:
 
 ```typescript
-setup: (ctx) => {
-  ctx.addCommand('tool', {
-    name: 'tool',
-    description: 'Run a tool',
-    args: {
-      name: { type: 'string', required: true, description: 'Tool name' },
-    },
-    run: async (cmdCtx) => {
-      const registry = cmdCtx.extensions[REGISTRY_PLUGIN_ID]
-      const tool = registry.get(cmdCtx.values.name)
-      // Execute tool...
-    },
-  })
-}
+plugin({
+  // New hook: runs after all setup(), before resolution
+  afterSetup: (ctx, allExtensions) => {
+    const registry = allExtensions[REGISTRY_PLUGIN_ID]
+    for (const tool of registry.list()) {
+      ctx.addCommand(tool.name, {...})
+    }
+  },
+})
 ```
+
+**Pros:**
+- Solves the problem properly
+- Benefits other gunshi users
+
+**Cons:**
+- Requires upstream change
+- Not available now
 
 ---
 
-## Extension Access Timing
+## Recommended Approach
 
-```mermaid
-flowchart TB
-    subgraph "What's available when"
-        subgraph "setup(ctx: PluginContext)"
-            S1[ctx.addCommand ✅]
-            S2[ctx.addGlobalOption ✅]
-            S3[ctx.decorateCommand ✅]
-            S4["ctx.extensions ❌ (not available)"]
-        end
+**Option B (Builder Orchestration)** is the pragmatic choice:
 
-        subgraph "extension(ctx: CommandContextCore)"
-            E1["ctx.extensions ⚠️ (previous plugins only)"]
-            E2[Return extension object]
-        end
+1. The builder already exists
+2. It can run discovery before creating plugins
+3. Tools are passed explicitly to each plugin
+4. User experience remains clean
 
-        subgraph "onExtension(ctx: CommandContext)"
-            O1["ctx.extensions ✅ (all previous)"]
-            O2["ctx.addCommand ❌ (too late)"]
-            O3[Perform initialization]
-        end
-    end
+```typescript
+// User writes:
+const plugins = await gunshiMcp()
+  .withDiscovery({ patterns: ["tools/**/*.ts"] })
+  .withCli()
+  .withServer({ name: "my-app" })
+  .build()
 
-    S1 --> E1
-    E1 --> O1
+// Builder internally:
+// 1. Runs discovery synchronously
+// 2. Collects tools
+// 3. Passes tools to CLI plugin options
+// 4. Passes tools to Server plugin options
+// 5. Returns configured plugins
 ```
+
+This means:
+- **CLI Plugin** accepts `tools` option, generates commands in `setup()`
+- **Server Plugin** accepts `tools` option (already does via `options.tools`)
+- **Registry Plugin** becomes optional (builder can skip if not explicitly requested)
+- **Discovery Plugin** runs during `build()`, not as a gunshi plugin
+
+### Implementation Changes Required
+
+1. **Update CLI Plugin**: Add `tools` option, generate commands in `setup()`
+2. **Update Builder**: Run discovery during `build()`, pass tools to plugins
+3. **Update Server Plugin**: Already accepts `tools`, verify it works standalone
+4. **Document**: The registry/discovery plugins are for advanced use cases
 
 ---
 
 ## Summary
 
-| Hook            | When                        | Can Add Commands? | Has Extensions?  |
-| --------------- | --------------------------- | ----------------- | ---------------- |
-| `setup()`       | Phase 1 (before resolution) | ✅ Yes            | ❌ No            |
-| `extension()`   | Phase 3 (after resolution)  | ❌ No             | ⚠️ Previous only |
-| `onExtension()` | Phase 3 (after extension)   | ❌ No             | ✅ All previous  |
+| Approach | Complexity | UX Impact | Recommended? |
+|----------|------------|-----------|--------------|
+| A: Pre-Discovery | Low | Medium (manual wiring) | For simple cases |
+| B: Builder Orchestration | Medium | None (hidden complexity) | ✅ Yes |
+| C: Lazy Commands | Low | High (UX regression) | No |
+| D: Two-Phase CLI | High | Low | No |
+| E: Gunshi Enhancement | High | None | Future possibility |
 
-**Golden rule**: If a plugin needs to add commands, it must have all required data available during `setup()`. This means:
-
-- Pass tools via options, not via registry extension
-- Or ensure discovery happens synchronously before `cli()` is called
-- Or use a lazy command pattern
+The fundamental tension is between gunshi's lifecycle (extensions after commands) and our architecture (commands from extensions). **Option B** resolves this by moving discovery outside the gunshi lifecycle while keeping the user-facing API clean.
