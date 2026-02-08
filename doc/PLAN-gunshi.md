@@ -409,6 +409,216 @@ const backupCommand = define<{
 5. **Familiar patterns**: Authors use Gunshi's well-documented API
 6. **Command decorators**: Automatic telemetry, logging, error handling
 
+## Lazy Commands
+
+Gunshi's `lazy()` function separates **command metadata** from **command implementation**, enabling fast startup and on-demand loading. This is critical for CLIs with many commands or heavy dependencies.
+
+### Core Concept
+
+```typescript
+import { lazy, define } from 'gunshi'
+import type { CommandRunner } from 'gunshi'
+
+// Metadata: bundled immediately, used for --help
+const deployMeta = define({
+  name: 'deploy',
+  description: 'Deploy to environment',
+  args: {
+    env: { type: 'string', required: true },
+    force: { type: 'boolean', short: 'f' }
+  }
+})
+
+// Loader: called only when command is executed
+const deployLoader = async (): Promise<CommandRunner> => {
+  // Heavy imports happen here, not at startup
+  const { run } = await import('./commands/deploy.ts')
+  return run
+}
+
+// Combine: metadata available immediately, implementation deferred
+const lazyDeploy = lazy(deployLoader, deployMeta)
+```
+
+### Key Properties
+
+| Property | When Available | What It Contains |
+|----------|----------------|------------------|
+| Metadata | Immediately at registration | name, description, args schema |
+| Loader | Called on command execution | Returns runner function |
+| `commandName` | Immediately | Access via `lazyDeploy.commandName` (not `.name`) |
+
+### Registration in Plugins
+
+```typescript
+import { plugin } from 'gunshi/plugin'
+import { lazy, define } from 'gunshi'
+
+const toolsPlugin = plugin({
+  id: 'tools',
+  setup: async (ctx) => {
+    // Quick manifest load - just names and descriptions
+    const manifest = await import('./tools/manifest.json')
+    
+    for (const tool of manifest.tools) {
+      const lazyCmd = lazy(
+        // Loader: full tool code loaded on execution
+        async () => {
+          const mod = await import(tool.path)
+          return mod.run
+        },
+        // Metadata: available immediately for --help
+        define({
+          name: tool.name,
+          description: tool.description,
+          args: tool.args
+        })
+      )
+      
+      ctx.addCommand(lazyCmd.commandName, lazyCmd)
+    }
+  }
+})
+```
+
+### Two-Tier Discovery Pattern
+
+For dynamic tool discovery, use a two-tier approach:
+
+```typescript
+// Tier 1: Quick manifest extraction (runs during setup)
+async function quickDiscoverManifests(patterns: string[]) {
+  const files = await glob(patterns)
+  return Promise.all(files.map(async file => {
+    // Extract metadata WITHOUT importing full module
+    // Options: read JSDoc/frontmatter, use manifest.json, or naming conventions
+    return {
+      name: path.basename(file, '.ts'),
+      description: await extractDescription(file),
+      args: await extractArgsSchema(file),
+      path: file
+    }
+  }))
+}
+
+// Tier 2: Full loading (runs on command execution)
+async function loadFullTool(path: string) {
+  const mod = await import(path)
+  return {
+    schema: mod.schema,    // Full Zod schema
+    execute: mod.execute   // Implementation
+  }
+}
+```
+
+### Manifest File Approach
+
+Pre-generate a manifest at build time for fastest startup:
+
+```json
+{
+  "tools": [
+    {
+      "name": "fetch-data",
+      "description": "Fetch data from a URL",
+      "path": "./tools/fetch-data.ts",
+      "args": {
+        "url": { "type": "string", "required": true },
+        "format": { "type": "string", "default": "json" }
+      }
+    }
+  ]
+}
+```
+
+```typescript
+setup: async (ctx) => {
+  const { tools } = await import('./manifest.json')
+  
+  for (const tool of tools) {
+    ctx.addCommand(
+      tool.name,
+      lazy(
+        async () => (await import(tool.path)).run,
+        define({ name: tool.name, description: tool.description, args: tool.args })
+      )
+    )
+  }
+}
+```
+
+### Advanced: Loader Returns Full Command
+
+Loaders can return complete `Command` objects for dynamic configuration:
+
+```typescript
+const dynamicLoader = async () => {
+  const config = await loadConfig()
+  
+  return define({
+    description: `Command (env: ${config.env})`,
+    args: {
+      verbose: {
+        type: 'boolean',
+        description: config.debug ? 'Verbose (DEBUG mode)' : 'Verbose'
+      }
+    },
+    run: ctx => {
+      console.log(config.debug ? 'Debug mode' : 'Normal mode')
+    }
+  })
+}
+
+const dynamicCmd = lazy(dynamicLoader, { name: 'dynamic', description: 'Dynamic command' })
+```
+
+### MCP Integration with Lazy Commands
+
+Lazy commands work seamlessly with MCP tool registration:
+
+```typescript
+// In MCP plugin setup
+for (const [name, command] of ctx.subCommands) {
+  if (isLazyCommand(command)) {
+    // Metadata available immediately for tool registration
+    const zodSchema = gunshiArgsToZod(command.args ?? {})
+    
+    server.registerTool(name, {
+      title: command.name ?? name,
+      description: command.description ?? '',
+      inputSchema: zodSchema
+    }, async (args) => {
+      // Loader called here - first MCP invocation loads the implementation
+      const runner = await command.load()
+      const ctx = buildCommandContext(command, args, extensions)
+      return captureOutput(() => runner(ctx))
+    })
+  }
+}
+```
+
+### Performance Benefits
+
+| Scenario | Without Lazy | With Lazy |
+|----------|--------------|-----------|
+| `mycli --help` | Loads all commands | Loads only metadata |
+| `mycli deploy --help` | Loads all commands | Loads only deploy metadata |
+| `mycli deploy` | Loads all commands | Loads only deploy implementation |
+| 50 commands, run 1 | 50 modules loaded | 1 module loaded |
+
+### When to Use Lazy Commands
+
+✅ **Use lazy when:**
+- Commands have heavy dependencies
+- Many commands exist (>10)
+- Startup time matters
+- Commands are rarely all used together
+
+❌ **Skip lazy when:**
+- Few simple commands
+- All commands share same dependencies
+- Build step can tree-shake unused code
+
 ## Open Questions
 
 1. **Nested subcommands**: How to name tools for `app deploy staging`? Use `app-deploy-staging` or `app.deploy.staging`?
