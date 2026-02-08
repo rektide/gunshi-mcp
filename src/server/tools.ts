@@ -1,11 +1,7 @@
 import type { GunshiTool } from "../types.ts"
 import { buildToolContext } from "../context.ts"
 import { formatResult } from "../output.ts"
-import type {
-	AnySchema,
-	ToolAnnotations,
-	ToolCallback,
-} from "@modelcontextprotocol/server"
+import type { AnySchema, ToolAnnotations, ToolCallback } from "@modelcontextprotocol/server"
 
 export type ToolHandler = (
 	args: unknown,

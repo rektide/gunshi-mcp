@@ -231,8 +231,8 @@ describe("CLI - Reconstruction Edge Cases", () => {
 
 		it("should handle underscore separator with nested paths", () => {
 			const flat = {
-				"a_b_c": "value",
-				"x_y": "nested",
+				a_b_c: "value",
+				x_y: "nested",
 			}
 			const nested = reconstructNested(flat, "_")
 
@@ -290,7 +290,6 @@ describe("CLI - Reconstruction Edge Cases", () => {
 	})
 
 	describe("malformed or inconsistent input", () => {
-
 		it("should handle separator in key value not creating intermediate objects", () => {
 			const flat = {
 				"a-b-c": "value",

@@ -229,7 +229,10 @@ describe("Schema Introspect", () => {
 
 		describe("wrappers with transformations", () => {
 			it("should handle transform combined with optional", () => {
-				const schema = z.string().transform((val) => val.toUpperCase()).optional()
+				const schema = z
+					.string()
+					.transform((val) => val.toUpperCase())
+					.optional()
 				const info = introspectZodField(schema)
 
 				expect(info.type).toBe("string")

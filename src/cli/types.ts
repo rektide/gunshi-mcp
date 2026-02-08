@@ -18,9 +18,18 @@ export interface CliExtension {
 export interface GenerateCommandContext {
 	extensions: {
 		schema: {
-			flatten: <T extends { shape: unknown }>(schema: T, options?: { separator?: string; maxDepth?: number }) => Array<{
+			flatten: <T extends { shape: unknown }>(
+				schema: T,
+				options?: { separator?: string; maxDepth?: number },
+			) => Array<{
 				key: string
-				info: { type: string; required: boolean; default?: unknown; description?: string; enumValues?: string[] }
+				info: {
+					type: string
+					required: boolean
+					default?: unknown
+					description?: string
+					enumValues?: string[]
+				}
 				optional: boolean
 			}>
 		}
@@ -29,8 +38,11 @@ export interface GenerateCommandContext {
 		}
 	}
 	options: CliPluginOptions
-	addCommand: (name: string, definition: {
-		args: Record<string, GunshiArg>
-		handler: (...args: unknown[]) => unknown
-	}) => void
+	addCommand: (
+		name: string,
+		definition: {
+			args: Record<string, GunshiArg>
+			handler: (...args: unknown[]) => unknown
+		},
+	) => void
 }

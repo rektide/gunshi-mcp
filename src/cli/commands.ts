@@ -12,9 +12,7 @@ export interface CommandGeneratorOptions {
 	arrayHandling?: "json" | "repeated"
 }
 
-export function generateCommands(
-	context: GenerateCommandContext,
-): string[] {
+export function generateCommands(context: GenerateCommandContext): string[] {
 	const { extensions, options, addCommand } = context
 	const { separator = "-", formatFlag = false, prefix = "" } = options
 
@@ -23,14 +21,19 @@ export function generateCommands(
 
 	for (const tool of tools) {
 		const commandName = prefix ? `${prefix}:${tool.name}` : tool.name
-		const flattened = extensions.schema.flatten(tool.inputSchema as { shape: unknown }, { separator, maxDepth: 3 })
+		const flattened = extensions.schema.flatten(tool.inputSchema as { shape: unknown }, {
+			separator,
+			maxDepth: 3,
+		})
 
 		const args: Record<string, ArgSchema> = {}
 
 		for (const field of flattened) {
 			const { key, info, optional } = field
 			const override = tool.cli?.[key]
-			const arrayHandler = analyzeArray(info.type, info.type === "object", { arrayHandling: options.arrayHandling })
+			const arrayHandler = analyzeArray(info.type, info.type === "object", {
+				arrayHandling: options.arrayHandling,
+			})
 
 			let parseFunction: ((value: string) => unknown) | undefined
 

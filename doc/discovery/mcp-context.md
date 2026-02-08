@@ -51,8 +51,8 @@ export type RequestHandlerExtra<
 
 #### Lifecycle & Cancellation
 
-| Field | Type | Description |
-|-------|------|-------------|
+| Field    | Type          | Description                                                                                                                               |
+| -------- | ------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
 | `signal` | `AbortSignal` | Communicates if the request was cancelled from the sender's side. Handlers should check this signal periodically to respect cancellation. |
 
 **Source:** [`packages/core/src/shared/protocol.ts#L244-L248`](https://github.com/modelcontextprotocol/typescript-sdk/blob/00249ce86dac558fb1089aea46d4d6d14e9a56c6/packages/core/src/shared/protocol.ts#L244-L248)
@@ -61,8 +61,8 @@ export type RequestHandlerExtra<
 
 #### Authentication & Security
 
-| Field | Type | Description |
-|-------|------|-------------|
+| Field      | Type        | Description                                                                             |
+| ---------- | ----------- | --------------------------------------------------------------------------------------- |
 | `authInfo` | `AuthInfo?` | Information about a validated access token. Contains `token`, `clientId`, and `scopes`. |
 
 **Source:** [`packages/core/src/shared/protocol.ts#L250-L253`](https://github.com/modelcontextprotocol/typescript-sdk/blob/00249ce86dac558fb1089aea46d4d6d14e9a56c6/packages/core/src/shared/protocol.ts#L250-L253)
@@ -81,10 +81,10 @@ interface AuthInfo {
 
 #### Session & Request Identification
 
-| Field | Type | Description |
-|-------|------|-------------|
-| `sessionId` | `string?` | The session ID from the transport. Used for multi-tenant or stateful transports. |
-| `requestId` | `RequestId` | The JSON-RPC ID of the request being handled. Useful for tracking and logging. |
+| Field       | Type        | Description                                                                      |
+| ----------- | ----------- | -------------------------------------------------------------------------------- |
+| `sessionId` | `string?`   | The session ID from the transport. Used for multi-tenant or stateful transports. |
+| `requestId` | `RequestId` | The JSON-RPC ID of the request being handled. Useful for tracking and logging.   |
 
 **Source:** [`packages/core/src/shared/protocol.ts#L255-L260`](https://github.com/modelcontextprotocol/typescript-sdk/blob/00249ce86dac558fb1089aea46d4d6d14e9a56c6/packages/core/src/shared/protocol.ts#L255-L260)
 
@@ -94,8 +94,8 @@ interface AuthInfo {
 
 #### Request Metadata
 
-| Field | Type | Description |
-|-------|------|-------------|
+| Field   | Type           | Description                                                                           |
+| ------- | -------------- | ------------------------------------------------------------------------------------- |
 | `_meta` | `RequestMeta?` | Metadata from the original request, including progress tokens and task relationships. |
 
 **Source:** [`packages/core/src/shared/protocol.ts#L262-L264`](https://github.com/modelcontextprotocol/typescript-sdk/blob/00249ce86dac558fb1089aea46d4d6d14e9a56c6/packages/core/src/shared/protocol.ts#L262-L264)
@@ -113,11 +113,11 @@ interface RequestMeta {
 
 #### Task Support (Experimental)
 
-| Field | Type | Description |
-|-------|------|-------------|
-| `taskId` | `string?` | The task ID if this is a task-related request. |
-| `taskStore` | `RequestTaskStore?` | Task store for creating/managing long-running async tasks. |
-| `taskRequestedTtl` | `number \| null` | Task requested time-to-lives, if specified. |
+| Field              | Type                | Description                                                |
+| ------------------ | ------------------- | ---------------------------------------------------------- |
+| `taskId`           | `string?`           | The task ID if this is a task-related request.             |
+| `taskStore`        | `RequestTaskStore?` | Task store for creating/managing long-running async tasks. |
+| `taskRequestedTtl` | `number \| null`    | Task requested time-to-lives, if specified.                |
 
 **Source:** [`packages/core/src/shared/protocol.ts#L266-L272`](https://github.com/modelcontextprotocol/typescript-sdk/blob/00249ce86dac558fb1089aea46d4d6d14e9a56c6/packages/core/src/shared/protocol.ts#L266-L272)
 
@@ -140,8 +140,8 @@ interface RequestTaskStore {
 
 #### HTTP-Specific Context
 
-| Field | Type | Description |
-|-------|------|-------------|
+| Field         | Type           | Description                                        |
+| ------------- | -------------- | -------------------------------------------------- |
 | `requestInfo` | `RequestInfo?` | The original HTTP request for SSE/HTTP transports. |
 
 **Source:** [`packages/core/src/shared/protocol.ts#L274-L276`](https://github.com/modelcontextprotocol/typescript-sdk/blob/00249ce86dac558fb1089aea46d4d6d14e9a56c6/packages/core/src/shared/protocol.ts#L274-L276)
@@ -158,10 +158,10 @@ interface RequestInfo {
 
 #### Communication Methods
 
-| Method | Signature | Description |
-|--------|-----------|-------------|
-| `sendNotification` | `(notification: SendNotificationT) => Promise<void>` | Sends a notification relating to the current request. Used by transports to associate related messages. |
-| `sendRequest` | `<U extends AnySchema>(request: SendRequestT, resultSchema: U, options?: TaskRequestOptions) => Promise<SchemaOutput<U>>` | Sends a request relating to the current request. Used by transports to associate related messages. |
+| Method             | Signature                                                                                                                 | Description                                                                                             |
+| ------------------ | ------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| `sendNotification` | `(notification: SendNotificationT) => Promise<void>`                                                                      | Sends a notification relating to the current request. Used by transports to associate related messages. |
+| `sendRequest`      | `<U extends AnySchema>(request: SendRequestT, resultSchema: U, options?: TaskRequestOptions) => Promise<SchemaOutput<U>>` | Sends a request relating to the current request. Used by transports to associate related messages.      |
 
 **Source:** [`packages/core/src/shared/protocol.ts#L278-L288`](https://github.com/modelcontextprotocol/typescript-sdk/blob/00249ce86dac558fb1089aea46d4d6d14e9a56c6/packages/core/src/shared/protocol.ts#L278-L288)
 
@@ -187,13 +187,13 @@ export const ToolAnnotationsSchema = z.object({
 
 ### Fields
 
-| Field | Type | Default | Description |
-|-------|------|---------|-------------|
-| `title` | `string?` | - | A human-readable title for the tool. |
-| `readOnlyHint` | `boolean?` | `false` | If `true`, the tool does not modify its environment. |
-| `destructiveHint` | `boolean?` | `true` | If `true`, the tool may perform destructive updates. Only meaningful when `readOnlyHint == false`. |
-| `idempotentHint` | `boolean?` | `false` | If `true`, calling the tool repeatedly with the same arguments has no additional effect. Only meaningful when `readOnlyHint == false`. |
-| `openWorldHint` | `boolean?` | `true` | If `true`, this tool may interact with an "open world" of external entities. If `false`, the tool's domain of interaction is closed (e.g., web search vs. memory tool). |
+| Field             | Type       | Default | Description                                                                                                                                                             |
+| ----------------- | ---------- | ------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `title`           | `string?`  | -       | A human-readable title for the tool.                                                                                                                                    |
+| `readOnlyHint`    | `boolean?` | `false` | If `true`, the tool does not modify its environment.                                                                                                                    |
+| `destructiveHint` | `boolean?` | `true`  | If `true`, the tool may perform destructive updates. Only meaningful when `readOnlyHint == false`.                                                                      |
+| `idempotentHint`  | `boolean?` | `false` | If `true`, calling the tool repeatedly with the same arguments has no additional effect. Only meaningful when `readOnlyHint == false`.                                  |
+| `openWorldHint`   | `boolean?` | `true`  | If `true`, this tool may interact with an "open world" of external entities. If `false`, the tool's domain of interaction is closed (e.g., web search vs. memory tool). |
 
 **Source:** [`packages/core/src/types/types.ts#L1319-L1347`](https://github.com/modelcontextprotocol/typescript-sdk/blob/00249ce86dac558fb1089aea46d4d6d14e9a56c6/packages/core/src/types/types.ts#L1319-L1347)
 
@@ -280,11 +280,11 @@ export const CallToolResultSchema = ResultSchema.extend({
 
 ### Fields
 
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `content` | `ContentBlock[]` | Yes (default: `[]`) | A list of content blocks representing the result. Required if tool does not define an `outputSchema`. |
-| `structuredContent` | `Record<string, unknown>?` | Conditional | Structured output matching the tool's `outputSchema`. Required if tool defines an `outputSchema`. |
-| `isError` | `boolean?` | No | Whether the tool call ended in an error. Defaults to `false`. |
+| Field               | Type                       | Required            | Description                                                                                           |
+| ------------------- | -------------------------- | ------------------- | ----------------------------------------------------------------------------------------------------- |
+| `content`           | `ContentBlock[]`           | Yes (default: `[]`) | A list of content blocks representing the result. Required if tool does not define an `outputSchema`. |
+| `structuredContent` | `Record<string, unknown>?` | Conditional         | Structured output matching the tool's `outputSchema`. Required if tool defines an `outputSchema`.     |
+| `isError`           | `boolean?`                 | No                  | Whether the tool call ended in an error. Defaults to `false`.                                         |
 
 **Source:** [`packages/core/src/types/types.ts#L1447-L1472`](https://github.com/modelcontextprotocol/typescript-sdk/blob/00249ce86dac558fb1089aea46d4d6d14e9a56c6/packages/core/src/types/types.ts#L1447-L1472)
 
@@ -443,6 +443,7 @@ The Model Context Protocol provides a rich, well-typed foundation for our tool s
 ### Integration Strategy
 
 Our `GunshiTool` system can leverage MCP types by:
+
 1. Using MCP-compatible handler signatures
 2. Mapping `ToolContext.extensions` to `RequestHandlerExtra`
 3. Supporting MCP result formats

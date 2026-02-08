@@ -33,7 +33,9 @@ export function buildGunshiArg(options: BuildGunshiArgOptions): GunshiArg {
 		required: required ? true : undefined,
 		default:
 			override?.default ??
-			(typeof info.default === "string" || typeof info.default === "number" || typeof info.default === "boolean"
+			(typeof info.default === "string" ||
+			typeof info.default === "number" ||
+			typeof info.default === "boolean"
 				? info.default
 				: undefined),
 	}

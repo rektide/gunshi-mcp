@@ -1,5 +1,11 @@
 import { describe, it, expect } from "vitest"
-import { createCliPlugin, buildGunshiArg, analyzeArray, applyOverrides, reconstructNested } from "../../src/cli/index.ts"
+import {
+	createCliPlugin,
+	buildGunshiArg,
+	analyzeArray,
+	applyOverrides,
+	reconstructNested,
+} from "../../src/cli/index.ts"
 
 describe("CLI Plugin", () => {
 	describe("buildGunshiArg", () => {
@@ -143,7 +149,10 @@ describe("CLI Plugin", () => {
 		})
 
 		it("should apply overrides to existing args", () => {
-			const args: Record<string, { type: string; required?: boolean; description?: string; short?: string }> = {
+			const args: Record<
+				string,
+				{ type: string; required?: boolean; description?: string; short?: string }
+			> = {
 				name: { type: "string", required: true },
 				age: { type: "number" },
 			}

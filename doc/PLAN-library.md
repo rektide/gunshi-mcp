@@ -805,11 +805,13 @@ src/
 **Goal:** Each `plugin.ts` should be a thin wrapper. The real work happens in sibling files that have no gunshi dependency. This makes the core logic reusable, testable in isolation, and easier to understand.
 
 **Direct linking instead of barrel files:** Each `plugin.ts` exports its factory directly from the file, not through an `index.ts` barrel file. Consumers import from the actual plugin file:
+
 ```typescript
 import { createSchemaPlugin } from "gunshi-mcp/src/schema/plugin.ts"
 ```
 
 This approach:
+
 - Makes dependencies explicit and traceable
 - Eliminates indirection through barrel files
 - Matches the "thin wrapper" philosophy where plugin.ts contains only the plugin definition
