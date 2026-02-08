@@ -411,6 +411,530 @@ plugin({
 - Requires upstream change
 - Not available now
 
+### Option F: Setup-time Shared State via Dependencies
+
+> See also **Option G** below for a decorator-based variant that combines well with this approach.
+
+**The key insight**: Gunshi runs `setup()` in **dependency order** (topological sort). A dependency plugin's `setup()` completes *before* a dependent plugin's `setup()` begins. This means plugins can share state during setup—not just during the extension phase.
+
+```typescript
+// Shared mutable state container
+const toolRegistry: Tool[] = []
+
+// Discovery plugin runs FIRST (no dependencies)
+const discoveryPlugin = plugin({
+  id: 'discovery',
+  setup: async (ctx) => {
+    // Discovery runs synchronously during setup
+    const tools = await discoverTools({ patterns: ["tools/**/*.ts"] })
+    toolRegistry.push(...tools)  // Populate shared state
+    
+    ctx.addCommand("tools", { /* list discovered tools */ })
+  },
+})
+
+// CLI plugin depends on discovery, runs SECOND
+const cliPlugin = plugin({
+  id: 'cli',
+  dependencies: ['discovery'],  // Ensures discovery.setup() completes first
+  setup: (ctx) => {
+    // toolRegistry is already populated!
+    for (const tool of toolRegistry) {
+      ctx.addCommand(tool.name, generateToolCommand(tool))
+    }
+  },
+})
+
+// Server plugin also depends on discovery
+const serverPlugin = plugin({
+  id: 'server',
+  dependencies: ['discovery'],
+  setup: (ctx) => {
+    ctx.addCommand("mcp", { /* ... */ })
+  },
+  extension: () => {
+    // Can use toolRegistry here too for MCP tool registration
+    return { tools: toolRegistry }
+  },
+})
+```
+
+```mermaid
+sequenceDiagram
+    participant CLI as cli()
+    participant D as Discovery Plugin
+    participant Reg as Shared Registry
+    participant C as CLI Plugin
+    participant S as Server Plugin
+
+    Note over CLI: Step C: Resolve Dependencies
+    CLI->>CLI: Topological sort: discovery → cli, server
+
+    Note over CLI: Step D: Execute setup() in order
+    CLI->>D: discovery.setup()
+    D->>Reg: Push discovered tools
+    D-->>CLI: setup complete
+
+    CLI->>C: cli.setup()
+    C->>Reg: Read tools (already populated!)
+    C->>CLI: addCommand() for each tool ✅
+    C-->>CLI: setup complete
+
+    CLI->>S: server.setup()
+    S->>CLI: addCommand("mcp")
+    S-->>CLI: setup complete
+
+    Note over CLI: Step E-G: Parse & resolve commands
+    Note over CLI: Commands exist! Resolution works ✅
+```
+
+**Pros:**
+
+- Works with current gunshi lifecycle—no upstream changes needed
+- Plugins remain composable with clear dependency declarations
+- Commands are registered during `setup()` where they belong
+- Uses gunshi's type-safe dependency system
+- Discovery and CLI can be separate concerns
+
+**Cons:**
+
+- Requires shared mutable state (module-level variable)
+- Less elegant than extension-based communication
+- Discovery plugin must be synchronous or use top-level await
+
+**Implementation approach:**
+
+```typescript
+// src/shared/registry.ts
+export interface Tool { name: string; /* ... */ }
+export const sharedRegistry: Tool[] = []
+
+// src/discovery/plugin.ts
+import { sharedRegistry } from '../shared/registry.ts'
+
+export function createDiscoveryPlugin(options) {
+  return plugin({
+    id: DISCOVERY_PLUGIN_ID,
+    setup: async (ctx) => {
+      const tools = await discoverTools(options)
+      sharedRegistry.push(...tools)
+    },
+  })
+}
+
+// src/cli/plugin.ts
+import { sharedRegistry } from '../shared/registry.ts'
+
+export function createCliPlugin(options) {
+  return plugin({
+    id: CLI_PLUGIN_ID,
+    dependencies: [DISCOVERY_PLUGIN_ID],
+    setup: (ctx) => {
+      for (const tool of sharedRegistry) {
+        ctx.addCommand(tool.name, generateCommand(tool))
+      }
+    },
+  })
+}
+```
+
+### Option G: Dispatcher Command with Plugin Decorators
+
+> See also **Option H** below for a lazy loading variant that provides better UX.
+
+This option uses a **single dispatcher command** (like `run <tool>`) combined with **plugin decorators** to allow multiple plugins to contribute tool execution logic. Each plugin decorates the dispatcher to add its own tools.
+
+```mermaid
+flowchart TB
+    subgraph "Single 'run' command"
+        R[run tool-name --args...]
+    end
+
+    subgraph "Plugin Decorator Chain (LIFO)"
+        D1[MCP Plugin Decorator]
+        D2[OpenCode Plugin Decorator]
+        D3[Custom Plugin Decorator]
+        Base[Base Runner]
+    end
+
+    R --> D1
+    D1 -->|"handles 'mcp:*' tools"| D1
+    D1 -->|"else delegate"| D2
+    D2 -->|"handles 'opencode:*' tools"| D2
+    D2 -->|"else delegate"| D3
+    D3 -->|"handles custom tools"| D3
+    D3 -->|"else delegate"| Base
+    Base -->|"unknown tool error"| R
+```
+
+**How it works:**
+
+1. A base plugin registers a single `run` command during `setup()`
+2. Each tool-providing plugin uses `decorateCommand()` to wrap the runner
+3. Decorators check if they handle the requested tool; if not, delegate to the next decorator
+4. Decorators execute in LIFO order (last registered = first executed)
+
+```typescript
+// Base dispatcher plugin - provides the 'run' command
+const dispatcherPlugin = plugin({
+  id: 'dispatcher',
+  setup: (ctx) => {
+    ctx.addCommand('run', {
+      name: 'run',
+      description: 'Run a tool by name',
+      args: {
+        tool: { type: 'string', description: 'Tool name to execute' },
+      },
+      run: async (cmdCtx) => {
+        // Base case: no decorator handled the tool
+        throw new Error(`Unknown tool: ${cmdCtx.values.tool}`)
+      },
+    })
+  },
+})
+
+// MCP tools plugin - decorates 'run' to handle MCP tools
+const mcpToolsPlugin = plugin({
+  id: 'mcp-tools',
+  dependencies: ['dispatcher'],
+  setup: (ctx) => {
+    // Register decorator during setup
+    ctx.decorateCommand(baseRunner => async (cmdCtx) => {
+      // Only intercept the 'run' command
+      if (cmdCtx.name !== 'run') {
+        return baseRunner(cmdCtx)
+      }
+
+      const toolName = cmdCtx.values.tool as string
+
+      // Check if this plugin handles the tool
+      if (toolName.startsWith('mcp:') || mcpTools.has(toolName)) {
+        const tool = mcpTools.get(toolName)
+        return await executeMcpTool(tool, cmdCtx)
+      }
+
+      // Not our tool, delegate to next decorator
+      return baseRunner(cmdCtx)
+    })
+  },
+  extension: () => ({
+    // MCP tools can also be accessed via extension
+    listTools: () => [...mcpTools.keys()],
+  }),
+})
+
+// Discovery plugin - decorates 'run' to handle discovered tools
+const discoveryPlugin = plugin({
+  id: 'discovery',
+  dependencies: ['dispatcher'],
+  setup: async (ctx) => {
+    // Discover tools during setup
+    const discoveredTools = await discoverTools({ patterns: ['tools/**/*.ts'] })
+
+    // Register decorator to handle discovered tools
+    ctx.decorateCommand(baseRunner => async (cmdCtx) => {
+      if (cmdCtx.name !== 'run') {
+        return baseRunner(cmdCtx)
+      }
+
+      const toolName = cmdCtx.values.tool as string
+      const tool = discoveredTools.find(t => t.name === toolName)
+
+      if (tool) {
+        return await executeDiscoveredTool(tool, cmdCtx)
+      }
+
+      // Not our tool, delegate
+      return baseRunner(cmdCtx)
+    })
+  },
+})
+
+// OpenCode plugin - another tool provider
+const openCodePlugin = plugin({
+  id: 'opencode',
+  dependencies: ['dispatcher'],
+  setup: (ctx) => {
+    ctx.decorateCommand(baseRunner => async (cmdCtx) => {
+      if (cmdCtx.name !== 'run') {
+        return baseRunner(cmdCtx)
+      }
+
+      const toolName = cmdCtx.values.tool as string
+
+      if (openCodeTools.has(toolName)) {
+        return await executeOpenCodeTool(toolName, cmdCtx)
+      }
+
+      return baseRunner(cmdCtx)
+    })
+  },
+})
+```
+
+**Usage:**
+
+```bash
+# Run an MCP tool
+mycli run mcp:fetch-data --url=https://example.com
+
+# Run a discovered tool
+mycli run my-custom-tool --input=data.json
+
+# Run an OpenCode tool
+mycli run opencode:search --query="find bugs"
+
+# List all available tools (each plugin contributes)
+mycli tools list
+```
+
+**Enhanced: Tool Listing via Extensions**
+
+Plugins can also provide a `listTools()` method via their extensions, allowing a `tools list` command to aggregate all available tools:
+
+```typescript
+const toolsListPlugin = plugin({
+  id: 'tools-list',
+  setup: (ctx) => {
+    ctx.addCommand('tools', {
+      name: 'tools',
+      description: 'List available tools',
+      run: async (cmdCtx) => {
+        const allTools: string[] = []
+
+        // Aggregate tools from all extensions that provide listTools()
+        for (const [id, ext] of Object.entries(cmdCtx.extensions)) {
+          if (ext && typeof ext.listTools === 'function') {
+            const tools = ext.listTools()
+            allTools.push(...tools.map(t => `${id}:${t}`))
+          }
+        }
+
+        console.log('Available tools:')
+        allTools.forEach(t => console.log(`  - ${t}`))
+      },
+    })
+  },
+})
+```
+
+**Pros:**
+
+- Works with current gunshi lifecycle—no timing issues
+- Each plugin independently contributes tools via decorators
+- Plugins don't need to know about each other
+- Highly extensible: new plugins just add decorators
+- Tool namespacing prevents conflicts (`mcp:tool`, `opencode:tool`)
+- Can combine with Option F for per-tool commands too
+
+**Cons:**
+
+- UX requires extra `run` subcommand: `mycli run tool-name` instead of `mycli tool-name`
+- No automatic per-tool help generation (but can implement `run --help tool-name`)
+- Decorator chain overhead (minimal in practice)
+- Tool argument parsing is manual (not schema-validated by gunshi)
+
+**Hybrid approach: Combine with Option F**
+
+Use Option F to generate individual commands for common tools, and Option G's dispatcher for dynamic/plugin-contributed tools:
+
+```typescript
+// Common tools get direct commands (Option F)
+mycli fetch-data --url=...
+
+// Plugin-contributed tools use dispatcher (Option G)
+mycli run opencode:search --query=...
+```
+
+### Option H: Lazy Commands with Minimal Metadata
+
+Gunshi's `lazy()` function separates **command metadata** (available immediately) from **command implementation** (loaded on execution). This allows registering commands during `setup()` with just enough metadata for help text, while deferring the actual tool loading.
+
+**Key insight**: The `lazy(loader, metadata)` function:
+- **Metadata**: Bundled immediately, used for `--help` and command resolution
+- **Loader**: Called only when the command is actually executed
+
+This means we can discover tool *names and descriptions* quickly during `setup()`, register lazy commands, and defer heavy tool loading until execution.
+
+```mermaid
+sequenceDiagram
+    participant CLI as cli()
+    participant D as Discovery Plugin
+    participant G as Gunshi
+    participant User
+
+    Note over CLI: Phase 1: Setup
+    CLI->>D: discovery.setup()
+    D->>D: Quick scan: get tool names & descriptions
+    D->>G: addCommand(lazy(loader, minimalMeta))
+    Note over G: Command registered with metadata only
+
+    Note over CLI: Phase 2: Resolution
+    User->>G: mycli my-tool --help
+    G->>G: Metadata available, show help ✅
+
+    Note over CLI: Phase 3: Execution
+    User->>G: mycli my-tool --arg=value
+    G->>D: loader() called
+    D->>D: Full tool loading (schemas, validation, etc.)
+    D->>G: Return runner function
+    G->>User: Execute tool
+```
+
+**Implementation:**
+
+```typescript
+import { plugin } from 'gunshi/plugin'
+import { lazy, define } from 'gunshi'
+
+// Discovery plugin with lazy loading
+const discoveryPlugin = plugin({
+  id: 'discovery',
+  setup: async (ctx) => {
+    // Quick discovery: just get tool names and basic metadata
+    // This should be FAST - no full parsing of tool implementations
+    const toolManifests = await quickDiscoverToolManifests({
+      patterns: ['tools/**/*.ts'],
+    })
+
+    // Register lazy commands for each discovered tool
+    for (const manifest of toolManifests) {
+      // Minimal metadata - enough for help text
+      const minimalMeta = define({
+        name: manifest.name,
+        description: manifest.description,
+        // Basic args schema if available from manifest
+        args: manifest.args ?? {},
+      })
+
+      // Loader - called only on execution
+      const loader = async () => {
+        // Full tool loading happens here
+        const fullTool = await loadFullTool(manifest.path)
+        
+        // Return the runner function
+        return async (cmdCtx) => {
+          // Validate args against full schema
+          const validated = fullTool.schema.parse(cmdCtx.values)
+          return await fullTool.execute(validated)
+        }
+      }
+
+      // Register lazy command
+      const lazyCmd = lazy(loader, minimalMeta)
+      ctx.addCommand(lazyCmd.commandName, lazyCmd)
+    }
+  },
+})
+```
+
+**Two-tier discovery pattern:**
+
+```typescript
+// Tier 1: Quick manifest discovery (runs during setup)
+async function quickDiscoverToolManifests(options) {
+  const files = await glob(options.patterns)
+  const manifests = []
+  
+  for (const file of files) {
+    // Option A: Read frontmatter/JSDoc from file without executing
+    const manifest = await extractToolManifest(file)
+    
+    // Option B: Use a manifest file (tools/manifest.json)
+    // Option C: Use naming conventions (tool name = filename)
+    
+    manifests.push({
+      name: manifest.name,
+      description: manifest.description,
+      args: manifest.args,  // Basic schema
+      path: file,
+    })
+  }
+  
+  return manifests
+}
+
+// Tier 2: Full tool loading (runs on command execution)
+async function loadFullTool(path) {
+  const module = await import(path)
+  return {
+    schema: module.schema,      // Full Zod/validation schema
+    execute: module.execute,    // Implementation
+    // ... other heavy dependencies
+  }
+}
+```
+
+**Manifest file approach (fastest):**
+
+```json
+// tools/manifest.json - generated at build time or manually maintained
+{
+  "tools": [
+    {
+      "name": "fetch-data",
+      "description": "Fetch data from a URL",
+      "path": "./fetch-data.ts",
+      "args": {
+        "url": { "type": "string", "required": true },
+        "format": { "type": "string", "default": "json" }
+      }
+    },
+    {
+      "name": "process-file",
+      "description": "Process a file",
+      "path": "./process-file.ts",
+      "args": {
+        "input": { "type": "string", "required": true }
+      }
+    }
+  ]
+}
+```
+
+```typescript
+// Fast setup using manifest
+setup: async (ctx) => {
+  const manifest = await import('./tools/manifest.json')
+  
+  for (const tool of manifest.tools) {
+    const lazyCmd = lazy(
+      async () => {
+        const mod = await import(tool.path)
+        return mod.run
+      },
+      define({
+        name: tool.name,
+        description: tool.description,
+        args: tool.args,
+      })
+    )
+    ctx.addCommand(lazyCmd.commandName, lazyCmd)
+  }
+}
+```
+
+**Pros:**
+
+- Full per-tool commands: `mycli my-tool --help` works correctly
+- Gunshi handles argument parsing and validation
+- Fast startup: heavy tool code loads only on execution
+- Works with current lifecycle—no timing hacks
+- Can combine with Option G for plugin-contributed tools
+
+**Cons:**
+
+- Requires two-tier discovery (quick manifest + full load)
+- Manifest must be available at setup time (may need build step)
+- Can't dynamically discover tools that don't have manifests
+- Slight complexity in maintaining manifest ↔ implementation sync
+
+**When to use:**
+
+- You have many tools and want fast `--help` response
+- Tools have predictable metadata that can be extracted quickly
+- You're willing to maintain a manifest file or extract metadata statically
+
 ---
 
 ## Recommended Approach
@@ -456,12 +980,28 @@ This means:
 
 ## Summary
 
-| Approach                 | Complexity | UX Impact                | Recommended?       |
-| ------------------------ | ---------- | ------------------------ | ------------------ |
-| A: Pre-Discovery         | Low        | Medium (manual wiring)   | For simple cases   |
-| B: Builder Orchestration | Medium     | None (hidden complexity) | ✅ Yes             |
-| C: Lazy Commands         | Low        | High (UX regression)     | No                 |
-| D: Two-Phase CLI         | High       | Low                      | No                 |
-| E: Gunshi Enhancement    | High       | None                     | Future possibility |
+| Approach                      | Complexity | UX Impact                   | Recommended?                  |
+| ----------------------------- | ---------- | --------------------------- | ----------------------------- |
+| A: Pre-Discovery              | Low        | Medium (manual wiring)      | For simple cases              |
+| B: Builder Orchestration      | Medium     | None (hidden complexity)    | ✅ Yes                        |
+| C: Lazy Commands              | Low        | High (UX regression)        | No (see Option G/H)           |
+| D: Two-Phase CLI              | High       | Low                         | No                            |
+| E: Gunshi Enhancement         | High       | None                        | Future possibility            |
+| F: Setup-time Shared State    | Medium     | None                        | ✅ Yes (native gunshi way)    |
+| G: Dispatcher + Decorators    | Medium     | Medium (`run` subcommand)   | ✅ Yes (plugin extensibility) |
+| H: Lazy Commands + Manifest   | Medium     | None (full per-tool UX)     | ✅ Yes (best UX + performance)|
 
-The fundamental tension is between gunshi's lifecycle (extensions after commands) and our architecture (commands from extensions). **Option B** resolves this by moving discovery outside the gunshi lifecycle while keeping the user-facing API clean.
+The fundamental tension is between gunshi's lifecycle (extensions after commands) and our architecture (commands from extensions). 
+
+**Option H** provides the best UX—full per-tool commands with `--help` support—by using gunshi's `lazy()` to separate metadata (available at setup) from implementation (loaded on execution). Requires a manifest or quick metadata extraction.
+
+**Option F** is the most "gunshi-native" approach—it uses the dependency system as intended, with `setup()` running in topological order. The downside is module-level shared state.
+
+**Option G** builds on Option C but leverages gunshi's decorator system for plugin extensibility. Each plugin can independently contribute tools without coordination. The tradeoff is requiring a `run` subcommand.
+
+**Option B** resolves this by moving discovery outside the gunshi lifecycle while keeping the user-facing API clean. It's cleaner from a state management perspective but less integrated with gunshi's plugin model.
+
+**Hybrid recommendation**: Combine **F + H + G**:
+- **H** for discovered tools with manifests (best UX, lazy loading)
+- **F** for tools that need full schema at setup time
+- **G** for dynamic plugin-contributed tools without manifests
