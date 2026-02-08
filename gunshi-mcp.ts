@@ -71,3 +71,19 @@ export {
 export { createServerPlugin, ManagedMcpServer, SERVER_PLUGIN_ID } from "./src/server/plugin.ts"
 export type { ServerExtension, ServerPluginId, ServerPluginOptions } from "./src/server/plugin.ts"
 export type { ServerOptions } from "./src/server/types.ts"
+export { createCliPlugin, CLI_PLUGIN_ID } from "./src/cli/plugin.ts"
+export type {
+	CliExtension,
+	CliPluginOptions,
+	GenerateCommandContext,
+} from "./src/cli/types.ts"
+export type { CommandGeneratorOptions } from "./src/cli/commands.ts"
+export type { ZodFieldInfo as CliZodFieldInfo, BuildGunshiArgOptions } from "./src/cli/schema/to-gunshi-arg.ts"
+export { buildGunshiArg } from "./src/cli/schema/to-gunshi-arg.ts"
+export type { ArrayHandlerInfo, ArrayHandlerContext } from "./src/cli/schema/arrays.ts"
+export { analyzeArray } from "./src/cli/schema/arrays.ts"
+export type { OverrideContext } from "./src/cli/schema/overrides.ts"
+export { applyOverrides } from "./src/cli/schema/overrides.ts"
+export { reconstructNested } from "./src/cli/values/reconstruct.ts"
+export type { ParseContext } from "./src/cli/values/parse.ts"
+export { parseValue } from "./src/cli/values/parse.ts"
