@@ -105,6 +105,19 @@ describe("Builder", () => {
 			expect(ids).toContain("gunshi-mcp:server")
 			expect(ids).toContain("gunshi-mcp:cli")
 		})
+
+		it("should add opencode plugin", async () => {
+			const plugins = await gunshiMcp().withOpenCode().build()
+			expect(plugins).toHaveLength(1)
+			expect(plugins[0].id).toBe("gunshi-mcp:opencode")
+		})
+
+		it("should pass options to opencode plugin", async () => {
+			const plugins = await gunshiMcp()
+				.withOpenCode({ autoExpose: true, include: ["tool1"] })
+				.build()
+			expect(plugins).toHaveLength(1)
+		})
 	})
 
 	describe("plugin ordering", () => {

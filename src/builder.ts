@@ -5,6 +5,7 @@ import type { RegistryPluginOptions } from "./registry/types.ts"
 import type { DiscoveryPluginOptions } from "./discovery/plugin.ts"
 import type { ServerPluginOptions } from "./server/plugin.ts"
 import type { CliPluginOptions } from "./cli/types.ts"
+import type { OpenCodePluginOptions } from "./opencode/types.ts"
 
 export interface BuilderConfig {
 	logging?: LoggingPluginOptions | true
@@ -13,7 +14,7 @@ export interface BuilderConfig {
 	discovery?: DiscoveryPluginOptions | true
 	server?: ServerPluginOptions | true
 	cli?: CliPluginOptions | true
-	opencode?: Record<string, unknown> | true
+	opencode?: OpenCodePluginOptions | true
 }
 
 export interface GunshiMcpBuilder {
@@ -23,7 +24,7 @@ export interface GunshiMcpBuilder {
 	withDiscovery(options?: DiscoveryPluginOptions): GunshiMcpBuilder
 	withServer(options?: ServerPluginOptions): GunshiMcpBuilder
 	withCli(options?: CliPluginOptions): GunshiMcpBuilder
-	withOpenCode(options?: Record<string, unknown>): GunshiMcpBuilder
+	withOpenCode(options?: OpenCodePluginOptions): GunshiMcpBuilder
 	build(): Promise<Plugin[]>
 }
 
@@ -65,7 +66,7 @@ class GunshiMcpBuilderImpl implements GunshiMcpBuilder {
 		return this
 	}
 
-	withOpenCode(options?: Record<string, unknown>): GunshiMcpBuilder {
+	withOpenCode(options?: OpenCodePluginOptions): GunshiMcpBuilder {
 		this.config.opencode = options ?? true
 		return this
 	}
@@ -102,6 +103,11 @@ class GunshiMcpBuilderImpl implements GunshiMcpBuilder {
 		if (this.config.cli) {
 			const { createCliPlugin } = await import("./cli/plugin.ts")
 			plugins.push(createCliPlugin(normalizeOptions(this.config.cli)))
+		}
+
+		if (this.config.opencode) {
+			const { createOpenCodePlugin } = await import("./opencode/plugin.ts")
+			plugins.push(createOpenCodePlugin(normalizeOptions(this.config.opencode)))
 		}
 
 		return plugins

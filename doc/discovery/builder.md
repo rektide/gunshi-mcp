@@ -38,15 +38,15 @@ await cli(args, command, { plugins })
 
 ### Plugin Methods
 
-| Method | Options Type | Auto-includes |
-|--------|--------------|---------------|
-| `withLogging(opts?)` | `LoggingPluginOptions` | - |
-| `withSchema(opts?)` | `SchemaPluginOptions` | - |
-| `withRegistry(opts?)` | `RegistryPluginOptions` | - |
-| `withDiscovery(opts?)` | `DiscoveryPluginOptions` | - |
-| `withServer(opts?)` | `ServerPluginOptions` | - |
-| `withCli(opts?)` | `CliPluginOptions` | schema |
-| `withOpenCode(opts?)` | `Record<string, unknown>` | - (placeholder) |
+| Method                 | Options Type              | Auto-includes   |
+| ---------------------- | ------------------------- | --------------- |
+| `withLogging(opts?)`   | `LoggingPluginOptions`    | -               |
+| `withSchema(opts?)`    | `SchemaPluginOptions`     | -               |
+| `withRegistry(opts?)`  | `RegistryPluginOptions`   | -               |
+| `withDiscovery(opts?)` | `DiscoveryPluginOptions`  | -               |
+| `withServer(opts?)`    | `ServerPluginOptions`     | -               |
+| `withCli(opts?)`       | `CliPluginOptions`        | schema          |
+| `withOpenCode(opts?)`  | `Record<string, unknown>` | - (placeholder) |
 
 ### Key Design Decisions
 
@@ -78,6 +78,7 @@ if (needsSchema) {
 #### 3. Dependency-ordered Output
 
 Plugins are added to the array in dependency order:
+
 1. logging (no deps)
 2. discovery (no deps)
 3. registry (optional dep on discovery)
@@ -120,21 +121,25 @@ Could read plugin `dependencies` arrays and topologically sort. Rejected as over
 ### 3. Separate Builder Per Composition
 
 Could create new builder instances for immutability:
+
 ```typescript
 withLogging() {
   return new Builder({ ...this.config, logging: true })
 }
 ```
+
 Rejected as unnecessary complexity for this use case.
 
 ### 4. Plugin Presets
 
 Could add preset methods:
+
 ```typescript
 .withMcpStack()   // discovery + registry + server
 .withCliStack()   // schema + registry + cli
 .withFullStack()  // everything
 ```
+
 Not implemented yet - could add if common patterns emerge.
 
 ## Future Improvements
@@ -153,6 +158,7 @@ if (this.config.opencode) {
 ### Validation
 
 Could add validation in `build()`:
+
 - Warn if CLI added without registry (commands would be empty)
 - Warn if server has autoRegister but no registry
 - Error on conflicting options
@@ -160,6 +166,7 @@ Could add validation in `build()`:
 ### Plugin Removal
 
 Could add `without()` for removing plugins from presets:
+
 ```typescript
 .withFullStack()
 .without("opencode")
@@ -168,6 +175,7 @@ Could add `without()` for removing plugins from presets:
 ### Conditional Plugins
 
 Could support conditional inclusion:
+
 ```typescript
 .withServer({ when: process.env.MCP_ENABLED === "true" })
 ```
@@ -175,6 +183,7 @@ Could support conditional inclusion:
 ## Test Coverage
 
 17 tests covering:
+
 - Empty builder returns empty array
 - Each plugin method adds correct plugin
 - Schema auto-included with CLI

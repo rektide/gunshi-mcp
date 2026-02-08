@@ -88,3 +88,20 @@ export type { ParseContext } from "./src/cli/values/parse.ts"
 export { parseValue } from "./src/cli/values/parse.ts"
 export { gunshiMcp } from "./src/builder.ts"
 export type { GunshiMcpBuilder, BuilderConfig } from "./src/builder.ts"
+export { createOpenCodePlugin, OPENCODE_PLUGIN_ID } from "./src/opencode/plugin.ts"
+export type {
+	OpenCodeExtension,
+	OpenCodePluginOptions,
+	OpenCodePluginId,
+	OpenCodeToolContext,
+} from "./src/opencode/types.ts"
+export { isOpenCodeEnvironment } from "./src/opencode/detection.ts"
+export {
+	installOpenCodeTools,
+	getInstalledTools,
+	createOpenCodeToolExport,
+	openCodeMain,
+} from "./src/opencode/install.ts"
+export type { InstallOpenCodeToolsOptions } from "./src/opencode/install.ts"
+export { convertToOpenCodeTool, filterTools } from "./src/opencode/exposure.ts"
+export type { OpenCodeToolDefinition } from "./src/opencode/exposure.ts"
