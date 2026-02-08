@@ -1,0 +1,3 @@
+# builder prompt
+
+we want to build a nice builder pattern to compose the gunshi plugins we have recently built. this will require first understanding the problem, and evaluating the work done and the current state of the gunshi plugins we have recently built. look at the beads ticket gunshi-mcp-plugin-arch , which is the epic. read the relevant documentation, especially library.md. read the builder ticket to understand the goal we are trying to achieve. get details on the individual gunshi plugins we have implemented, by reading the beads tickets, reading the commit message, and looking directly at the work output / files created or changed. for example, the cli plugin gunshi-mcp-cli-plugin and how it was implemented. implement the builder pattern.
