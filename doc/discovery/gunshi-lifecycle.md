@@ -2,6 +2,33 @@
 
 This document analyzes how the gunshi plugin lifecycle interacts with our composable plugin architecture, identifies a fundamental timing problem, and explores solutions.
 
+## Table of Contents
+
+- [Problem Statement](#problem-statement)
+- [Gunshi Lifecycle Deep Dive](#gunshi-lifecycle-deep-dive)
+  - [Source References](#source-references)
+  - [The Four Phases](#the-four-phases)
+  - [Phase 1: Plugin Setup](#phase-1-plugin-setup)
+  - [Phase 2: Command Resolution](#phase-2-command-resolution)
+  - [Phase 3: Extension Creation](#phase-3-extension-creation)
+  - [The Timing Mismatch](#the-timing-mismatch)
+- [Current Implementation Analysis](#current-implementation-analysis)
+  - [CLI Plugin (src/cli/plugin.ts)](#cli-plugin-srccliplugints)
+  - [Server Plugin (src/server/plugin.ts)](#server-plugin-srcserverplugints)
+  - [Discovery Plugin (src/discovery/plugin.ts)](#discovery-plugin-srcdiscoveryplugints)
+- [Solution Space](#solution-space)
+  - [Option A: Pre-Discovery Pattern](#option-a-pre-discovery-pattern)
+  - [Option B: Builder Orchestration](#option-b-builder-orchestration)
+  - [Option C: Lazy Command Pattern](#option-c-lazy-command-pattern)
+  - [Option D: Two-Phase CLI](#option-d-two-phase-cli)
+  - [Option E: Gunshi Enhancement](#option-e-gunshi-enhancement)
+  - [Option F: Setup-time Shared State via Dependencies](#option-f-setup-time-shared-state-via-dependencies)
+  - [Option G: Dispatcher Command with Plugin Decorators](#option-g-dispatcher-command-with-plugin-decorators)
+  - [Option H: Lazy Commands with Minimal Metadata](#option-h-lazy-commands-with-minimal-metadata)
+- [Recommended Approach](#recommended-approach)
+  - [Implementation Changes Required](#implementation-changes-required)
+- [Summary](#summary)
+
 ## Problem Statement
 
 **PLAN-library.md envisions:**
