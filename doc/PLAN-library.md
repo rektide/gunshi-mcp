@@ -64,17 +64,17 @@ gunshi-mcp decomposes into focused plugins, each with a single responsibility an
 │                             Application Layer                                  │
 │   plugins: [logging, discovery, registry, schema, server, cli, opencode]      │
 └───────────────────────────────────────────────────────────────────────────────┘
-                                         │
-     ┌──────────┬──────────┬─────────────┼─────────────┬──────────┬──────────┐
-     ▼          ▼          ▼             ▼             ▼          ▼          ▼
- ┌────────┐ ┌────────┐ ┌────────┐   ┌────────┐   ┌────────┐ ┌────────┐
- │Logging │ │Discovery│ │Registry│   │ Server │   │  CLI   │ │OpenCode│
- │ Plugin │ │ Plugin │ │ Plugin │   │ Plugin │   │ Plugin │ │ Plugin │
- └────────┘ └────────┘ └────────┘   └────────┘   └────────┘ └────────┘
-     │          │          │             │             │          │
-     ▼          ▼          ▼             ▼             ▼          ▼
-  Logger    Discovery   Registry     McpServer     CLI Cmds  OpenCode
- Extension  Extension  Extension    Extension     Extension  Extension
+                                          │
+      ┌──────────┬──────────┬─────────────┼─────────────┬──────────┬──────────┐
+      ▼          ▼          ▼             ▼             ▼          ▼          ▼
+  ┌────────┐ ┌────────┐ ┌────────┐   ┌────────┐   ┌────────┐ ┌────────┐
+  │Logging │ │Discovery│ │Registry│   │ Server │   │  CLI   │ │OpenCode│
+  │ Plugin │ │ Plugin │ │ Plugin │   │ Plugin │   │ Plugin │ │ Plugin │
+  └────────┘ └────────┘ └────────┘   └────────┘   └────────┘ └────────┘
+      │          │          │             │             │          │
+      ▼          ▼          ▼             ▼             ▼          ▼
+   Logger    Discovery   Registry     McpServer     CLI Cmds  OpenCode
+  Extension  Extension  Extension    Extension     Extension  Extension
 ```
 
 ```mermaid
@@ -170,57 +170,21 @@ src/
 │   ├── introspect/
 │   │   ├── field.ts              # Extract ZodFieldInfo from a field
 │   │   ├── unwrap.ts             # Unwrap optionals, defaults, etc.
-│   │   ├── types.ts              # Introspection result types
-│   │   └── index.ts
+│   │   └── types.ts              # Introspection result types
 │   │
 │   ├── flatten/
 │   │   ├── flatten.ts            # Nested schema → flat fields
 │   │   ├── collision.ts          # Detect/report collisions
-│   │   ├── types.ts              # FlattenContext, FlattenOptions
-│   │   └── index.ts
+│   │   └── types.ts              # FlattenContext, FlattenOptions
 │   │
 │   ├── validate/
 │   │   ├── required.ts           # Validate required fields present
-│   │   ├── types.ts              # Validate type compatibility
-│   │   └── index.ts
+│   │   └── types.ts              # Validate type compatibility
 │   │
 │   ├── cache.ts                  # Cache analyzed schemas
 │   ├── plugin.ts                 # createSchemaPlugin
 │   ├── types.ts                  # SchemaExtension, shared types
 │   └── index.ts                  # Re-exports
-│
-├── cli/
-│   ├── schema/                   # CLI-specific schema transforms
-│   │   ├── to-gunshi-arg.ts      # ZodFieldInfo → GunshiArg
-│   │   ├── arrays.ts             # Array handling strategies
-│   │   ├── overrides.ts          # Apply user overrides
-│   │   └── index.ts
-│   │
-│   ├── values/
-│   │   ├── reconstruct.ts        # Flat CLI values → nested object
-│   │   ├── parse.ts              # Custom parsers
-│   │   └── index.ts
-│   │
-│   ├── commands.ts               # Generate commands from tools
-│   ├── plugin.ts                 # createCliPlugin (depends on schema)
-│   └── index.ts
-│
-├── server/
-│   ├── schema/                   # MCP-specific schema transforms
-│   │   ├── to-json-schema.ts     # ZodFieldInfo → JSON Schema
-│   │   ├── annotations.ts        # MCP-specific annotations
-│   │   └── index.ts
-│   │
-│   ├── server.ts                 # McpServer factory
-│   ├── tools.ts                  # Tool registration
-│   ├── plugin.ts                 # createServerPlugin (depends on schema)
-│   └── index.ts
-│
-├── opencode/
-│   ├── schema/                   # OpenCode-specific transforms (TBD)
-│   │   └── ...
-│   ├── plugin.ts                 # createOpenCodePlugin (depends on schema)
-│   └── index.ts
 ```
 
 ### Schema Plugin Extension
@@ -499,7 +463,7 @@ interface CliPluginOptions {
 
 **Behavior:**
 
-- During `setup`, reads tools from registry
+- During `onExtension`, reads tools from registry (extensions not available in setup)
 - Calls `ctx.addCommand()` for each tool
 - Uses schema plugin's `flatten` for arg conversion
 
@@ -545,27 +509,27 @@ interface OpenCodePluginOptions {
 
 ---
 
-### Dependency Graph
+## Dependency Graph
 
 ```
                     ┌─────────┐
                     │ logging │
                     └────┬────┘
                          │ optional
-            ┌────────────┼────────────┐
-            ▼            ▼            ▼
-      ┌──────────┐ ┌──────────┐ ┌──────────┐
-      │ discovery│ │ registry │ │  schema  │
-      └────┬─────┘ └────┬─────┘ └────┬─────┘
-           │            │            │
-           │  optional  │            │ required
-           └─────►──────┤            │
-                        │       ┌────┴────┐
-           ┌────────────┤       │         │
-           ▼            ▼       ▼         ▼
-      ┌─────────┐  ┌─────────┐ ┌────┐ ┌────────┐
-      │   cli   │  │opencode │ │svr │ │ server │
-      └─────────┘  └─────────┘ └────┘ └────────┘
+             ┌────────────┼────────────┐
+             ▼            ▼            ▼
+       ┌──────────┐ ┌──────────┐ ┌──────────┐
+       │ discovery│ │ registry │ │  schema  │
+       └────┬─────┘ └────┬─────┘ └────┬─────┘
+            │            │            │
+            │  optional  │            │ required
+            └─────►──────┤            │
+                         │       ┌────┴────┐
+            ┌────────────┤       │         │
+            ▼            ▼       ▼         ▼
+       ┌─────────┐  ┌─────────┐ ┌────┐ ┌────────┐
+       │   cli   │  │opencode │ │svr │ │ server │
+       └─────────┘  └─────────┘ └────┘ └────────┘
 ```
 
 ```mermaid
@@ -775,72 +739,62 @@ This separation means:
 src/
 ├── logging/
 │   ├── logger.ts         # Pino logger factory, LoggerExtension interface
-│   ├── plugin.ts         # createLoggingPlugin - wraps logger for gunshi
-│   └── index.ts          # Re-exports
+│   └── plugin.ts         # createLoggingPlugin - wraps logger for gunshi
 │
 ├── discovery/
 │   ├── roots.ts          # Root discovery strategies (async generators)
 │   ├── tools.ts          # Tool discovery strategies (async generators)
 │   ├── discover.ts       # discoverTools() - general-purpose discovery function
 │   ├── types.ts          # RootDiscovery, ToolDiscovery types
-│   ├── plugin.ts         # createDiscoveryPlugin - wraps discovery for gunshi
-│   └── index.ts          # Re-exports
+│   └── plugin.ts         # createDiscoveryPlugin - wraps discovery for gunshi
 │
 ├── registry/
 │   ├── registry.ts       # ToolRegistry class - add/remove/list tools
 │   ├── plugin.ts         # createRegistryPlugin - wraps registry for gunshi
-│   └── index.ts          # Re-exports
+│   └── types.ts          # RegistryExtension, RegistryPluginOptions
 │
 ├── schema/               # NEW: Schema Plugin - shared Zod analysis
 │   ├── introspect/
 │   │   ├── field.ts      # Extract ZodFieldInfo from a field
 │   │   ├── unwrap.ts     # Unwrap optionals, defaults, etc.
-│   │   ├── types.ts      # Introspection result types
-│   │   └── index.ts
+│   │   └── types.ts      # Introspection result types
+│   │
 │   ├── flatten/
 │   │   ├── flatten.ts    # Nested schema → flat fields
 │   │   ├── collision.ts  # Detect/report collisions
-│   │   ├── types.ts      # FlattenContext, FlattenOptions
-│   │   └── index.ts
+│   │   └── types.ts      # FlattenContext, FlattenOptions
+│   │
 │   ├── validate/
 │   │   ├── required.ts   # Validate required fields present
-│   │   ├── types.ts      # Validate type compatibility
-│   │   └── index.ts
+│   │   └── types.ts      # Validate type compatibility
+│   │
 │   ├── cache.ts          # Cache analyzed schemas
 │   ├── plugin.ts         # createSchemaPlugin
-│   ├── types.ts          # SchemaExtension, shared types
-│   └── index.ts          # Re-exports
+│   └── types.ts          # SchemaExtension, shared types
 │
 ├── server/
-│   ├── schema/           # MCP-specific schema handling
-│   │   ├── to-json-schema.ts
-│   │   ├── annotations.ts
-│   │   └── index.ts
 │   ├── server.ts         # McpServer factory, transport handling
-│   ├── tools.ts          # Tool registration helpers
+│   ├── tools.ts          # Tool registration
 │   ├── plugin.ts         # createServerPlugin - wraps server for gunshi
-│   └── index.ts          # Re-exports
+│   └── types.ts          # ServerExtension, ServerPluginOptions
 │
 ├── cli/
 │   ├── schema/           # CLI-specific schema transforms
 │   │   ├── to-gunshi-arg.ts
 │   │   ├── arrays.ts
-│   │   ├── overrides.ts
-│   │   └── index.ts
+│   │   └── overrides.ts
+│   │
 │   ├── values/
 │   │   ├── reconstruct.ts
-│   │   ├── parse.ts
-│   │   └── index.ts
-│   ├── commands.ts       # Command generation from GunshiTool
-│   ├── plugin.ts         # createCliPlugin - wraps command gen for gunshi
-│   └── index.ts          # Re-exports
+│   │   └── parse.ts
+│   │
+│   ├── commands.ts       # Generate commands from GunshiTool
+│   ├── plugin.ts         # createCliPlugin (depends on schema)
+│   └── types.ts          # CLIPluginOptions, CliExtension, GenerateCommandContext
 │
 ├── opencode/
-│   ├── schema/           # OpenCode-specific transforms (TBD)
-│   ├── detection.ts      # Environment detection (TBD)
-│   ├── exposure.ts       # Tool exposure to opencode
-│   ├── plugin.ts         # createOpenCodePlugin - wraps for gunshi
-│   └── index.ts          # Re-exports
+│   ├── plugin.ts                 # createOpenCodePlugin (depends on schema)
+│   └── types.ts                  # OpenCodeExtension, OpenCodePluginOptions
 │
 ├── builder.ts            # gunshiMcp() builder
 ├── define-tool.ts        # defineTool() helper
@@ -849,6 +803,17 @@ src/
 ```
 
 **Goal:** Each `plugin.ts` should be a thin wrapper. The real work happens in sibling files that have no gunshi dependency. This makes the core logic reusable, testable in isolation, and easier to understand.
+
+**Direct linking instead of barrel files:** Each `plugin.ts` exports its factory directly from the file, not through an `index.ts` barrel file. Consumers import from the actual plugin file:
+```typescript
+import { createSchemaPlugin } from "gunshi-mcp/src/schema/plugin.ts"
+```
+
+This approach:
+- Makes dependencies explicit and traceable
+- Eliminates indirection through barrel files
+- Matches the "thin wrapper" philosophy where plugin.ts contains only the plugin definition
+- Improves tree-shaking by allowing bundlers to eliminate unused exports
 
 ---
 

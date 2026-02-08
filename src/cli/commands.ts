@@ -34,7 +34,7 @@ export function generateCommands(
 
 			let parseFunction: ((value: string) => unknown) | undefined
 
-			if (info.type === "array") {
+			if (info.type === "array" && field) {
 				if (!override?.parse) {
 					parseFunction = arrayHandler.parse
 				}

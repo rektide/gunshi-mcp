@@ -35,7 +35,6 @@ export function createCliPlugin(options: CliPluginOptions = {}) {
 				refresh() {
 					if (pluginCtxRef && extensionsRef) {
 						registeredCommands = generateCommands({
-							tool: null as any,
 							extensions: extensionsRef,
 							options,
 							addCommand: pluginCtxRef.addCommand.bind(pluginCtxRef),
@@ -57,7 +56,6 @@ export function createCliPlugin(options: CliPluginOptions = {}) {
 				}
 
 				registeredCommands = generateCommands({
-					tool: null as any,
 					extensions: extensionsRef,
 					options,
 					addCommand: pluginCtxRef.addCommand.bind(pluginCtxRef),

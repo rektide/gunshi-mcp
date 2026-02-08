@@ -1,5 +1,4 @@
 import type { GunshiTool, GunshiArg } from "../types.ts"
-import type { ArgSchema } from "gunshi"
 
 export const CLI_PLUGIN_ID = "gunshi-mcp:cli" as const
 export type CliPluginId = typeof CLI_PLUGIN_ID
@@ -17,7 +16,6 @@ export interface CliExtension {
 }
 
 export interface GenerateCommandContext {
-	tool: GunshiTool
 	extensions: {
 		schema: {
 			flatten: <T extends { shape: unknown }>(schema: T, options?: { separator?: string; maxDepth?: number }) => Array<{
@@ -35,9 +33,4 @@ export interface GenerateCommandContext {
 		args: Record<string, GunshiArg>
 		handler: (...args: unknown[]) => unknown
 	}) => void
-}
-
-export interface CliCommandDefinition {
-	args: Record<string, ArgSchema>
-	handler: (ctx: unknown, ...args: unknown[]) => Promise<unknown>
 }
