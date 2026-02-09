@@ -1,4 +1,4 @@
-import type { GunshiTool } from "../types.js"
+import type { GunshiTool } from "../types.ts"
 
 export interface RegistryExtension {
 	register: (tool: GunshiTool) => void

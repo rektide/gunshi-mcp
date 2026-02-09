@@ -1,5 +1,5 @@
-import type { GunshiTool } from "../types.js"
-import type { RegistryPluginOptions } from "./types.js"
+import type { GunshiTool } from "../types.ts"
+import type { RegistryPluginOptions } from "./types.ts"
 
 export class ToolRegistry {
 	private tools = new Map<string, GunshiTool>()

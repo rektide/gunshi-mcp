@@ -1,9 +1,7 @@
 import { isZodObject, isZodArray, getZodArrayElement } from "./introspect.ts"
+import type { ArrayHandlerInfo } from "../cli/schema/arrays.ts"
 
-export interface ArrayHandlerInfo {
-	shouldUseRepeated: boolean
-	parse: (value: string) => unknown
-}
+export type { ArrayHandlerInfo } from "../cli/schema/arrays.ts"
 
 export function analyzeArray(
 	field: unknown,

@@ -15,7 +15,8 @@ export type ZodShape = z.ZodRawShape
 export type ZodInput<Shape extends ZodShape> = z.infer<z.ZodObject<Shape>>
 
 export interface McpExtension {
-	startServer: (options?: { port?: number }) => Promise<void>
+	registerTools: (tools: GunshiTool<any, any>[]) => void
+	startServer: () => Promise<void>
 	stopServer: () => Promise<void>
 }
 

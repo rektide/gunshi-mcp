@@ -1,44 +1,13 @@
 import { plugin } from "gunshi/plugin"
-import type { GunshiTool } from "../types.ts"
 import { REGISTRY_PLUGIN_ID, type RegistryExtension } from "../registry/types.ts"
 import { ManagedMcpServer } from "./server.ts"
 import { createToolHandler, registerGunshiTool } from "./tools.ts"
-import type { ServerOptions } from "./types.ts"
-import type {
-	PromptCallback,
-	ReadResourceCallback,
-	ResourceMetadata,
-	ZodRawShapeCompat,
-} from "@modelcontextprotocol/server"
+import type { ServerExtension, ServerPluginOptions } from "./types.ts"
 
 export const SERVER_PLUGIN_ID = "gunshi-mcp:server" as const
 export type ServerPluginId = typeof SERVER_PLUGIN_ID
 export { ManagedMcpServer } from "./server.ts"
-
-export interface ServerExtension {
-	readonly server: ManagedMcpServer
-	readonly isRunning: boolean
-	start: (transport?: "stdio" | "sse") => Promise<void>
-	stop: () => Promise<void>
-	registerTool: (tool: GunshiTool) => void
-	registerTools: (tools: GunshiTool[]) => void
-	registerPrompt: (
-		name: string,
-		config: { title?: string; description?: string; argsSchema?: ZodRawShapeCompat },
-		callback: PromptCallback<ZodRawShapeCompat>,
-	) => void
-	registerResource: (
-		name: string,
-		uriOrTemplate: string,
-		config: ResourceMetadata,
-		callback: ReadResourceCallback,
-	) => void
-}
-
-export interface ServerPluginOptions extends ServerOptions {
-	autoRegister?: boolean
-	tools?: GunshiTool[]
-}
+export type { ServerExtension, ServerPluginOptions } from "./types.ts"
 
 type Deps = {
 	[REGISTRY_PLUGIN_ID]?: RegistryExtension

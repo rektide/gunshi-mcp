@@ -1,11 +1,12 @@
 import type { GunshiTool } from "../types.ts"
 import type {
-	McpServer,
+	ServerCapabilities,
 	PromptCallback,
 	ReadResourceCallback,
-	ServerCapabilities,
+	ResourceMetadata,
 	ZodRawShapeCompat,
 } from "@modelcontextprotocol/server"
+import type { ManagedMcpServer } from "./server.ts"
 
 export interface ServerOptions {
 	name?: string
@@ -14,8 +15,13 @@ export interface ServerOptions {
 	transport?: "stdio" | "sse"
 }
 
+export interface ServerPluginOptions extends ServerOptions {
+	autoRegister?: boolean
+	tools?: GunshiTool[]
+}
+
 export interface ServerExtension {
-	readonly server: McpServer
+	readonly server: ManagedMcpServer
 	readonly isRunning: boolean
 	start: (transport?: "stdio" | "sse") => Promise<void>
 	stop: () => Promise<void>
@@ -29,42 +35,7 @@ export interface ServerExtension {
 	registerResource: (
 		name: string,
 		uriOrTemplate: string,
-		config: unknown,
+		config: ResourceMetadata,
 		callback: ReadResourceCallback,
 	) => void
-}
-
-export interface ServerPluginOptions extends ServerOptions {
-	autoRegister?: boolean
-	tools?: GunshiTool[]
-}
-
-export interface ServerExtension {
-	readonly server: McpServer
-	readonly isRunning: boolean
-	start: (transport?: "stdio" | "sse") => Promise<void>
-	stop: () => Promise<void>
-	registerTool: (tool: GunshiTool) => void
-	registerTools: (tools: GunshiTool[]) => void
-	registerPrompt: (
-		name: string,
-		config: { title?: string; description?: string; argsSchema?: ZodRawShapeCompat },
-		callback: PromptCallback<ZodRawShapeCompat>,
-	) => void
-	registerResource: (
-		name: string,
-		uriOrTemplate: string,
-		config: unknown,
-		callback: ReadResourceCallback,
-	) => void
-}
-
-export interface ServerPluginOptions extends ServerOptions {
-	autoRegister?: boolean
-	tools?: GunshiTool[]
-}
-
-export interface ServerPluginOptions extends ServerOptions {
-	autoRegister?: boolean
-	tools?: GunshiTool[]
 }

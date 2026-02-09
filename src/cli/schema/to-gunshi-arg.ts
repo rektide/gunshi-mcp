@@ -1,13 +1,8 @@
 import type { GunshiArg } from "../../types.ts"
 import type { ArgSchema } from "gunshi"
+import type { ZodFieldInfo } from "../../schema/types.ts"
 
-export interface ZodFieldInfo {
-	type: "string" | "number" | "boolean" | "array" | "object" | "enum"
-	required: boolean
-	default?: unknown
-	description?: string
-	enumValues?: string[]
-}
+export type { ZodFieldInfo } from "../../schema/types.ts"
 
 export interface BuildGunshiArgOptions {
 	info: ZodFieldInfo

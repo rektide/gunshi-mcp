@@ -1,10 +1,6 @@
-export interface ZodFieldInfo {
-	type: "string" | "number" | "boolean" | "array" | "object" | "enum"
-	required: boolean
-	default?: unknown
-	description?: string
-	enumValues?: string[]
-}
+import type { ZodFieldInfo } from "../schema/types.ts"
+
+export type { ZodFieldInfo } from "../schema/types.ts"
 
 /**
  * Options for converting Zod schemas to CLI arguments.

@@ -1,7 +1,7 @@
 import { plugin } from "gunshi/plugin"
 import type { GunshiTool } from "../types.ts"
 import type { RegistryExtension, RegistryPluginOptions } from "./types.ts"
-import { ToolRegistry } from "./registry.js"
+import { ToolRegistry } from "./registry.ts"
 import { REGISTRY_PLUGIN_ID } from "./types.ts"
 
 export function createRegistryPlugin(options: RegistryPluginOptions = {}) {
