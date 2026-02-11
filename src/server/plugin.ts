@@ -72,6 +72,10 @@ export function createServerPlugin(options: ServerPluginOptions = {}) {
 				}
 			}
 
+			if (options.lazy) {
+				registerLazyTools(managedServer, pluginExtensions)
+			}
+
 			return {
 				get server() {
 					return managedServer
@@ -106,4 +110,30 @@ export function createServerPlugin(options: ServerPluginOptions = {}) {
 			}
 		},
 	})
+}
+
+async function registerLazyTools(
+	managedServer: ManagedMcpServer,
+	extensions: Record<string, unknown>,
+): Promise<void> {
+	const { quickDiscoverToolManifests, createToolLoader } = await import("../discovery/manifest.ts")
+
+	const manifestGenerator = quickDiscoverToolManifests()
+
+	for await (const manifest of manifestGenerator) {
+		managedServer.registerTool(
+			manifest.name,
+			{
+				title: manifest.name,
+				description: manifest.description,
+			},
+			async (args: unknown, extra: unknown) => {
+				const loaderFn = createToolLoader(manifest)
+				const tool = await loaderFn()
+				const handlerFactory = createToolHandler(extensions)
+				const handler = handlerFactory(tool)
+				return handler(args, extra as any)
+			},
+		)
+	}
 }

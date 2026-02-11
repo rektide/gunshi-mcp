@@ -8,6 +8,7 @@ export interface CliPluginOptions {
 	separator?: string
 	formatFlag?: boolean
 	arrayHandling?: "json" | "repeated"
+	lazy?: boolean
 }
 
 export interface CliExtension {

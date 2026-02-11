@@ -18,6 +18,7 @@ export interface ServerOptions {
 export interface ServerPluginOptions extends ServerOptions {
 	autoRegister?: boolean
 	tools?: GunshiTool[]
+	lazy?: boolean
 }
 
 export interface ServerExtension {

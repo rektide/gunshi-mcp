@@ -8,8 +8,7 @@ export type ToolHandler = (
 	extra: {
 		requestId: string | number
 	},
-) => Promise<{ content: Array<{ type: string; text: string }> }>
-
+) => Promise<{ content: Array<{ type: "text"; text: string }> }>
 export function createToolHandler(
 	pluginExtensions: Record<string, unknown>,
 ): (tool: GunshiTool) => ToolHandler {

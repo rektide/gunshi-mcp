@@ -15,6 +15,7 @@ export interface BuilderConfig {
 	server?: ServerPluginOptions | true
 	cli?: CliPluginOptions | true
 	opencode?: OpenCodePluginOptions | true
+	lazy?: boolean
 }
 
 export interface GunshiMcpBuilder {
@@ -25,6 +26,7 @@ export interface GunshiMcpBuilder {
 	withServer(options?: ServerPluginOptions): GunshiMcpBuilder
 	withCli(options?: CliPluginOptions): GunshiMcpBuilder
 	withOpenCode(options?: OpenCodePluginOptions): GunshiMcpBuilder
+	withLazy(lazy?: boolean): GunshiMcpBuilder
 	build(): Promise<Plugin[]>
 }
 
@@ -71,8 +73,14 @@ class GunshiMcpBuilderImpl implements GunshiMcpBuilder {
 		return this
 	}
 
+	withLazy(lazy: boolean = true): GunshiMcpBuilder {
+		this.config.lazy = lazy
+		return this
+	}
+
 	async build(): Promise<Plugin[]> {
 		const plugins: Plugin[] = []
+		const lazy = this.config.lazy ?? false
 
 		if (this.config.logging) {
 			const { default: createLoggingPlugin } = await import("./plugins/logger.ts")
@@ -97,12 +105,16 @@ class GunshiMcpBuilderImpl implements GunshiMcpBuilder {
 
 		if (this.config.server) {
 			const { createServerPlugin } = await import("./server/plugin.ts")
-			plugins.push(createServerPlugin(normalizeOptions(this.config.server)))
+			const serverOptions =
+				typeof this.config.server === "boolean" ? { lazy } : { ...this.config.server, lazy }
+			plugins.push(createServerPlugin(serverOptions))
 		}
 
 		if (this.config.cli) {
 			const { createCliPlugin } = await import("./cli/plugin.ts")
-			plugins.push(createCliPlugin(normalizeOptions(this.config.cli)))
+			const cliOptions =
+				typeof this.config.cli === "boolean" ? { lazy } : { ...this.config.cli, lazy }
+			plugins.push(createCliPlugin(cliOptions))
 		}
 
 		if (this.config.opencode) {

@@ -442,11 +442,11 @@ const lazyDeploy = lazy(deployLoader, deployMeta)
 
 ### Key Properties
 
-| Property | When Available | What It Contains |
-|----------|----------------|------------------|
-| Metadata | Immediately at registration | name, description, args schema |
-| Loader | Called on command execution | Returns runner function |
-| `commandName` | Immediately | Access via `lazyDeploy.commandName` (not `.name`) |
+| Property      | When Available              | What It Contains                                  |
+| ------------- | --------------------------- | ------------------------------------------------- |
+| Metadata      | Immediately at registration | name, description, args schema                    |
+| Loader        | Called on command execution | Returns runner function                           |
+| `commandName` | Immediately                 | Access via `lazyDeploy.commandName` (not `.name`) |
 
 ### Registration in Plugins
 
@@ -459,7 +459,7 @@ const toolsPlugin = plugin({
   setup: async (ctx) => {
     // Quick manifest load - just names and descriptions
     const manifest = await import('./tools/manifest.json')
-    
+
     for (const tool of manifest.tools) {
       const lazyCmd = lazy(
         // Loader: full tool code loaded on execution
@@ -474,7 +474,7 @@ const toolsPlugin = plugin({
           args: tool.args
         })
       )
-      
+
       ctx.addCommand(lazyCmd.commandName, lazyCmd)
     }
   }
@@ -534,7 +534,7 @@ Pre-generate a manifest at build time for fastest startup:
 ```typescript
 setup: async (ctx) => {
   const { tools } = await import('./manifest.json')
-  
+
   for (const tool of tools) {
     ctx.addCommand(
       tool.name,
@@ -554,7 +554,7 @@ Loaders can return complete `Command` objects for dynamic configuration:
 ```typescript
 const dynamicLoader = async () => {
   const config = await loadConfig()
-  
+
   return define({
     description: `Command (env: ${config.env})`,
     args: {
@@ -582,7 +582,7 @@ for (const [name, command] of ctx.subCommands) {
   if (isLazyCommand(command)) {
     // Metadata available immediately for tool registration
     const zodSchema = gunshiArgsToZod(command.args ?? {})
-    
+
     server.registerTool(name, {
       title: command.name ?? name,
       description: command.description ?? '',
@@ -599,22 +599,24 @@ for (const [name, command] of ctx.subCommands) {
 
 ### Performance Benefits
 
-| Scenario | Without Lazy | With Lazy |
-|----------|--------------|-----------|
-| `mycli --help` | Loads all commands | Loads only metadata |
-| `mycli deploy --help` | Loads all commands | Loads only deploy metadata |
-| `mycli deploy` | Loads all commands | Loads only deploy implementation |
-| 50 commands, run 1 | 50 modules loaded | 1 module loaded |
+| Scenario              | Without Lazy       | With Lazy                        |
+| --------------------- | ------------------ | -------------------------------- |
+| `mycli --help`        | Loads all commands | Loads only metadata              |
+| `mycli deploy --help` | Loads all commands | Loads only deploy metadata       |
+| `mycli deploy`        | Loads all commands | Loads only deploy implementation |
+| 50 commands, run 1    | 50 modules loaded  | 1 module loaded                  |
 
 ### When to Use Lazy Commands
 
 ✅ **Use lazy when:**
+
 - Commands have heavy dependencies
 - Many commands exist (>10)
 - Startup time matters
 - Commands are rarely all used together
 
 ❌ **Skip lazy when:**
+
 - Few simple commands
 - All commands share same dependencies
 - Build step can tree-shake unused code

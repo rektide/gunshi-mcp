@@ -442,7 +442,7 @@ plugin({
 
 > See also **Option G** below for a decorator-based variant that combines well with this approach.
 
-**The key insight**: Gunshi runs `setup()` in **dependency order** (topological sort). A dependency plugin's `setup()` completes *before* a dependent plugin's `setup()` begins. This means plugins can share state during setup—not just during the extension phase.
+**The key insight**: Gunshi runs `setup()` in **dependency order** (topological sort). A dependency plugin's `setup()` completes _before_ a dependent plugin's `setup()` begins. This means plugins can share state during setup—not just during the extension phase.
 
 ```typescript
 // Shared mutable state container
@@ -455,7 +455,7 @@ const discoveryPlugin = plugin({
     // Discovery runs synchronously during setup
     const tools = await discoverTools({ patterns: ["tools/**/*.ts"] })
     toolRegistry.push(...tools)  // Populate shared state
-    
+
     ctx.addCommand("tools", { /* list discovered tools */ })
   },
 })
@@ -778,10 +778,11 @@ mycli run opencode:search --query=...
 Gunshi's `lazy()` function separates **command metadata** (available immediately) from **command implementation** (loaded on execution). This allows registering commands during `setup()` with just enough metadata for help text, while deferring the actual tool loading.
 
 **Key insight**: The `lazy(loader, metadata)` function:
+
 - **Metadata**: Bundled immediately, used for `--help` and command resolution
 - **Loader**: Called only when the command is actually executed
 
-This means we can discover tool *names and descriptions* quickly during `setup()`, register lazy commands, and defer heavy tool loading until execution.
+This means we can discover tool _names and descriptions_ quickly during `setup()`, register lazy commands, and defer heavy tool loading until execution.
 
 ```mermaid
 sequenceDiagram
@@ -838,7 +839,7 @@ const discoveryPlugin = plugin({
       const loader = async () => {
         // Full tool loading happens here
         const fullTool = await loadFullTool(manifest.path)
-        
+
         // Return the runner function
         return async (cmdCtx) => {
           // Validate args against full schema
@@ -862,14 +863,14 @@ const discoveryPlugin = plugin({
 async function quickDiscoverToolManifests(options) {
   const files = await glob(options.patterns)
   const manifests = []
-  
+
   for (const file of files) {
     // Option A: Read frontmatter/JSDoc from file without executing
     const manifest = await extractToolManifest(file)
-    
+
     // Option B: Use a manifest file (tools/manifest.json)
     // Option C: Use naming conventions (tool name = filename)
-    
+
     manifests.push({
       name: manifest.name,
       description: manifest.description,
@@ -877,7 +878,7 @@ async function quickDiscoverToolManifests(options) {
       path: file,
     })
   }
-  
+
   return manifests
 }
 
@@ -923,7 +924,7 @@ async function loadFullTool(path) {
 // Fast setup using manifest
 setup: async (ctx) => {
   const manifest = await import('./tools/manifest.json')
-  
+
   for (const tool of manifest.tools) {
     const lazyCmd = lazy(
       async () => {
@@ -1007,18 +1008,18 @@ This means:
 
 ## Summary
 
-| Approach                      | Complexity | UX Impact                   | Recommended?                  |
-| ----------------------------- | ---------- | --------------------------- | ----------------------------- |
-| A: Pre-Discovery              | Low        | Medium (manual wiring)      | For simple cases              |
-| B: Builder Orchestration      | Medium     | None (hidden complexity)    | ✅ Yes                        |
-| C: Lazy Commands              | Low        | High (UX regression)        | No (see Option G/H)           |
-| D: Two-Phase CLI              | High       | Low                         | No                            |
-| E: Gunshi Enhancement         | High       | None                        | Future possibility            |
-| F: Setup-time Shared State    | Medium     | None                        | ✅ Yes (native gunshi way)    |
-| G: Dispatcher + Decorators    | Medium     | Medium (`run` subcommand)   | ✅ Yes (plugin extensibility) |
-| H: Lazy Commands + Manifest   | Medium     | None (full per-tool UX)     | ✅ Yes (best UX + performance)|
+| Approach                    | Complexity | UX Impact                 | Recommended?                   |
+| --------------------------- | ---------- | ------------------------- | ------------------------------ |
+| A: Pre-Discovery            | Low        | Medium (manual wiring)    | For simple cases               |
+| B: Builder Orchestration    | Medium     | None (hidden complexity)  | ✅ Yes                         |
+| C: Lazy Commands            | Low        | High (UX regression)      | No (see Option G/H)            |
+| D: Two-Phase CLI            | High       | Low                       | No                             |
+| E: Gunshi Enhancement       | High       | None                      | Future possibility             |
+| F: Setup-time Shared State  | Medium     | None                      | ✅ Yes (native gunshi way)     |
+| G: Dispatcher + Decorators  | Medium     | Medium (`run` subcommand) | ✅ Yes (plugin extensibility)  |
+| H: Lazy Commands + Manifest | Medium     | None (full per-tool UX)   | ✅ Yes (best UX + performance) |
 
-The fundamental tension is between gunshi's lifecycle (extensions after commands) and our architecture (commands from extensions). 
+The fundamental tension is between gunshi's lifecycle (extensions after commands) and our architecture (commands from extensions).
 
 **Option H** provides the best UX—full per-tool commands with `--help` support—by using gunshi's `lazy()` to separate metadata (available at setup) from implementation (loaded on execution). Requires a manifest or quick metadata extraction.
 
@@ -1029,6 +1030,7 @@ The fundamental tension is between gunshi's lifecycle (extensions after commands
 **Option B** resolves this by moving discovery outside the gunshi lifecycle while keeping the user-facing API clean. It's cleaner from a state management perspective but less integrated with gunshi's plugin model.
 
 **Hybrid recommendation**: Combine **F + H + G**:
+
 - **H** for discovered tools with manifests (best UX, lazy loading)
 - **F** for tools that need full schema at setup time
 - **G** for dynamic plugin-contributed tools without manifests
