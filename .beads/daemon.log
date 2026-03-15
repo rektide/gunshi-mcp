@@ -1,0 +1,1150 @@
+time=2026-01-04T05:51:52.724-05:00 level=INFO msg="Daemon started (interval: %v, auto-commit: %v, auto-push: %v)" !BADKEY=5s !BADKEY=false !BADKEY=false
+time=2026-01-04T05:51:52.724-05:00 level=INFO msg="using database" path=/home/rektide/src/gunshi-mcp/.beads/beads.db
+time=2026-01-04T05:51:52.738-05:00 level=INFO msg="database opened" path=/home/rektide/src/gunshi-mcp/.beads/beads.db freshness_checking=true
+time=2026-01-04T05:51:52.738-05:00 level=INFO msg="upgrading .beads/.gitignore"
+time=2026-01-04T05:51:52.738-05:00 level=WARN msg="failed to upgrade .gitignore" error="open .beads/.gitignore: no such file or directory"
+time=2026-01-04T05:51:52.739-05:00 level=INFO msg="Repository fingerprint validated: %s" !BADKEY=b23607b6
+time=2026-01-04T05:51:52.739-05:00 level=INFO msg="starting RPC server" socket=/home/rektide/src/gunshi-mcp/.beads/bd.sock
+time=2026-01-04T05:51:52.739-05:00 level=INFO msg="RPC server ready (socket listening)"
+time=2026-01-04T05:51:52.743-05:00 level=INFO msg="registered in global registry"
+time=2026-01-04T05:51:52.743-05:00 level=INFO msg="Starting %s..." !BADKEY="sync cycle"
+time=2026-01-04T05:51:52.744-05:00 level=INFO msg="Exported to JSONL"
+time=2026-01-04T05:51:52.750-05:00 level=INFO msg="Pull failed: %v" !BADKEY="failed to get current branch: exit status 128"
+time=2026-01-04T05:51:52.750-05:00 level=INFO msg="monitoring parent process" pid=0
+time=2026-01-04T05:51:52.750-05:00 level=INFO msg="using event-driven mode"
+time=2026-01-04T05:51:52.751-05:00 level=INFO msg="Auto-pull disabled: use 'git pull' manually to sync remote changes"
+time=2026-01-04T05:51:52.751-05:00 level=INFO msg="Mutation detected: %s %s" create=gunshi-mcp-7ar
+time=2026-01-04T05:51:53.251-05:00 level=INFO msg="Export triggered by mutation events"
+time=2026-01-04T05:51:53.251-05:00 level=INFO msg="Starting %s..." !BADKEY=export
+time=2026-01-04T05:51:53.265-05:00 level=INFO msg="Exported to JSONL"
+time=2026-01-04T05:51:53.265-05:00 level=INFO msg="JSONL file created: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-01-04T05:51:53.268-05:00 level=INFO msg="Export complete"
+time=2026-01-04T05:51:54.266-05:00 level=INFO msg="Import triggered by file change"
+time=2026-01-04T05:51:54.266-05:00 level=INFO msg="Starting %s..." !BADKEY=auto-import
+time=2026-01-04T05:51:54.266-05:00 level=INFO msg="Skipping %s: JSONL content unchanged" !BADKEY=auto-import
+time=2026-01-04T05:52:30.433-05:00 level=INFO msg="Mutation detected: %s %s" create=gunshi-mcp-t5d
+time=2026-01-04T05:52:30.933-05:00 level=INFO msg="Export triggered by mutation events"
+time=2026-01-04T05:52:30.933-05:00 level=INFO msg="Starting %s..." !BADKEY=export
+time=2026-01-04T05:52:30.943-05:00 level=INFO msg="JSONL file created: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-01-04T05:52:30.943-05:00 level=INFO msg="Exported to JSONL"
+time=2026-01-04T05:52:30.946-05:00 level=INFO msg="Export complete"
+time=2026-01-04T05:52:31.944-05:00 level=INFO msg="Import triggered by file change"
+time=2026-01-04T05:52:31.945-05:00 level=INFO msg="Starting %s..." !BADKEY=auto-import
+time=2026-01-04T05:52:31.945-05:00 level=INFO msg="Skipping %s: JSONL content unchanged" !BADKEY=auto-import
+time=2026-01-04T05:53:01.532-05:00 level=INFO msg="Mutation detected: %s %s" create=gunshi-mcp-w6q
+time=2026-01-04T05:53:01.533-05:00 level=INFO msg="Mutation detected: %s %s" create=gunshi-mcp-5l2
+time=2026-01-04T05:53:01.534-05:00 level=INFO msg="Mutation detected: %s %s" create=gunshi-mcp-alo
+time=2026-01-04T05:53:01.535-05:00 level=INFO msg="Mutation detected: %s %s" create=gunshi-mcp-h4v
+time=2026-01-04T05:53:01.536-05:00 level=INFO msg="Mutation detected: %s %s" create=gunshi-mcp-0gd
+time=2026-01-04T05:53:01.538-05:00 level=INFO msg="Mutation detected: %s %s" create=gunshi-mcp-rvz
+time=2026-01-04T05:53:02.039-05:00 level=INFO msg="Export triggered by mutation events"
+time=2026-01-04T05:53:02.039-05:00 level=INFO msg="Starting %s..." !BADKEY=export
+time=2026-01-04T05:53:02.054-05:00 level=INFO msg="Exported to JSONL"
+time=2026-01-04T05:53:02.054-05:00 level=INFO msg="JSONL file created: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-01-04T05:53:02.054-05:00 level=INFO msg="File change detected: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-01-04T05:53:02.057-05:00 level=INFO msg="Export complete"
+time=2026-01-04T05:53:03.055-05:00 level=INFO msg="Import triggered by file change"
+time=2026-01-04T05:53:03.055-05:00 level=INFO msg="Starting %s..." !BADKEY=auto-import
+time=2026-01-04T05:53:03.055-05:00 level=INFO msg="Skipping %s: JSONL content unchanged" !BADKEY=auto-import
+time=2026-01-04T05:53:06.926-05:00 level=INFO msg="Mutation detected: %s %s" update=gunshi-mcp-alo
+time=2026-01-04T05:53:06.928-05:00 level=INFO msg="Mutation detected: %s %s" update=gunshi-mcp-rvz
+time=2026-01-04T05:53:06.930-05:00 level=INFO msg="Mutation detected: %s %s" update=gunshi-mcp-h4v
+time=2026-01-04T05:53:07.027-05:00 level=INFO msg="Mutation detected: %s %s" update=gunshi-mcp-w6q
+time=2026-01-04T05:53:07.028-05:00 level=INFO msg="Mutation detected: %s %s" update=gunshi-mcp-5l2
+time=2026-01-04T05:53:07.529-05:00 level=INFO msg="Export triggered by mutation events"
+time=2026-01-04T05:53:07.529-05:00 level=INFO msg="Starting %s..." !BADKEY=export
+time=2026-01-04T05:53:07.531-05:00 level=INFO msg="JSONL file created: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-01-04T05:53:07.531-05:00 level=INFO msg="Exported to JSONL"
+time=2026-01-04T05:53:07.531-05:00 level=INFO msg="Export complete"
+time=2026-01-04T05:53:08.532-05:00 level=INFO msg="Import triggered by file change"
+time=2026-01-04T05:53:08.533-05:00 level=INFO msg="Starting %s..." !BADKEY=auto-import
+time=2026-01-04T05:53:08.533-05:00 level=INFO msg="Skipping %s: JSONL content unchanged" !BADKEY=auto-import
+time=2026-01-04T06:03:33.306-05:00 level=INFO msg="Mutation detected: %s %s" create=gunshi-mcp-ikw
+time=2026-01-04T06:03:33.307-05:00 level=INFO msg="Mutation detected: %s %s" create=gunshi-mcp-1ev
+time=2026-01-04T06:03:33.308-05:00 level=INFO msg="Mutation detected: %s %s" create=gunshi-mcp-4t6
+time=2026-01-04T06:03:33.309-05:00 level=INFO msg="Mutation detected: %s %s" create=gunshi-mcp-koi
+time=2026-01-04T06:03:33.311-05:00 level=INFO msg="Mutation detected: %s %s" create=gunshi-mcp-60m
+time=2026-01-04T06:03:33.313-05:00 level=INFO msg="Mutation detected: %s %s" create=gunshi-mcp-ctb
+time=2026-01-04T06:03:33.315-05:00 level=INFO msg="Mutation detected: %s %s" create=gunshi-mcp-ugh
+time=2026-01-04T06:03:33.318-05:00 level=INFO msg="Mutation detected: %s %s" create=gunshi-mcp-r5s
+time=2026-01-04T06:03:33.818-05:00 level=INFO msg="Export triggered by mutation events"
+time=2026-01-04T06:03:33.818-05:00 level=INFO msg="Starting %s..." !BADKEY=export
+time=2026-01-04T06:03:33.821-05:00 level=INFO msg="JSONL file created: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-01-04T06:03:33.821-05:00 level=INFO msg="Exported to JSONL"
+time=2026-01-04T06:03:33.822-05:00 level=INFO msg="Export complete"
+time=2026-01-04T06:03:34.823-05:00 level=INFO msg="Import triggered by file change"
+time=2026-01-04T06:03:34.823-05:00 level=INFO msg="Starting %s..." !BADKEY=auto-import
+time=2026-01-04T06:03:34.823-05:00 level=INFO msg="Skipping %s: JSONL content unchanged" !BADKEY=auto-import
+time=2026-01-04T06:03:44.102-05:00 level=INFO msg="Mutation detected: %s %s" create=gunshi-mcp-5n1
+time=2026-01-04T06:03:44.103-05:00 level=INFO msg="Mutation detected: %s %s" create=gunshi-mcp-vhp
+time=2026-01-04T06:03:44.104-05:00 level=INFO msg="Mutation detected: %s %s" create=gunshi-mcp-6wm
+time=2026-01-04T06:03:44.106-05:00 level=INFO msg="Mutation detected: %s %s" create=gunshi-mcp-ghh
+time=2026-01-04T06:03:44.109-05:00 level=INFO msg="Mutation detected: %s %s" create=gunshi-mcp-k06
+time=2026-01-04T06:03:44.609-05:00 level=INFO msg="Export triggered by mutation events"
+time=2026-01-04T06:03:44.609-05:00 level=INFO msg="Starting %s..." !BADKEY=export
+time=2026-01-04T06:03:44.626-05:00 level=INFO msg="JSONL file created: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-01-04T06:03:44.626-05:00 level=INFO msg="Exported to JSONL"
+time=2026-01-04T06:03:44.629-05:00 level=INFO msg="Export complete"
+time=2026-01-04T06:03:45.627-05:00 level=INFO msg="Import triggered by file change"
+time=2026-01-04T06:03:45.628-05:00 level=INFO msg="Starting %s..." !BADKEY=auto-import
+time=2026-01-04T06:03:45.628-05:00 level=INFO msg="Skipping %s: JSONL content unchanged" !BADKEY=auto-import
+time=2026-01-04T06:03:56.400-05:00 level=INFO msg="Mutation detected: %s %s" create=gunshi-mcp-56l
+time=2026-01-04T06:03:56.401-05:00 level=INFO msg="Mutation detected: %s %s" create=gunshi-mcp-dk9
+time=2026-01-04T06:03:56.402-05:00 level=INFO msg="Mutation detected: %s %s" create=gunshi-mcp-wro
+time=2026-01-04T06:03:56.404-05:00 level=INFO msg="Mutation detected: %s %s" create=gunshi-mcp-8rf
+time=2026-01-04T06:03:56.407-05:00 level=INFO msg="Mutation detected: %s %s" create=gunshi-mcp-6eu
+time=2026-01-04T06:03:56.908-05:00 level=INFO msg="Export triggered by mutation events"
+time=2026-01-04T06:03:56.908-05:00 level=INFO msg="Starting %s..." !BADKEY=export
+time=2026-01-04T06:03:56.925-05:00 level=INFO msg="JSONL file created: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-01-04T06:03:56.925-05:00 level=INFO msg="Exported to JSONL"
+time=2026-01-04T06:03:56.929-05:00 level=INFO msg="Export complete"
+time=2026-01-04T06:03:57.926-05:00 level=INFO msg="Import triggered by file change"
+time=2026-01-04T06:03:57.926-05:00 level=INFO msg="Starting %s..." !BADKEY=auto-import
+time=2026-01-04T06:03:57.926-05:00 level=INFO msg="Skipping %s: JSONL content unchanged" !BADKEY=auto-import
+time=2026-01-04T06:04:04.854-05:00 level=INFO msg="Mutation detected: %s %s" create=gunshi-mcp-5g4
+time=2026-01-04T06:04:04.855-05:00 level=INFO msg="Mutation detected: %s %s" create=gunshi-mcp-muv
+time=2026-01-04T06:04:04.856-05:00 level=INFO msg="Mutation detected: %s %s" create=gunshi-mcp-xo6
+time=2026-01-04T06:04:04.857-05:00 level=INFO msg="Mutation detected: %s %s" create=gunshi-mcp-hn3
+time=2026-01-04T06:04:04.858-05:00 level=INFO msg="Mutation detected: %s %s" create=gunshi-mcp-29l
+time=2026-01-04T06:04:05.359-05:00 level=INFO msg="Export triggered by mutation events"
+time=2026-01-04T06:04:05.359-05:00 level=INFO msg="Starting %s..." !BADKEY=export
+time=2026-01-04T06:04:05.373-05:00 level=INFO msg="Exported to JSONL"
+time=2026-01-04T06:04:05.373-05:00 level=INFO msg="JSONL file created: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-01-04T06:04:05.377-05:00 level=INFO msg="Export complete"
+time=2026-01-04T06:04:06.374-05:00 level=INFO msg="Import triggered by file change"
+time=2026-01-04T06:04:06.374-05:00 level=INFO msg="Starting %s..." !BADKEY=auto-import
+time=2026-01-04T06:04:06.374-05:00 level=INFO msg="Skipping %s: JSONL content unchanged" !BADKEY=auto-import
+time=2026-01-04T06:04:15.336-05:00 level=INFO msg="Mutation detected: %s %s" create=gunshi-mcp-gch
+time=2026-01-04T06:04:15.338-05:00 level=INFO msg="Mutation detected: %s %s" create=gunshi-mcp-u8k
+time=2026-01-04T06:04:15.340-05:00 level=INFO msg="Mutation detected: %s %s" create=gunshi-mcp-eho
+time=2026-01-04T06:04:15.340-05:00 level=INFO msg="Mutation detected: %s %s" create=gunshi-mcp-1df
+time=2026-01-04T06:04:15.341-05:00 level=INFO msg="Mutation detected: %s %s" create=gunshi-mcp-bj3
+time=2026-01-04T06:04:15.344-05:00 level=INFO msg="Mutation detected: %s %s" create=gunshi-mcp-68d
+time=2026-01-04T06:04:15.845-05:00 level=INFO msg="Export triggered by mutation events"
+time=2026-01-04T06:04:15.845-05:00 level=INFO msg="Starting %s..." !BADKEY=export
+time=2026-01-04T06:04:15.864-05:00 level=INFO msg="Exported to JSONL"
+time=2026-01-04T06:04:15.864-05:00 level=INFO msg="JSONL file created: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-01-04T06:04:15.868-05:00 level=INFO msg="Export complete"
+time=2026-01-04T06:04:16.866-05:00 level=INFO msg="Import triggered by file change"
+time=2026-01-04T06:04:16.866-05:00 level=INFO msg="Starting %s..." !BADKEY=auto-import
+time=2026-01-04T06:04:16.866-05:00 level=INFO msg="Skipping %s: JSONL content unchanged" !BADKEY=auto-import
+time=2026-01-04T06:04:21.371-05:00 level=INFO msg="Mutation detected: %s %s" create=gunshi-mcp-xwu
+time=2026-01-04T06:04:21.373-05:00 level=INFO msg="Mutation detected: %s %s" create=gunshi-mcp-23a
+time=2026-01-04T06:04:21.374-05:00 level=INFO msg="Mutation detected: %s %s" create=gunshi-mcp-r2o
+time=2026-01-04T06:04:21.376-05:00 level=INFO msg="Mutation detected: %s %s" create=gunshi-mcp-p5x
+time=2026-01-04T06:04:21.378-05:00 level=INFO msg="Mutation detected: %s %s" create=gunshi-mcp-7n4
+time=2026-01-04T06:04:21.879-05:00 level=INFO msg="Export triggered by mutation events"
+time=2026-01-04T06:04:21.879-05:00 level=INFO msg="Starting %s..." !BADKEY=export
+time=2026-01-04T06:04:21.898-05:00 level=INFO msg="Exported to JSONL"
+time=2026-01-04T06:04:21.898-05:00 level=INFO msg="JSONL file created: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-01-04T06:04:21.898-05:00 level=INFO msg="File change detected: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-01-04T06:04:21.902-05:00 level=INFO msg="Export complete"
+time=2026-01-04T06:04:22.899-05:00 level=INFO msg="Import triggered by file change"
+time=2026-01-04T06:04:22.899-05:00 level=INFO msg="Starting %s..." !BADKEY=auto-import
+time=2026-01-04T06:04:22.899-05:00 level=INFO msg="Skipping %s: JSONL content unchanged" !BADKEY=auto-import
+time=2026-01-04T06:04:29.951-05:00 level=INFO msg="Mutation detected: %s %s" create=gunshi-mcp-1li
+time=2026-01-04T06:04:29.952-05:00 level=INFO msg="Mutation detected: %s %s" create=gunshi-mcp-jju
+time=2026-01-04T06:04:29.954-05:00 level=INFO msg="Mutation detected: %s %s" create=gunshi-mcp-vbv
+time=2026-01-04T06:04:29.955-05:00 level=INFO msg="Mutation detected: %s %s" create=gunshi-mcp-o83
+time=2026-01-04T06:04:29.956-05:00 level=INFO msg="Mutation detected: %s %s" create=gunshi-mcp-5ws
+time=2026-01-04T06:04:29.958-05:00 level=INFO msg="Mutation detected: %s %s" create=gunshi-mcp-i18
+time=2026-01-04T06:04:30.459-05:00 level=INFO msg="Export triggered by mutation events"
+time=2026-01-04T06:04:30.459-05:00 level=INFO msg="Starting %s..." !BADKEY=export
+time=2026-01-04T06:04:30.478-05:00 level=INFO msg="JSONL file created: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-01-04T06:04:30.478-05:00 level=INFO msg="File change detected: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-01-04T06:04:30.478-05:00 level=INFO msg="Exported to JSONL"
+time=2026-01-04T06:04:30.482-05:00 level=INFO msg="Export complete"
+time=2026-01-04T06:04:31.480-05:00 level=INFO msg="Import triggered by file change"
+time=2026-01-04T06:04:31.480-05:00 level=INFO msg="Starting %s..." !BADKEY=auto-import
+time=2026-01-04T06:04:31.480-05:00 level=INFO msg="Skipping %s: JSONL content unchanged" !BADKEY=auto-import
+time=2026-01-04T06:04:35.644-05:00 level=INFO msg="Mutation detected: %s %s" create=gunshi-mcp-6gg
+time=2026-01-04T06:04:35.645-05:00 level=INFO msg="Mutation detected: %s %s" create=gunshi-mcp-78g
+time=2026-01-04T06:04:35.646-05:00 level=INFO msg="Mutation detected: %s %s" create=gunshi-mcp-c5h
+time=2026-01-04T06:04:35.647-05:00 level=INFO msg="Mutation detected: %s %s" create=gunshi-mcp-6ya
+time=2026-01-04T06:04:35.649-05:00 level=INFO msg="Mutation detected: %s %s" create=gunshi-mcp-odv
+time=2026-01-04T06:04:35.651-05:00 level=INFO msg="Mutation detected: %s %s" create=gunshi-mcp-acc
+time=2026-01-04T06:04:36.152-05:00 level=INFO msg="Export triggered by mutation events"
+time=2026-01-04T06:04:36.152-05:00 level=INFO msg="Starting %s..." !BADKEY=export
+time=2026-01-04T06:04:36.171-05:00 level=INFO msg="Exported to JSONL"
+time=2026-01-04T06:04:36.171-05:00 level=INFO msg="JSONL file created: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-01-04T06:04:36.171-05:00 level=INFO msg="File change detected: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-01-04T06:04:36.174-05:00 level=INFO msg="Export complete"
+time=2026-01-04T06:04:37.172-05:00 level=INFO msg="Import triggered by file change"
+time=2026-01-04T06:04:37.172-05:00 level=INFO msg="Starting %s..." !BADKEY=auto-import
+time=2026-01-04T06:04:37.173-05:00 level=INFO msg="Skipping %s: JSONL content unchanged" !BADKEY=auto-import
+time=2026-01-04T06:04:42.252-05:00 level=INFO msg="Mutation detected: %s %s" create=gunshi-mcp-ere
+time=2026-01-04T06:04:42.254-05:00 level=INFO msg="Mutation detected: %s %s" create=gunshi-mcp-4tb
+time=2026-01-04T06:04:42.256-05:00 level=INFO msg="Mutation detected: %s %s" create=gunshi-mcp-a3d
+time=2026-01-04T06:04:42.257-05:00 level=INFO msg="Mutation detected: %s %s" create=gunshi-mcp-jdf
+time=2026-01-04T06:04:42.258-05:00 level=INFO msg="Mutation detected: %s %s" create=gunshi-mcp-b6a
+time=2026-01-04T06:04:42.259-05:00 level=INFO msg="Mutation detected: %s %s" create=gunshi-mcp-295
+time=2026-01-04T06:04:42.260-05:00 level=INFO msg="Mutation detected: %s %s" create=gunshi-mcp-5vs
+time=2026-01-04T06:04:42.760-05:00 level=INFO msg="Export triggered by mutation events"
+time=2026-01-04T06:04:42.760-05:00 level=INFO msg="Starting %s..." !BADKEY=export
+time=2026-01-04T06:04:42.781-05:00 level=INFO msg="JSONL file created: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-01-04T06:04:42.781-05:00 level=INFO msg="Exported to JSONL"
+time=2026-01-04T06:04:42.784-05:00 level=INFO msg="Export complete"
+time=2026-01-04T06:04:43.782-05:00 level=INFO msg="Import triggered by file change"
+time=2026-01-04T06:04:43.782-05:00 level=INFO msg="Starting %s..." !BADKEY=auto-import
+time=2026-01-04T06:04:43.782-05:00 level=INFO msg="Skipping %s: JSONL content unchanged" !BADKEY=auto-import
+time=2026-01-04T06:04:55.455-05:00 level=INFO msg="Mutation detected: %s %s" update=gunshi-mcp-4t6
+time=2026-01-04T06:04:55.550-05:00 level=INFO msg="Mutation detected: %s %s" update=gunshi-mcp-ikw
+time=2026-01-04T06:04:55.553-05:00 level=INFO msg="Mutation detected: %s %s" update=gunshi-mcp-ctb
+time=2026-01-04T06:04:55.554-05:00 level=INFO msg="Mutation detected: %s %s" update=gunshi-mcp-60m
+time=2026-01-04T06:04:55.557-05:00 level=INFO msg="Mutation detected: %s %s" update=gunshi-mcp-1ev
+time=2026-01-04T06:04:56.058-05:00 level=INFO msg="Export triggered by mutation events"
+time=2026-01-04T06:04:56.058-05:00 level=INFO msg="Starting %s..." !BADKEY=export
+time=2026-01-04T06:04:56.066-05:00 level=INFO msg="JSONL file created: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-01-04T06:04:56.066-05:00 level=INFO msg="Exported to JSONL"
+time=2026-01-04T06:04:56.066-05:00 level=INFO msg="Export complete"
+time=2026-01-04T06:04:57.067-05:00 level=INFO msg="Import triggered by file change"
+time=2026-01-04T06:04:57.068-05:00 level=INFO msg="Starting %s..." !BADKEY=auto-import
+time=2026-01-04T06:04:57.068-05:00 level=INFO msg="Skipping %s: JSONL content unchanged" !BADKEY=auto-import
+time=2026-01-04T06:05:04.504-05:00 level=INFO msg="Mutation detected: %s %s" update=gunshi-mcp-r5s
+time=2026-01-04T06:05:05.005-05:00 level=INFO msg="Export triggered by mutation events"
+time=2026-01-04T06:05:05.005-05:00 level=INFO msg="Starting %s..." !BADKEY=export
+time=2026-01-04T06:05:05.013-05:00 level=INFO msg="JSONL file created: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-01-04T06:05:05.013-05:00 level=INFO msg="Exported to JSONL"
+time=2026-01-04T06:05:05.013-05:00 level=INFO msg="Export complete"
+time=2026-01-04T06:05:06.015-05:00 level=INFO msg="Import triggered by file change"
+time=2026-01-04T06:05:06.015-05:00 level=INFO msg="Starting %s..." !BADKEY=auto-import
+time=2026-01-04T06:05:06.015-05:00 level=INFO msg="Skipping %s: JSONL content unchanged" !BADKEY=auto-import
+time=2026-01-04T06:05:13.343-05:00 level=INFO msg="Mutation detected: %s %s" update=gunshi-mcp-koi
+time=2026-01-04T06:05:13.844-05:00 level=INFO msg="Export triggered by mutation events"
+time=2026-01-04T06:05:13.844-05:00 level=INFO msg="Starting %s..." !BADKEY=export
+time=2026-01-04T06:05:13.852-05:00 level=INFO msg="JSONL file created: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-01-04T06:05:13.852-05:00 level=INFO msg="Exported to JSONL"
+time=2026-01-04T06:05:13.852-05:00 level=INFO msg="Export complete"
+time=2026-01-04T06:05:14.853-05:00 level=INFO msg="Import triggered by file change"
+time=2026-01-04T06:05:14.853-05:00 level=INFO msg="Starting %s..." !BADKEY=auto-import
+time=2026-01-04T06:05:14.853-05:00 level=INFO msg="Skipping %s: JSONL content unchanged" !BADKEY=auto-import
+time=2026-01-04T06:06:47.487-05:00 level=INFO msg="Mutation detected: %s %s" status=gunshi-mcp-7ar
+time=2026-01-04T06:06:47.489-05:00 level=INFO msg="Mutation detected: %s %s" status=gunshi-mcp-w6q
+time=2026-01-04T06:06:47.491-05:00 level=INFO msg="Mutation detected: %s %s" status=gunshi-mcp-5l2
+time=2026-01-04T06:06:47.492-05:00 level=INFO msg="Mutation detected: %s %s" status=gunshi-mcp-alo
+time=2026-01-04T06:06:47.494-05:00 level=INFO msg="Mutation detected: %s %s" status=gunshi-mcp-0gd
+time=2026-01-04T06:06:47.496-05:00 level=INFO msg="Mutation detected: %s %s" status=gunshi-mcp-h4v
+time=2026-01-04T06:06:47.497-05:00 level=INFO msg="Mutation detected: %s %s" status=gunshi-mcp-rvz
+time=2026-01-04T06:06:47.499-05:00 level=INFO msg="Mutation detected: %s %s" status=gunshi-mcp-t5d
+time=2026-01-04T06:06:48.000-05:00 level=INFO msg="Export triggered by mutation events"
+time=2026-01-04T06:06:48.000-05:00 level=INFO msg="Starting %s..." !BADKEY=export
+time=2026-01-04T06:06:48.008-05:00 level=INFO msg="JSONL file created: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-01-04T06:06:48.008-05:00 level=INFO msg="Exported to JSONL"
+time=2026-01-04T06:06:48.009-05:00 level=INFO msg="Export complete"
+time=2026-01-04T06:06:49.009-05:00 level=INFO msg="Import triggered by file change"
+time=2026-01-04T06:06:49.010-05:00 level=INFO msg="Starting %s..." !BADKEY=auto-import
+time=2026-01-04T06:06:49.010-05:00 level=INFO msg="Skipping %s: JSONL content unchanged" !BADKEY=auto-import
+time=2026-01-04T06:14:27.005-05:00 level=INFO msg="Mutation detected: %s %s" status=gunshi-mcp-5n1
+time=2026-01-04T06:14:27.505-05:00 level=INFO msg="Export triggered by mutation events"
+time=2026-01-04T06:14:27.505-05:00 level=INFO msg="Starting %s..." !BADKEY=export
+time=2026-01-04T06:14:27.513-05:00 level=INFO msg="JSONL file created: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-01-04T06:14:27.513-05:00 level=INFO msg="Exported to JSONL"
+time=2026-01-04T06:14:27.513-05:00 level=INFO msg="Export complete"
+time=2026-01-04T06:14:28.514-05:00 level=INFO msg="Import triggered by file change"
+time=2026-01-04T06:14:28.514-05:00 level=INFO msg="Starting %s..." !BADKEY=auto-import
+time=2026-01-04T06:14:28.515-05:00 level=INFO msg="Skipping %s: JSONL content unchanged" !BADKEY=auto-import
+time=2026-01-04T06:15:46.030-05:00 level=INFO msg="Mutation detected: %s %s" status=gunshi-mcp-5n1
+time=2026-01-04T06:15:46.531-05:00 level=INFO msg="Export triggered by mutation events"
+time=2026-01-04T06:15:46.531-05:00 level=INFO msg="Starting %s..." !BADKEY=export
+time=2026-01-04T06:15:46.539-05:00 level=INFO msg="JSONL file created: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-01-04T06:15:46.539-05:00 level=INFO msg="Exported to JSONL"
+time=2026-01-04T06:15:46.540-05:00 level=INFO msg="Export complete"
+time=2026-01-04T06:15:47.541-05:00 level=INFO msg="Import triggered by file change"
+time=2026-01-04T06:15:47.541-05:00 level=INFO msg="Starting %s..." !BADKEY=auto-import
+time=2026-01-04T06:15:47.541-05:00 level=INFO msg="Skipping %s: JSONL content unchanged" !BADKEY=auto-import
+time=2026-01-04T06:17:35.370-05:00 level=INFO msg="Mutation detected: %s %s" status=gunshi-mcp-vhp
+time=2026-01-04T06:17:35.870-05:00 level=INFO msg="Export triggered by mutation events"
+time=2026-01-04T06:17:35.870-05:00 level=INFO msg="Starting %s..." !BADKEY=export
+time=2026-01-04T06:17:35.878-05:00 level=INFO msg="JSONL file created: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-01-04T06:17:35.878-05:00 level=INFO msg="Exported to JSONL"
+time=2026-01-04T06:17:35.878-05:00 level=INFO msg="File change detected: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-01-04T06:17:35.878-05:00 level=INFO msg="Export complete"
+time=2026-01-04T06:17:36.880-05:00 level=INFO msg="Import triggered by file change"
+time=2026-01-04T06:17:36.880-05:00 level=INFO msg="Starting %s..." !BADKEY=auto-import
+time=2026-01-04T06:17:36.880-05:00 level=INFO msg="Skipping %s: JSONL content unchanged" !BADKEY=auto-import
+time=2026-01-04T06:18:39.992-05:00 level=INFO msg="Mutation detected: %s %s" status=gunshi-mcp-vhp
+time=2026-01-04T06:18:40.493-05:00 level=INFO msg="Export triggered by mutation events"
+time=2026-01-04T06:18:40.493-05:00 level=INFO msg="Starting %s..." !BADKEY=export
+time=2026-01-04T06:18:40.502-05:00 level=INFO msg="JSONL file created: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-01-04T06:18:40.502-05:00 level=INFO msg="Exported to JSONL"
+time=2026-01-04T06:18:40.502-05:00 level=INFO msg="Export complete"
+time=2026-01-04T06:18:41.503-05:00 level=INFO msg="Import triggered by file change"
+time=2026-01-04T06:18:41.503-05:00 level=INFO msg="Starting %s..." !BADKEY=auto-import
+time=2026-01-04T06:18:41.503-05:00 level=INFO msg="Skipping %s: JSONL content unchanged" !BADKEY=auto-import
+time=2026-01-04T06:25:19.026-05:00 level=INFO msg="Mutation detected: %s %s" create=gunshi-mcp-rfi
+time=2026-01-04T06:25:19.526-05:00 level=INFO msg="Export triggered by mutation events"
+time=2026-01-04T06:25:19.526-05:00 level=INFO msg="Starting %s..." !BADKEY=export
+time=2026-01-04T06:25:19.534-05:00 level=INFO msg="JSONL file created: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-01-04T06:25:19.535-05:00 level=INFO msg="Exported to JSONL"
+time=2026-01-04T06:25:19.535-05:00 level=INFO msg="Export complete"
+time=2026-01-04T06:25:20.536-05:00 level=INFO msg="Import triggered by file change"
+time=2026-01-04T06:25:20.536-05:00 level=INFO msg="Starting %s..." !BADKEY=auto-import
+time=2026-01-04T06:25:20.536-05:00 level=INFO msg="Skipping %s: JSONL content unchanged" !BADKEY=auto-import
+time=2026-01-04T06:25:25.112-05:00 level=INFO msg="Mutation detected: %s %s" status=gunshi-mcp-rfi
+time=2026-01-04T06:25:25.613-05:00 level=INFO msg="Export triggered by mutation events"
+time=2026-01-04T06:25:25.613-05:00 level=INFO msg="Starting %s..." !BADKEY=export
+time=2026-01-04T06:25:25.622-05:00 level=INFO msg="JSONL file created: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-01-04T06:25:25.622-05:00 level=INFO msg="Exported to JSONL"
+time=2026-01-04T06:25:25.622-05:00 level=INFO msg="Export complete"
+time=2026-01-04T06:25:26.623-05:00 level=INFO msg="Import triggered by file change"
+time=2026-01-04T06:25:26.623-05:00 level=INFO msg="Starting %s..." !BADKEY=auto-import
+time=2026-01-04T06:25:26.624-05:00 level=INFO msg="Skipping %s: JSONL content unchanged" !BADKEY=auto-import
+time=2026-01-04T06:25:46.249-05:00 level=INFO msg="Mutation detected: %s %s" status=gunshi-mcp-rfi
+time=2026-01-04T06:25:46.750-05:00 level=INFO msg="Export triggered by mutation events"
+time=2026-01-04T06:25:46.750-05:00 level=INFO msg="Starting %s..." !BADKEY=export
+time=2026-01-04T06:25:46.759-05:00 level=INFO msg="JSONL file created: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-01-04T06:25:46.759-05:00 level=INFO msg="File change detected: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-01-04T06:25:46.759-05:00 level=INFO msg="Exported to JSONL"
+time=2026-01-04T06:25:46.759-05:00 level=INFO msg="Export complete"
+time=2026-01-04T06:25:47.760-05:00 level=INFO msg="Import triggered by file change"
+time=2026-01-04T06:25:47.760-05:00 level=INFO msg="Starting %s..." !BADKEY=auto-import
+time=2026-01-04T06:25:47.761-05:00 level=INFO msg="Skipping %s: JSONL content unchanged" !BADKEY=auto-import
+time=2026-01-04T06:29:11.944-05:00 level=INFO msg="Git ref change detected: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.git/refs/heads/main.lock
+time=2026-01-04T06:29:12.945-05:00 level=INFO msg="Import triggered by file change"
+time=2026-01-04T06:29:12.945-05:00 level=INFO msg="Starting %s..." !BADKEY=auto-import
+time=2026-01-04T06:29:12.946-05:00 level=INFO msg="Skipping %s: JSONL content unchanged" !BADKEY=auto-import
+time=2026-01-04T06:29:22.039-05:00 level=INFO msg="JSONL file created: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-01-04T06:29:22.039-05:00 level=INFO msg="File change detected: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-01-04T06:29:23.041-05:00 level=INFO msg="Import triggered by file change"
+time=2026-01-04T06:29:23.041-05:00 level=INFO msg="Starting %s..." !BADKEY=auto-import
+time=2026-01-04T06:29:23.042-05:00 level=INFO msg="Skipping %s: JSONL content unchanged" !BADKEY=auto-import
+time=2026-01-04T06:31:36.728-05:00 level=INFO msg="Mutation detected: %s %s" status=gunshi-mcp-ghh
+time=2026-01-04T06:31:37.228-05:00 level=INFO msg="Export triggered by mutation events"
+time=2026-01-04T06:31:37.228-05:00 level=INFO msg="Starting %s..." !BADKEY=export
+time=2026-01-04T06:31:37.237-05:00 level=INFO msg="JSONL file created: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-01-04T06:31:37.237-05:00 level=INFO msg="Exported to JSONL"
+time=2026-01-04T06:31:37.237-05:00 level=INFO msg="Export complete"
+time=2026-01-04T06:31:38.238-05:00 level=INFO msg="Import triggered by file change"
+time=2026-01-04T06:31:38.238-05:00 level=INFO msg="Starting %s..." !BADKEY=auto-import
+time=2026-01-04T06:31:38.239-05:00 level=INFO msg="Skipping %s: JSONL content unchanged" !BADKEY=auto-import
+time=2026-01-04T06:33:51.200-05:00 level=INFO msg="JSONL file created: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-01-04T06:33:51.200-05:00 level=INFO msg="File change detected: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-01-04T06:33:51.224-05:00 level=INFO msg="Git ref change detected: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.git/refs/heads/main.lock
+time=2026-01-04T06:33:52.225-05:00 level=INFO msg="Import triggered by file change"
+time=2026-01-04T06:33:52.225-05:00 level=INFO msg="Starting %s..." !BADKEY=auto-import
+time=2026-01-04T06:33:52.226-05:00 level=INFO msg="Skipping %s: JSONL content unchanged" !BADKEY=auto-import
+time=2026-01-04T06:34:03.556-05:00 level=INFO msg="Mutation detected: %s %s" status=gunshi-mcp-ghh
+time=2026-01-04T06:34:04.057-05:00 level=INFO msg="Export triggered by mutation events"
+time=2026-01-04T06:34:04.057-05:00 level=INFO msg="Starting %s..." !BADKEY=export
+time=2026-01-04T06:34:04.065-05:00 level=INFO msg="JSONL file created: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-01-04T06:34:04.065-05:00 level=INFO msg="Exported to JSONL"
+time=2026-01-04T06:34:04.065-05:00 level=INFO msg="Export complete"
+time=2026-01-04T06:34:05.067-05:00 level=INFO msg="Import triggered by file change"
+time=2026-01-04T06:34:05.067-05:00 level=INFO msg="Starting %s..." !BADKEY=auto-import
+time=2026-01-04T06:34:05.067-05:00 level=INFO msg="Skipping %s: JSONL content unchanged" !BADKEY=auto-import
+time=2026-01-04T06:34:13.175-05:00 level=INFO msg="JSONL file created: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-01-04T06:34:13.175-05:00 level=INFO msg="File change detected: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-01-04T06:34:14.177-05:00 level=INFO msg="Import triggered by file change"
+time=2026-01-04T06:34:14.177-05:00 level=INFO msg="Starting %s..." !BADKEY=auto-import
+time=2026-01-04T06:34:14.178-05:00 level=INFO msg="Skipping %s: JSONL content unchanged" !BADKEY=auto-import
+time=2026-01-04T06:34:22.086-05:00 level=INFO msg="JSONL file created: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-01-04T06:34:22.086-05:00 level=INFO msg="File change detected: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-01-04T06:34:22.153-05:00 level=INFO msg="JSONL file created: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-01-04T06:34:22.188-05:00 level=INFO msg="Git ref change detected: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.git/refs/heads/main.lock
+time=2026-01-04T06:34:22.707-05:00 level=INFO msg="JSONL file created: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-01-04T06:34:22.707-05:00 level=INFO msg="File change detected: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-01-04T06:34:23.063-05:00 level=INFO msg="JSONL file created: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-01-04T06:34:23.189-05:00 level=INFO msg="Import triggered by file change"
+time=2026-01-04T06:34:23.189-05:00 level=INFO msg="Starting %s..." !BADKEY=auto-import
+time=2026-01-04T06:34:23.190-05:00 level=INFO msg="Skipping %s: JSONL content unchanged" !BADKEY=auto-import
+time=2026-01-04T06:34:24.064-05:00 level=INFO msg="Import triggered by file change"
+time=2026-01-04T06:34:24.064-05:00 level=INFO msg="Starting %s..." !BADKEY=auto-import
+time=2026-01-04T06:34:24.065-05:00 level=INFO msg="Skipping %s: JSONL content unchanged" !BADKEY=auto-import
+time=2026-01-04T06:34:26.352-05:00 level=INFO msg="JSONL file created: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-01-04T06:34:26.352-05:00 level=INFO msg="File change detected: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-01-04T06:34:27.352-05:00 level=INFO msg="Import triggered by file change"
+time=2026-01-04T06:34:27.353-05:00 level=INFO msg="Starting %s..." !BADKEY=auto-import
+time=2026-01-04T06:34:27.354-05:00 level=INFO msg="Skipping %s: JSONL content unchanged" !BADKEY=auto-import
+time=2026-01-04T06:34:33.245-05:00 level=INFO msg="Mutation detected: %s %s" status=gunshi-mcp-k06
+time=2026-01-04T06:34:33.746-05:00 level=INFO msg="Export triggered by mutation events"
+time=2026-01-04T06:34:33.746-05:00 level=INFO msg="Starting %s..." !BADKEY=export
+time=2026-01-04T06:34:33.755-05:00 level=INFO msg="JSONL file created: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-01-04T06:34:33.755-05:00 level=INFO msg="Exported to JSONL"
+time=2026-01-04T06:34:33.755-05:00 level=INFO msg="Export complete"
+time=2026-01-04T06:34:34.756-05:00 level=INFO msg="Import triggered by file change"
+time=2026-01-04T06:34:34.756-05:00 level=INFO msg="Starting %s..." !BADKEY=auto-import
+time=2026-01-04T06:34:34.756-05:00 level=INFO msg="Skipping %s: JSONL content unchanged" !BADKEY=auto-import
+time=2026-01-04T06:34:56.712-05:00 level=INFO msg="JSONL file created: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-01-04T06:34:56.712-05:00 level=INFO msg="File change detected: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-01-04T06:34:56.736-05:00 level=INFO msg="Git ref change detected: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.git/refs/heads/main.lock
+time=2026-01-04T06:34:57.737-05:00 level=INFO msg="Import triggered by file change"
+time=2026-01-04T06:34:57.738-05:00 level=INFO msg="Starting %s..." !BADKEY=auto-import
+time=2026-01-04T06:34:57.739-05:00 level=INFO msg="Skipping %s: JSONL content unchanged" !BADKEY=auto-import
+time=2026-01-04T06:35:20.715-05:00 level=INFO msg="Mutation detected: %s %s" status=gunshi-mcp-k06
+time=2026-01-04T06:35:21.216-05:00 level=INFO msg="Export triggered by mutation events"
+time=2026-01-04T06:35:21.216-05:00 level=INFO msg="Starting %s..." !BADKEY=export
+time=2026-01-04T06:35:21.224-05:00 level=INFO msg="JSONL file created: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-01-04T06:35:21.224-05:00 level=INFO msg="File change detected: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-01-04T06:35:21.224-05:00 level=INFO msg="Exported to JSONL"
+time=2026-01-04T06:35:21.225-05:00 level=INFO msg="Export complete"
+time=2026-01-04T06:35:22.226-05:00 level=INFO msg="Import triggered by file change"
+time=2026-01-04T06:35:22.226-05:00 level=INFO msg="Starting %s..." !BADKEY=auto-import
+time=2026-01-04T06:35:22.226-05:00 level=INFO msg="Skipping %s: JSONL content unchanged" !BADKEY=auto-import
+time=2026-01-04T06:35:23.595-05:00 level=INFO msg="JSONL file created: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-01-04T06:35:23.595-05:00 level=INFO msg="File change detected: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-01-04T06:35:23.663-05:00 level=INFO msg="JSONL file created: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-01-04T06:35:23.687-05:00 level=INFO msg="Git ref change detected: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.git/refs/heads/main.lock
+time=2026-01-04T06:35:24.202-05:00 level=INFO msg="JSONL file created: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-01-04T06:35:24.202-05:00 level=INFO msg="File change detected: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-01-04T06:35:24.553-05:00 level=INFO msg="JSONL file created: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-01-04T06:35:24.687-05:00 level=INFO msg="Import triggered by file change"
+time=2026-01-04T06:35:24.688-05:00 level=INFO msg="Starting %s..." !BADKEY=auto-import
+time=2026-01-04T06:35:24.688-05:00 level=INFO msg="Skipping %s: JSONL content unchanged" !BADKEY=auto-import
+time=2026-01-04T06:35:25.554-05:00 level=INFO msg="Import triggered by file change"
+time=2026-01-04T06:35:25.554-05:00 level=INFO msg="Starting %s..." !BADKEY=auto-import
+time=2026-01-04T06:35:25.554-05:00 level=INFO msg="Skipping %s: JSONL content unchanged" !BADKEY=auto-import
+time=2026-01-04T06:35:28.402-05:00 level=INFO msg="JSONL file created: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-01-04T06:35:28.402-05:00 level=INFO msg="File change detected: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-01-04T06:35:29.403-05:00 level=INFO msg="Import triggered by file change"
+time=2026-01-04T06:35:29.403-05:00 level=INFO msg="Starting %s..." !BADKEY=auto-import
+time=2026-01-04T06:35:29.404-05:00 level=INFO msg="Skipping %s: JSONL content unchanged" !BADKEY=auto-import
+time=2026-01-04T06:35:41.458-05:00 level=INFO msg="Mutation detected: %s %s" status=gunshi-mcp-6wm
+time=2026-01-04T06:35:41.958-05:00 level=INFO msg="Export triggered by mutation events"
+time=2026-01-04T06:35:41.958-05:00 level=INFO msg="Starting %s..." !BADKEY=export
+time=2026-01-04T06:35:41.966-05:00 level=INFO msg="JSONL file created: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-01-04T06:35:41.966-05:00 level=INFO msg="Exported to JSONL"
+time=2026-01-04T06:35:41.967-05:00 level=INFO msg="Export complete"
+time=2026-01-04T06:35:42.968-05:00 level=INFO msg="Import triggered by file change"
+time=2026-01-04T06:35:42.968-05:00 level=INFO msg="Starting %s..." !BADKEY=auto-import
+time=2026-01-04T06:35:42.968-05:00 level=INFO msg="Skipping %s: JSONL content unchanged" !BADKEY=auto-import
+time=2026-01-04T06:36:10.146-05:00 level=INFO msg="JSONL file created: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-01-04T06:36:10.146-05:00 level=INFO msg="File change detected: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-01-04T06:36:10.168-05:00 level=INFO msg="Git ref change detected: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.git/refs/heads/main.lock
+time=2026-01-04T06:36:11.169-05:00 level=INFO msg="Import triggered by file change"
+time=2026-01-04T06:36:11.169-05:00 level=INFO msg="Starting %s..." !BADKEY=auto-import
+time=2026-01-04T06:36:11.171-05:00 level=INFO msg="Skipping %s: JSONL content unchanged" !BADKEY=auto-import
+time=2026-01-04T06:36:12.913-05:00 level=INFO msg="Mutation detected: %s %s" status=gunshi-mcp-6wm
+time=2026-01-04T06:36:13.414-05:00 level=INFO msg="Export triggered by mutation events"
+time=2026-01-04T06:36:13.414-05:00 level=INFO msg="Starting %s..." !BADKEY=export
+time=2026-01-04T06:36:13.423-05:00 level=INFO msg="JSONL file created: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-01-04T06:36:13.423-05:00 level=INFO msg="Exported to JSONL"
+time=2026-01-04T06:36:13.423-05:00 level=INFO msg="Export complete"
+time=2026-01-04T06:36:14.424-05:00 level=INFO msg="Import triggered by file change"
+time=2026-01-04T06:36:14.424-05:00 level=INFO msg="Starting %s..." !BADKEY=auto-import
+time=2026-01-04T06:36:14.424-05:00 level=INFO msg="Skipping %s: JSONL content unchanged" !BADKEY=auto-import
+time=2026-01-04T06:36:15.660-05:00 level=INFO msg="JSONL file created: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-01-04T06:36:15.660-05:00 level=INFO msg="File change detected: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-01-04T06:36:15.730-05:00 level=INFO msg="JSONL file created: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-01-04T06:36:15.753-05:00 level=INFO msg="Git ref change detected: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.git/refs/heads/main.lock
+time=2026-01-04T06:36:16.250-05:00 level=INFO msg="JSONL file created: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-01-04T06:36:16.250-05:00 level=INFO msg="File change detected: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-01-04T06:36:16.596-05:00 level=INFO msg="JSONL file created: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-01-04T06:36:17.258-05:00 level=INFO msg="JSONL file created: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-01-04T06:36:17.258-05:00 level=INFO msg="File change detected: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-01-04T06:36:17.597-05:00 level=INFO msg="Import triggered by file change"
+time=2026-01-04T06:36:17.597-05:00 level=INFO msg="Starting %s..." !BADKEY=auto-import
+time=2026-01-04T06:36:17.598-05:00 level=INFO msg="Skipping %s: JSONL content unchanged" !BADKEY=auto-import
+time=2026-01-04T06:36:18.259-05:00 level=INFO msg="Import triggered by file change"
+time=2026-01-04T06:36:18.259-05:00 level=INFO msg="Starting %s..." !BADKEY=auto-import
+time=2026-01-04T06:36:18.259-05:00 level=INFO msg="Skipping %s: JSONL content unchanged" !BADKEY=auto-import
+time=2026-01-04T07:04:01.854-05:00 level=INFO msg="Mutation detected: %s %s" status=gunshi-mcp-ere
+time=2026-01-04T07:04:02.354-05:00 level=INFO msg="Export triggered by mutation events"
+time=2026-01-04T07:04:02.354-05:00 level=INFO msg="Starting %s..." !BADKEY=export
+time=2026-01-04T07:04:02.363-05:00 level=INFO msg="JSONL file created: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-01-04T07:04:02.363-05:00 level=INFO msg="File change detected: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-01-04T07:04:02.363-05:00 level=INFO msg="Exported to JSONL"
+time=2026-01-04T07:04:02.363-05:00 level=INFO msg="Export complete"
+time=2026-01-04T07:04:03.364-05:00 level=INFO msg="Import triggered by file change"
+time=2026-01-04T07:04:03.364-05:00 level=INFO msg="Starting %s..." !BADKEY=auto-import
+time=2026-01-04T07:04:03.365-05:00 level=INFO msg="Skipping %s: JSONL content unchanged" !BADKEY=auto-import
+time=2026-01-04T07:06:29.103-05:00 level=INFO msg="JSONL file created: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-01-04T07:06:29.103-05:00 level=INFO msg="File change detected: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-01-04T07:06:29.139-05:00 level=INFO msg="Git ref change detected: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.git/refs/heads/main.lock
+time=2026-01-04T07:06:30.140-05:00 level=INFO msg="Import triggered by file change"
+time=2026-01-04T07:06:30.140-05:00 level=INFO msg="Starting %s..." !BADKEY=auto-import
+time=2026-01-04T07:06:30.142-05:00 level=INFO msg="Skipping %s: JSONL content unchanged" !BADKEY=auto-import
+time=2026-01-04T07:06:31.862-05:00 level=INFO msg="Mutation detected: %s %s" status=gunshi-mcp-ere
+time=2026-01-04T07:06:32.363-05:00 level=INFO msg="Export triggered by mutation events"
+time=2026-01-04T07:06:32.363-05:00 level=INFO msg="Starting %s..." !BADKEY=export
+time=2026-01-04T07:06:32.371-05:00 level=INFO msg="JSONL file created: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-01-04T07:06:32.371-05:00 level=INFO msg="File change detected: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-01-04T07:06:32.371-05:00 level=INFO msg="Exported to JSONL"
+time=2026-01-04T07:06:32.371-05:00 level=INFO msg="Export complete"
+time=2026-01-04T07:06:33.372-05:00 level=INFO msg="Import triggered by file change"
+time=2026-01-04T07:06:33.373-05:00 level=INFO msg="Starting %s..." !BADKEY=auto-import
+time=2026-01-04T07:06:33.373-05:00 level=INFO msg="Skipping %s: JSONL content unchanged" !BADKEY=auto-import
+time=2026-01-04T07:06:34.549-05:00 level=INFO msg="JSONL file created: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-01-04T07:06:34.549-05:00 level=INFO msg="File change detected: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-01-04T07:06:34.627-05:00 level=INFO msg="JSONL file created: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-01-04T07:06:34.650-05:00 level=INFO msg="Git ref change detected: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.git/refs/heads/main.lock
+time=2026-01-04T07:06:35.180-05:00 level=INFO msg="JSONL file created: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-01-04T07:06:35.180-05:00 level=INFO msg="File change detected: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-01-04T07:06:35.531-05:00 level=INFO msg="JSONL file created: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-01-04T07:06:35.651-05:00 level=INFO msg="Import triggered by file change"
+time=2026-01-04T07:06:35.651-05:00 level=INFO msg="Starting %s..." !BADKEY=auto-import
+time=2026-01-04T07:06:35.652-05:00 level=INFO msg="Skipping %s: JSONL content unchanged" !BADKEY=auto-import
+time=2026-01-04T07:06:36.116-05:00 level=INFO msg="JSONL file created: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-01-04T07:06:36.116-05:00 level=INFO msg="File change detected: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-01-04T07:06:36.533-05:00 level=INFO msg="Import triggered by file change"
+time=2026-01-04T07:06:36.533-05:00 level=INFO msg="Starting %s..." !BADKEY=auto-import
+time=2026-01-04T07:06:36.534-05:00 level=INFO msg="Skipping %s: JSONL content unchanged" !BADKEY=auto-import
+time=2026-01-04T07:06:37.117-05:00 level=INFO msg="Import triggered by file change"
+time=2026-01-04T07:06:37.118-05:00 level=INFO msg="Starting %s..." !BADKEY=auto-import
+time=2026-01-04T07:06:37.118-05:00 level=INFO msg="Skipping %s: JSONL content unchanged" !BADKEY=auto-import
+time=2026-01-04T07:14:31.805-05:00 level=INFO msg="Mutation detected: %s %s" status=gunshi-mcp-56l
+time=2026-01-04T07:14:32.305-05:00 level=INFO msg="Export triggered by mutation events"
+time=2026-01-04T07:14:32.305-05:00 level=INFO msg="Starting %s..." !BADKEY=export
+time=2026-01-04T07:14:32.314-05:00 level=INFO msg="JSONL file created: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-01-04T07:14:32.314-05:00 level=INFO msg="Exported to JSONL"
+time=2026-01-04T07:14:32.314-05:00 level=INFO msg="Export complete"
+time=2026-01-04T07:14:33.315-05:00 level=INFO msg="Import triggered by file change"
+time=2026-01-04T07:14:33.316-05:00 level=INFO msg="Starting %s..." !BADKEY=auto-import
+time=2026-01-04T07:14:33.316-05:00 level=INFO msg="Skipping %s: JSONL content unchanged" !BADKEY=auto-import
+time=2026-01-04T07:18:09.013-05:00 level=INFO msg="Mutation detected: %s %s" status=gunshi-mcp-56l
+time=2026-01-04T07:18:09.514-05:00 level=INFO msg="Export triggered by mutation events"
+time=2026-01-04T07:18:09.514-05:00 level=INFO msg="Starting %s..." !BADKEY=export
+time=2026-01-04T07:18:09.523-05:00 level=INFO msg="JSONL file created: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-01-04T07:18:09.523-05:00 level=INFO msg="Exported to JSONL"
+time=2026-01-04T07:18:09.523-05:00 level=INFO msg="Export complete"
+time=2026-01-04T07:18:10.524-05:00 level=INFO msg="Import triggered by file change"
+time=2026-01-04T07:18:10.524-05:00 level=INFO msg="Starting %s..." !BADKEY=auto-import
+time=2026-01-04T07:18:10.525-05:00 level=INFO msg="Skipping %s: JSONL content unchanged" !BADKEY=auto-import
+time=2026-01-04T07:18:31.928-05:00 level=INFO msg="Mutation detected: %s %s" status=gunshi-mcp-6eu
+time=2026-01-04T07:18:32.428-05:00 level=INFO msg="Export triggered by mutation events"
+time=2026-01-04T07:18:32.428-05:00 level=INFO msg="Starting %s..." !BADKEY=export
+time=2026-01-04T07:18:32.436-05:00 level=INFO msg="JSONL file created: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-01-04T07:18:32.436-05:00 level=INFO msg="Exported to JSONL"
+time=2026-01-04T07:18:32.437-05:00 level=INFO msg="Export complete"
+time=2026-01-04T07:18:33.437-05:00 level=INFO msg="Import triggered by file change"
+time=2026-01-04T07:18:33.437-05:00 level=INFO msg="Starting %s..." !BADKEY=auto-import
+time=2026-01-04T07:18:33.437-05:00 level=INFO msg="Skipping %s: JSONL content unchanged" !BADKEY=auto-import
+time=2026-01-04T07:19:05.080-05:00 level=INFO msg="Mutation detected: %s %s" status=gunshi-mcp-6eu
+time=2026-01-04T07:19:05.581-05:00 level=INFO msg="Export triggered by mutation events"
+time=2026-01-04T07:19:05.581-05:00 level=INFO msg="Starting %s..." !BADKEY=export
+time=2026-01-04T07:19:05.590-05:00 level=INFO msg="JSONL file created: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-01-04T07:19:05.590-05:00 level=INFO msg="File change detected: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-01-04T07:19:05.590-05:00 level=INFO msg="Exported to JSONL"
+time=2026-01-04T07:19:05.591-05:00 level=INFO msg="Export complete"
+time=2026-01-04T07:19:06.592-05:00 level=INFO msg="Import triggered by file change"
+time=2026-01-04T07:19:06.592-05:00 level=INFO msg="Starting %s..." !BADKEY=auto-import
+time=2026-01-04T07:19:06.593-05:00 level=INFO msg="Skipping %s: JSONL content unchanged" !BADKEY=auto-import
+time=2026-01-04T07:19:08.121-05:00 level=INFO msg="Mutation detected: %s %s" status=gunshi-mcp-wro
+time=2026-01-04T07:19:08.622-05:00 level=INFO msg="Export triggered by mutation events"
+time=2026-01-04T07:19:08.622-05:00 level=INFO msg="Starting %s..." !BADKEY=export
+time=2026-01-04T07:19:08.630-05:00 level=INFO msg="JSONL file created: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-01-04T07:19:08.630-05:00 level=INFO msg="Exported to JSONL"
+time=2026-01-04T07:19:08.630-05:00 level=INFO msg="Export complete"
+time=2026-01-04T07:19:09.631-05:00 level=INFO msg="Import triggered by file change"
+time=2026-01-04T07:19:09.631-05:00 level=INFO msg="Starting %s..." !BADKEY=auto-import
+time=2026-01-04T07:19:09.632-05:00 level=INFO msg="Skipping %s: JSONL content unchanged" !BADKEY=auto-import
+time=2026-01-04T07:20:51.443-05:00 level=INFO msg="Mutation detected: %s %s" status=gunshi-mcp-wro
+time=2026-01-04T07:20:51.943-05:00 level=INFO msg="Export triggered by mutation events"
+time=2026-01-04T07:20:51.943-05:00 level=INFO msg="Starting %s..." !BADKEY=export
+time=2026-01-04T07:20:51.952-05:00 level=INFO msg="Exported to JSONL"
+time=2026-01-04T07:20:51.952-05:00 level=INFO msg="JSONL file created: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-01-04T07:20:51.952-05:00 level=INFO msg="File change detected: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-01-04T07:20:51.952-05:00 level=INFO msg="Export complete"
+time=2026-01-04T07:20:52.953-05:00 level=INFO msg="Import triggered by file change"
+time=2026-01-04T07:20:52.953-05:00 level=INFO msg="Starting %s..." !BADKEY=auto-import
+time=2026-01-04T07:20:52.953-05:00 level=INFO msg="Skipping %s: JSONL content unchanged" !BADKEY=auto-import
+time=2026-01-04T07:20:55.070-05:00 level=INFO msg="Mutation detected: %s %s" status=gunshi-mcp-dk9
+time=2026-01-04T07:20:55.570-05:00 level=INFO msg="Export triggered by mutation events"
+time=2026-01-04T07:20:55.570-05:00 level=INFO msg="Starting %s..." !BADKEY=export
+time=2026-01-04T07:20:55.578-05:00 level=INFO msg="JSONL file created: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-01-04T07:20:55.578-05:00 level=INFO msg="Exported to JSONL"
+time=2026-01-04T07:20:55.579-05:00 level=INFO msg="Export complete"
+time=2026-01-04T07:20:56.580-05:00 level=INFO msg="Import triggered by file change"
+time=2026-01-04T07:20:56.580-05:00 level=INFO msg="Starting %s..." !BADKEY=auto-import
+time=2026-01-04T07:20:56.580-05:00 level=INFO msg="Skipping %s: JSONL content unchanged" !BADKEY=auto-import
+time=2026-01-04T07:22:32.330-05:00 level=INFO msg="Mutation detected: %s %s" status=gunshi-mcp-dk9
+time=2026-01-04T07:22:32.831-05:00 level=INFO msg="Export triggered by mutation events"
+time=2026-01-04T07:22:32.831-05:00 level=INFO msg="Starting %s..." !BADKEY=export
+time=2026-01-04T07:22:32.840-05:00 level=INFO msg="JSONL file created: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-01-04T07:22:32.840-05:00 level=INFO msg="Exported to JSONL"
+time=2026-01-04T07:22:32.840-05:00 level=INFO msg="Export complete"
+time=2026-01-04T07:22:33.841-05:00 level=INFO msg="Import triggered by file change"
+time=2026-01-04T07:22:33.842-05:00 level=INFO msg="Starting %s..." !BADKEY=auto-import
+time=2026-01-04T07:22:33.842-05:00 level=INFO msg="Skipping %s: JSONL content unchanged" !BADKEY=auto-import
+time=2026-01-04T07:22:38.609-05:00 level=INFO msg="Mutation detected: %s %s" status=gunshi-mcp-8rf
+time=2026-01-04T07:22:39.110-05:00 level=INFO msg="Export triggered by mutation events"
+time=2026-01-04T07:22:39.110-05:00 level=INFO msg="Starting %s..." !BADKEY=export
+time=2026-01-04T07:22:39.119-05:00 level=INFO msg="JSONL file created: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-01-04T07:22:39.119-05:00 level=INFO msg="Exported to JSONL"
+time=2026-01-04T07:22:39.119-05:00 level=INFO msg="Export complete"
+time=2026-01-04T07:22:40.120-05:00 level=INFO msg="Import triggered by file change"
+time=2026-01-04T07:22:40.121-05:00 level=INFO msg="Starting %s..." !BADKEY=auto-import
+time=2026-01-04T07:22:40.121-05:00 level=INFO msg="Skipping %s: JSONL content unchanged" !BADKEY=auto-import
+time=2026-01-04T07:22:41.736-05:00 level=INFO msg="Mutation detected: %s %s" status=gunshi-mcp-5g4
+time=2026-01-04T07:22:42.236-05:00 level=INFO msg="Export triggered by mutation events"
+time=2026-01-04T07:22:42.236-05:00 level=INFO msg="Starting %s..." !BADKEY=export
+time=2026-01-04T07:22:42.245-05:00 level=INFO msg="JSONL file created: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-01-04T07:22:42.245-05:00 level=INFO msg="Exported to JSONL"
+time=2026-01-04T07:22:42.245-05:00 level=INFO msg="Export complete"
+time=2026-01-04T07:22:43.246-05:00 level=INFO msg="Import triggered by file change"
+time=2026-01-04T07:22:43.246-05:00 level=INFO msg="Starting %s..." !BADKEY=auto-import
+time=2026-01-04T07:22:43.246-05:00 level=INFO msg="Skipping %s: JSONL content unchanged" !BADKEY=auto-import
+time=2026-01-04T07:23:30.899-05:00 level=INFO msg="Mutation detected: %s %s" status=gunshi-mcp-5g4
+time=2026-01-04T07:23:31.400-05:00 level=INFO msg="Export triggered by mutation events"
+time=2026-01-04T07:23:31.400-05:00 level=INFO msg="Starting %s..." !BADKEY=export
+time=2026-01-04T07:23:31.409-05:00 level=INFO msg="JSONL file created: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-01-04T07:23:31.409-05:00 level=INFO msg="Exported to JSONL"
+time=2026-01-04T07:23:31.409-05:00 level=INFO msg="Export complete"
+time=2026-01-04T07:23:32.410-05:00 level=INFO msg="Import triggered by file change"
+time=2026-01-04T07:23:32.410-05:00 level=INFO msg="Starting %s..." !BADKEY=auto-import
+time=2026-01-04T07:23:32.410-05:00 level=INFO msg="Skipping %s: JSONL content unchanged" !BADKEY=auto-import
+time=2026-01-04T07:23:35.988-05:00 level=INFO msg="Mutation detected: %s %s" status=gunshi-mcp-muv
+time=2026-01-04T07:23:36.489-05:00 level=INFO msg="Export triggered by mutation events"
+time=2026-01-04T07:23:36.489-05:00 level=INFO msg="Starting %s..." !BADKEY=export
+time=2026-01-04T07:23:36.498-05:00 level=INFO msg="JSONL file created: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-01-04T07:23:36.498-05:00 level=INFO msg="Exported to JSONL"
+time=2026-01-04T07:23:36.498-05:00 level=INFO msg="Export complete"
+time=2026-01-04T07:23:37.499-05:00 level=INFO msg="Import triggered by file change"
+time=2026-01-04T07:23:37.499-05:00 level=INFO msg="Starting %s..." !BADKEY=auto-import
+time=2026-01-04T07:23:37.499-05:00 level=INFO msg="Skipping %s: JSONL content unchanged" !BADKEY=auto-import
+time=2026-01-04T07:56:37.521-05:00 level=INFO msg="Mutation detected: %s %s" status=gunshi-mcp-muv
+time=2026-01-04T07:56:38.022-05:00 level=INFO msg="Export triggered by mutation events"
+time=2026-01-04T07:56:38.022-05:00 level=INFO msg="Starting %s..." !BADKEY=export
+time=2026-01-04T07:56:38.031-05:00 level=INFO msg="JSONL file created: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-01-04T07:56:38.031-05:00 level=INFO msg="Exported to JSONL"
+time=2026-01-04T07:56:38.031-05:00 level=INFO msg="Export complete"
+time=2026-01-04T07:56:39.032-05:00 level=INFO msg="Import triggered by file change"
+time=2026-01-04T07:56:39.032-05:00 level=INFO msg="Starting %s..." !BADKEY=auto-import
+time=2026-01-04T07:56:39.032-05:00 level=INFO msg="Skipping %s: JSONL content unchanged" !BADKEY=auto-import
+time=2026-01-04T07:56:45.180-05:00 level=INFO msg="Mutation detected: %s %s" status=gunshi-mcp-xo6
+time=2026-01-04T07:56:45.681-05:00 level=INFO msg="Export triggered by mutation events"
+time=2026-01-04T07:56:45.681-05:00 level=INFO msg="Starting %s..." !BADKEY=export
+time=2026-01-04T07:56:45.689-05:00 level=INFO msg="JSONL file created: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-01-04T07:56:45.689-05:00 level=INFO msg="Exported to JSONL"
+time=2026-01-04T07:56:45.689-05:00 level=INFO msg="Export complete"
+time=2026-01-04T07:56:46.690-05:00 level=INFO msg="Import triggered by file change"
+time=2026-01-04T07:56:46.690-05:00 level=INFO msg="Starting %s..." !BADKEY=auto-import
+time=2026-01-04T07:56:46.690-05:00 level=INFO msg="Skipping %s: JSONL content unchanged" !BADKEY=auto-import
+time=2026-01-04T07:56:49.900-05:00 level=INFO msg="Mutation detected: %s %s" status=gunshi-mcp-hn3
+time=2026-01-04T07:56:50.401-05:00 level=INFO msg="Export triggered by mutation events"
+time=2026-01-04T07:56:50.401-05:00 level=INFO msg="Starting %s..." !BADKEY=export
+time=2026-01-04T07:56:50.410-05:00 level=INFO msg="JSONL file created: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-01-04T07:56:50.410-05:00 level=INFO msg="Exported to JSONL"
+time=2026-01-04T07:56:50.410-05:00 level=INFO msg="File change detected: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-01-04T07:56:50.410-05:00 level=INFO msg="Export complete"
+time=2026-01-04T07:56:51.411-05:00 level=INFO msg="Import triggered by file change"
+time=2026-01-04T07:56:51.411-05:00 level=INFO msg="Starting %s..." !BADKEY=auto-import
+time=2026-01-04T07:56:51.412-05:00 level=INFO msg="Skipping %s: JSONL content unchanged" !BADKEY=auto-import
+time=2026-01-04T07:57:22.256-05:00 level=INFO msg="Mutation detected: %s %s" status=gunshi-mcp-hn3
+time=2026-01-04T07:57:22.757-05:00 level=INFO msg="Export triggered by mutation events"
+time=2026-01-04T07:57:22.757-05:00 level=INFO msg="Starting %s..." !BADKEY=export
+time=2026-01-04T07:57:22.765-05:00 level=INFO msg="JSONL file created: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-01-04T07:57:22.765-05:00 level=INFO msg="Exported to JSONL"
+time=2026-01-04T07:57:22.766-05:00 level=INFO msg="Export complete"
+time=2026-01-04T07:57:23.767-05:00 level=INFO msg="Import triggered by file change"
+time=2026-01-04T07:57:23.767-05:00 level=INFO msg="Starting %s..." !BADKEY=auto-import
+time=2026-01-04T07:57:23.767-05:00 level=INFO msg="Skipping %s: JSONL content unchanged" !BADKEY=auto-import
+time=2026-01-04T07:57:27.125-05:00 level=INFO msg="Mutation detected: %s %s" status=gunshi-mcp-29l
+time=2026-01-04T07:57:27.625-05:00 level=INFO msg="Export triggered by mutation events"
+time=2026-01-04T07:57:27.625-05:00 level=INFO msg="Starting %s..." !BADKEY=export
+time=2026-01-04T07:57:27.634-05:00 level=INFO msg="JSONL file created: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-01-04T07:57:27.634-05:00 level=INFO msg="File change detected: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-01-04T07:57:27.634-05:00 level=INFO msg="Exported to JSONL"
+time=2026-01-04T07:57:27.634-05:00 level=INFO msg="Export complete"
+time=2026-01-04T07:57:28.636-05:00 level=INFO msg="Import triggered by file change"
+time=2026-01-04T07:57:28.636-05:00 level=INFO msg="Starting %s..." !BADKEY=auto-import
+time=2026-01-04T07:57:28.636-05:00 level=INFO msg="Skipping %s: JSONL content unchanged" !BADKEY=auto-import
+time=2026-01-04T07:57:55.260-05:00 level=INFO msg="Mutation detected: %s %s" status=gunshi-mcp-gch
+time=2026-01-04T07:57:55.761-05:00 level=INFO msg="Export triggered by mutation events"
+time=2026-01-04T07:57:55.761-05:00 level=INFO msg="Starting %s..." !BADKEY=export
+time=2026-01-04T07:57:55.770-05:00 level=INFO msg="JSONL file created: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-01-04T07:57:55.770-05:00 level=INFO msg="Exported to JSONL"
+time=2026-01-04T07:57:55.770-05:00 level=INFO msg="Export complete"
+time=2026-01-04T07:57:56.771-05:00 level=INFO msg="Import triggered by file change"
+time=2026-01-04T07:57:56.771-05:00 level=INFO msg="Starting %s..." !BADKEY=auto-import
+time=2026-01-04T07:57:56.771-05:00 level=INFO msg="Skipping %s: JSONL content unchanged" !BADKEY=auto-import
+time=2026-01-04T07:58:26.973-05:00 level=INFO msg="Mutation detected: %s %s" status=gunshi-mcp-gch
+time=2026-01-04T07:58:27.474-05:00 level=INFO msg="Export triggered by mutation events"
+time=2026-01-04T07:58:27.474-05:00 level=INFO msg="Starting %s..." !BADKEY=export
+time=2026-01-04T07:58:27.483-05:00 level=INFO msg="JSONL file created: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-01-04T07:58:27.483-05:00 level=INFO msg="Exported to JSONL"
+time=2026-01-04T07:58:27.483-05:00 level=INFO msg="Export complete"
+time=2026-01-04T07:58:28.484-05:00 level=INFO msg="Import triggered by file change"
+time=2026-01-04T07:58:28.484-05:00 level=INFO msg="Starting %s..." !BADKEY=auto-import
+time=2026-01-04T07:58:28.484-05:00 level=INFO msg="Skipping %s: JSONL content unchanged" !BADKEY=auto-import
+time=2026-01-04T08:01:25.883-05:00 level=INFO msg="Mutation detected: %s %s" create=gunshi-mcp-6bo
+time=2026-01-04T08:01:26.383-05:00 level=INFO msg="Export triggered by mutation events"
+time=2026-01-04T08:01:26.383-05:00 level=INFO msg="Starting %s..." !BADKEY=export
+time=2026-01-04T08:01:26.391-05:00 level=INFO msg="JSONL file created: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-01-04T08:01:26.391-05:00 level=INFO msg="Exported to JSONL"
+time=2026-01-04T08:01:26.392-05:00 level=INFO msg="Export complete"
+time=2026-01-04T08:01:27.393-05:00 level=INFO msg="Import triggered by file change"
+time=2026-01-04T08:01:27.393-05:00 level=INFO msg="Starting %s..." !BADKEY=auto-import
+time=2026-01-04T08:01:27.393-05:00 level=INFO msg="Skipping %s: JSONL content unchanged" !BADKEY=auto-import
+time=2026-01-04T08:03:42.962-05:00 level=INFO msg="Mutation detected: %s %s" create=gunshi-mcp-8u5
+time=2026-01-04T08:03:43.463-05:00 level=INFO msg="Export triggered by mutation events"
+time=2026-01-04T08:03:43.463-05:00 level=INFO msg="Starting %s..." !BADKEY=export
+time=2026-01-04T08:03:43.471-05:00 level=INFO msg="JSONL file created: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-01-04T08:03:43.471-05:00 level=INFO msg="Exported to JSONL"
+time=2026-01-04T08:03:43.472-05:00 level=INFO msg="Export complete"
+time=2026-01-04T08:03:44.473-05:00 level=INFO msg="Import triggered by file change"
+time=2026-01-04T08:03:44.473-05:00 level=INFO msg="Starting %s..." !BADKEY=auto-import
+time=2026-01-04T08:03:44.473-05:00 level=INFO msg="Skipping %s: JSONL content unchanged" !BADKEY=auto-import
+time=2026-01-04T08:03:57.615-05:00 level=INFO msg="Mutation detected: %s %s" create=gunshi-mcp-x9p
+time=2026-01-04T08:03:58.116-05:00 level=INFO msg="Export triggered by mutation events"
+time=2026-01-04T08:03:58.116-05:00 level=INFO msg="Starting %s..." !BADKEY=export
+time=2026-01-04T08:03:58.134-05:00 level=INFO msg="JSONL file created: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-01-04T08:03:58.134-05:00 level=INFO msg="Exported to JSONL"
+time=2026-01-04T08:03:58.138-05:00 level=INFO msg="Export complete"
+time=2026-01-04T08:03:59.135-05:00 level=INFO msg="Import triggered by file change"
+time=2026-01-04T08:03:59.135-05:00 level=INFO msg="Starting %s..." !BADKEY=auto-import
+time=2026-01-04T08:03:59.135-05:00 level=INFO msg="Skipping %s: JSONL content unchanged" !BADKEY=auto-import
+time=2026-01-04T08:04:01.471-05:00 level=INFO msg="Mutation detected: %s %s" create=gunshi-mcp-5we
+time=2026-01-04T08:04:01.972-05:00 level=INFO msg="Export triggered by mutation events"
+time=2026-01-04T08:04:01.972-05:00 level=INFO msg="Starting %s..." !BADKEY=export
+time=2026-01-04T08:04:02.001-05:00 level=INFO msg="JSONL file created: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-01-04T08:04:02.001-05:00 level=INFO msg="Exported to JSONL"
+time=2026-01-04T08:04:02.004-05:00 level=INFO msg="Export complete"
+time=2026-01-04T08:04:03.002-05:00 level=INFO msg="Import triggered by file change"
+time=2026-01-04T08:04:03.002-05:00 level=INFO msg="Starting %s..." !BADKEY=auto-import
+time=2026-01-04T08:04:03.002-05:00 level=INFO msg="Skipping %s: JSONL content unchanged" !BADKEY=auto-import
+time=2026-01-04T08:04:04.399-05:00 level=INFO msg="Mutation detected: %s %s" update=gunshi-mcp-x9p
+time=2026-01-04T08:04:04.899-05:00 level=INFO msg="Export triggered by mutation events"
+time=2026-01-04T08:04:04.899-05:00 level=INFO msg="Starting %s..." !BADKEY=export
+time=2026-01-04T08:04:04.909-05:00 level=INFO msg="JSONL file created: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-01-04T08:04:04.909-05:00 level=INFO msg="Exported to JSONL"
+time=2026-01-04T08:04:04.909-05:00 level=INFO msg="Export complete"
+time=2026-01-04T08:04:05.910-05:00 level=INFO msg="Import triggered by file change"
+time=2026-01-04T08:04:05.910-05:00 level=INFO msg="Starting %s..." !BADKEY=auto-import
+time=2026-01-04T08:04:05.910-05:00 level=INFO msg="Skipping %s: JSONL content unchanged" !BADKEY=auto-import
+time=2026-01-04T08:04:08.808-05:00 level=INFO msg="Mutation detected: %s %s" update=gunshi-mcp-5we
+time=2026-01-04T08:04:09.309-05:00 level=INFO msg="Export triggered by mutation events"
+time=2026-01-04T08:04:09.309-05:00 level=INFO msg="Starting %s..." !BADKEY=export
+time=2026-01-04T08:04:09.318-05:00 level=INFO msg="JSONL file created: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-01-04T08:04:09.318-05:00 level=INFO msg="Exported to JSONL"
+time=2026-01-04T08:04:09.318-05:00 level=INFO msg="Export complete"
+time=2026-01-04T08:04:10.319-05:00 level=INFO msg="Import triggered by file change"
+time=2026-01-04T08:04:10.319-05:00 level=INFO msg="Starting %s..." !BADKEY=auto-import
+time=2026-01-04T08:04:10.320-05:00 level=INFO msg="Skipping %s: JSONL content unchanged" !BADKEY=auto-import
+time=2026-01-04T08:10:18.052-05:00 level=INFO msg="Mutation detected: %s %s" status=gunshi-mcp-x9p
+time=2026-01-04T08:10:18.553-05:00 level=INFO msg="Export triggered by mutation events"
+time=2026-01-04T08:10:18.554-05:00 level=INFO msg="Starting %s..." !BADKEY=export
+time=2026-01-04T08:10:18.562-05:00 level=INFO msg="JSONL file created: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-01-04T08:10:18.562-05:00 level=INFO msg="File change detected: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-01-04T08:10:18.562-05:00 level=INFO msg="Exported to JSONL"
+time=2026-01-04T08:10:18.563-05:00 level=INFO msg="Export complete"
+time=2026-01-04T08:10:19.564-05:00 level=INFO msg="Import triggered by file change"
+time=2026-01-04T08:10:19.564-05:00 level=INFO msg="Starting %s..." !BADKEY=auto-import
+time=2026-01-04T08:10:19.564-05:00 level=INFO msg="Skipping %s: JSONL content unchanged" !BADKEY=auto-import
+time=2026-01-04T08:13:25.668-05:00 level=INFO msg="Mutation detected: %s %s" status=gunshi-mcp-x9p
+time=2026-01-04T08:13:26.169-05:00 level=INFO msg="Export triggered by mutation events"
+time=2026-01-04T08:13:26.169-05:00 level=INFO msg="Starting %s..." !BADKEY=export
+time=2026-01-04T08:13:26.179-05:00 level=INFO msg="JSONL file created: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-01-04T08:13:26.179-05:00 level=INFO msg="File change detected: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-01-04T08:13:26.179-05:00 level=INFO msg="Exported to JSONL"
+time=2026-01-04T08:13:26.179-05:00 level=INFO msg="Export complete"
+time=2026-01-04T08:13:27.180-05:00 level=INFO msg="Import triggered by file change"
+time=2026-01-04T08:13:27.180-05:00 level=INFO msg="Starting %s..." !BADKEY=auto-import
+time=2026-01-04T08:13:27.181-05:00 level=INFO msg="Skipping %s: JSONL content unchanged" !BADKEY=auto-import
+time=2026-01-04T08:13:41.211-05:00 level=INFO msg="Mutation detected: %s %s" status=gunshi-mcp-5we
+time=2026-01-04T08:13:41.712-05:00 level=INFO msg="Export triggered by mutation events"
+time=2026-01-04T08:13:41.712-05:00 level=INFO msg="Starting %s..." !BADKEY=export
+time=2026-01-04T08:13:41.721-05:00 level=INFO msg="JSONL file created: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-01-04T08:13:41.721-05:00 level=INFO msg="Exported to JSONL"
+time=2026-01-04T08:13:41.721-05:00 level=INFO msg="Export complete"
+time=2026-01-04T08:13:42.722-05:00 level=INFO msg="Import triggered by file change"
+time=2026-01-04T08:13:42.722-05:00 level=INFO msg="Starting %s..." !BADKEY=auto-import
+time=2026-01-04T08:13:42.723-05:00 level=INFO msg="Skipping %s: JSONL content unchanged" !BADKEY=auto-import
+time=2026-01-04T08:17:50.340-05:00 level=INFO msg="Mutation detected: %s %s" status=gunshi-mcp-5we
+time=2026-01-04T08:17:50.841-05:00 level=INFO msg="Export triggered by mutation events"
+time=2026-01-04T08:17:50.841-05:00 level=INFO msg="Starting %s..." !BADKEY=export
+time=2026-01-04T08:17:50.850-05:00 level=INFO msg="JSONL file created: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-01-04T08:17:50.850-05:00 level=INFO msg="File change detected: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-01-04T08:17:50.850-05:00 level=INFO msg="Exported to JSONL"
+time=2026-01-04T08:17:50.851-05:00 level=INFO msg="Export complete"
+time=2026-01-04T08:17:51.852-05:00 level=INFO msg="Import triggered by file change"
+time=2026-01-04T08:17:51.852-05:00 level=INFO msg="Starting %s..." !BADKEY=auto-import
+time=2026-01-04T08:17:51.852-05:00 level=INFO msg="Skipping %s: JSONL content unchanged" !BADKEY=auto-import
+time=2026-01-15T20:16:55.674-05:00 level=INFO msg="Context canceled, shutting down"
+time=2026-01-22T17:13:26.657-05:00 level=INFO msg="Daemon started (interval: %v, auto-commit: %v, auto-push: %v)" !BADKEY=5s !BADKEY=false !BADKEY=false
+time=2026-01-22T17:13:26.657-05:00 level=INFO msg="using database" path=/home/rektide/src/gunshi-mcp/.beads/beads.db
+time=2026-01-22T17:13:26.672-05:00 level=INFO msg="database opened" path=/home/rektide/src/gunshi-mcp/.beads/beads.db backend=sqlite freshness_checking=true
+time=2026-01-22T17:13:26.672-05:00 level=INFO msg="upgrading .beads/.gitignore"
+time=2026-01-22T17:13:26.672-05:00 level=WARN msg="failed to upgrade .gitignore" error="open .beads/.gitignore: no such file or directory"
+time=2026-01-22T17:13:26.673-05:00 level=INFO msg="Repository fingerprint validated: %s" !BADKEY=b23607b6
+time=2026-01-22T17:13:26.673-05:00 level=WARN msg="database schema version mismatch" db_version=0.43.0 daemon_version=0.48.0
+time=2026-01-22T17:13:26.673-05:00 level=INFO msg="auto-upgrading database to daemon version"
+time=2026-01-22T17:13:26.673-05:00 level=INFO msg="database version updated" version=0.48.0
+time=2026-01-22T17:13:26.673-05:00 level=INFO msg="starting RPC server" socket=/home/rektide/src/gunshi-mcp/.beads/bd.sock
+time=2026-01-22T17:13:26.673-05:00 level=INFO msg="RPC server ready (socket listening)"
+time=2026-01-22T17:13:26.676-05:00 level=INFO msg="registered in global registry"
+time=2026-01-22T17:13:26.676-05:00 level=INFO msg="Starting %s..." !BADKEY="sync cycle"
+time=2026-01-22T17:13:26.690-05:00 level=INFO msg="Exported to JSONL"
+time=2026-01-22T17:13:26.700-05:00 level=INFO msg="Pull failed: %v" !BADKEY="failed to get current branch: exit status 128"
+time=2026-01-22T17:13:26.700-05:00 level=INFO msg="monitoring parent process" pid=0
+time=2026-01-22T17:13:26.700-05:00 level=INFO msg="using event-driven mode"
+time=2026-01-22T17:13:26.700-05:00 level=INFO msg="Auto-pull disabled: use 'git pull' manually to sync remote changes"
+time=2026-01-22T17:36:49.004-05:00 level=INFO msg="Mutation detected: %s %s" create=gunshi-mcp-53i
+time=2026-01-22T17:36:49.505-05:00 level=INFO msg="Export triggered by mutation events"
+time=2026-01-22T17:36:49.505-05:00 level=INFO msg="Starting %s..." !BADKEY=export
+time=2026-01-22T17:36:49.514-05:00 level=INFO msg="JSONL file created: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-01-22T17:36:49.514-05:00 level=INFO msg="Exported to JSONL"
+time=2026-01-22T17:36:49.514-05:00 level=INFO msg="Export complete"
+time=2026-01-22T17:36:49.693-05:00 level=INFO msg="Mutation detected: %s %s" create=gunshi-mcp-fvt
+time=2026-01-22T17:36:50.193-05:00 level=INFO msg="Export triggered by mutation events"
+time=2026-01-22T17:36:50.193-05:00 level=INFO msg="Starting %s..." !BADKEY=export
+time=2026-01-22T17:36:50.194-05:00 level=INFO msg="Pre-export validation failed: %v" !BADKEY="refusing to export: JSONL content has changed since last import (import first to avoid data loss)"
+time=2026-01-22T17:36:50.516-05:00 level=INFO msg="Import triggered by file change"
+time=2026-01-22T17:36:50.516-05:00 level=INFO msg="Starting %s..." !BADKEY=auto-import
+time=2026-01-22T17:36:50.517-05:00 level=INFO msg="JSONL content changed, proceeding with %s..." !BADKEY=auto-import
+time=2026-01-22T17:36:50.518-05:00 level=INFO msg="⚠️  WARNING: Uncommitted local changes detected in %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-01-22T17:36:50.518-05:00 level=INFO msg="   Pulling from remote may overwrite local unpushed changes."
+time=2026-01-22T17:36:50.518-05:00 level=INFO msg="   Consider running 'bd sync' to commit and push your changes first."
+time=2026-01-22T17:36:50.520-05:00 level=INFO msg="Pull failed: %v (backoff: %v)" !BADKEY="failed to get current branch: exit status 128" !BADKEY=30s
+time=2026-01-22T17:36:50.610-05:00 level=INFO msg="Mutation detected: %s %s" create=gunshi-mcp-bdb
+time=2026-01-22T17:36:51.111-05:00 level=INFO msg="Export triggered by mutation events"
+time=2026-01-22T17:36:51.111-05:00 level=INFO msg="Starting %s..." !BADKEY=export
+time=2026-01-22T17:36:51.111-05:00 level=INFO msg="Pre-export validation failed: %v" !BADKEY="refusing to export: JSONL content has changed since last import (import first to avoid data loss)"
+time=2026-01-22T17:37:01.830-05:00 level=INFO msg="JSONL file created: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-01-22T17:37:01.830-05:00 level=INFO msg="File change detected: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-01-22T17:37:02.832-05:00 level=INFO msg="Import triggered by file change"
+time=2026-01-22T17:37:02.832-05:00 level=INFO msg="Skipping %s: in backoff period" !BADKEY=auto-import
+time=2026-01-25T18:40:40.046-05:00 level=INFO msg="Mutation detected: %s %s" create=gunshi-mcp-t9c
+time=2026-01-25T18:40:40.549-05:00 level=INFO msg="Export triggered by mutation events"
+time=2026-01-25T18:40:40.549-05:00 level=INFO msg="Starting %s..." !BADKEY=export
+time=2026-01-25T18:40:40.564-05:00 level=INFO msg="JSONL file created: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-01-25T18:40:40.564-05:00 level=INFO msg="Exported to JSONL"
+time=2026-01-25T18:40:40.564-05:00 level=INFO msg="Export complete"
+time=2026-01-25T18:40:41.565-05:00 level=INFO msg="Import triggered by file change"
+time=2026-01-25T18:40:41.565-05:00 level=INFO msg="Starting %s..." !BADKEY=auto-import
+time=2026-01-25T18:40:41.566-05:00 level=INFO msg="JSONL content changed, proceeding with %s..." !BADKEY=auto-import
+time=2026-01-25T18:40:41.567-05:00 level=INFO msg="⚠️  WARNING: Uncommitted local changes detected in %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-01-25T18:40:41.567-05:00 level=INFO msg="   Pulling from remote may overwrite local unpushed changes."
+time=2026-01-25T18:40:41.567-05:00 level=INFO msg="   Consider running 'bd sync' to commit and push your changes first."
+time=2026-01-25T18:40:41.571-05:00 level=INFO msg="Pull failed: %v (backoff: %v)" !BADKEY="failed to get current branch: exit status 128" !BADKEY=30s
+time=2026-01-25T18:40:52.249-05:00 level=INFO msg="JSONL file created: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-01-25T18:40:52.249-05:00 level=INFO msg="File change detected: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-01-25T18:40:53.249-05:00 level=INFO msg="Import triggered by file change"
+time=2026-01-25T18:40:53.249-05:00 level=INFO msg="Skipping %s: in backoff period" !BADKEY=auto-import
+time=2026-01-27T18:36:39.083-05:00 level=INFO msg="Mutation detected: %s %s" status=gunshi-mcp-8u5
+time=2026-01-27T18:36:39.379-05:00 level=INFO msg="Mutation detected: %s %s" status=gunshi-mcp-jdf
+time=2026-01-27T18:36:39.690-05:00 level=INFO msg="Mutation detected: %s %s" status=gunshi-mcp-b6a
+time=2026-01-27T18:36:40.190-05:00 level=INFO msg="Export triggered by mutation events"
+time=2026-01-27T18:36:40.190-05:00 level=INFO msg="Starting %s..." !BADKEY=export
+time=2026-01-27T18:36:40.212-05:00 level=INFO msg="JSONL file created: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-01-27T18:36:40.212-05:00 level=INFO msg="Exported to JSONL"
+time=2026-01-27T18:36:40.212-05:00 level=INFO msg="Export complete"
+time=2026-01-27T18:36:40.212-05:00 level=INFO msg="File change detected: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-01-27T18:36:41.214-05:00 level=INFO msg="Import triggered by file change"
+time=2026-01-27T18:36:41.215-05:00 level=INFO msg="Starting %s..." !BADKEY=auto-import
+time=2026-01-27T18:36:41.215-05:00 level=INFO msg="JSONL content changed, proceeding with %s..." !BADKEY=auto-import
+time=2026-01-27T18:36:41.222-05:00 level=INFO msg="⚠️  WARNING: Uncommitted local changes detected in %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-01-27T18:36:41.222-05:00 level=INFO msg="   Pulling from remote may overwrite local unpushed changes."
+time=2026-01-27T18:36:41.222-05:00 level=INFO msg="   Consider running 'bd sync' to commit and push your changes first."
+time=2026-01-27T18:36:41.225-05:00 level=INFO msg="Pull failed: %v (backoff: %v)" !BADKEY="failed to get current branch: exit status 128" !BADKEY=30s
+time=2026-01-27T18:36:44.986-05:00 level=INFO msg="JSONL file created: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-01-27T18:36:44.986-05:00 level=INFO msg="File change detected: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-01-27T18:36:45.987-05:00 level=INFO msg="Import triggered by file change"
+time=2026-01-27T18:36:45.988-05:00 level=INFO msg="Skipping %s: in backoff period" !BADKEY=auto-import
+time=2026-01-27T23:29:22.803-05:00 level=INFO msg="JSONL file created: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-01-27T23:29:22.803-05:00 level=INFO msg="File change detected: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-01-27T23:29:23.805-05:00 level=INFO msg="Import triggered by file change"
+time=2026-01-27T23:29:23.805-05:00 level=INFO msg="Starting %s..." !BADKEY=auto-import
+time=2026-01-27T23:29:23.806-05:00 level=INFO msg="Skipping %s: JSONL content unchanged" !BADKEY=auto-import
+time=2026-01-27T23:35:45.911-05:00 level=INFO msg="Git ref change detected: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.git/refs/heads/main.lock
+time=2026-01-27T23:35:46.912-05:00 level=INFO msg="Import triggered by file change"
+time=2026-01-27T23:35:46.912-05:00 level=INFO msg="Starting %s..." !BADKEY=auto-import
+time=2026-01-27T23:35:46.912-05:00 level=INFO msg="Skipping %s: JSONL content unchanged" !BADKEY=auto-import
+time=2026-01-28T03:27:12.856-05:00 level=INFO msg="Git ref change detected: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.git/refs/heads/main.lock
+time=2026-01-28T03:27:13.868-05:00 level=INFO msg="Import triggered by file change"
+time=2026-01-28T03:27:13.879-05:00 level=INFO msg="Starting %s..." !BADKEY=auto-import
+time=2026-01-28T03:27:13.880-05:00 level=INFO msg="Skipping %s: JSONL content unchanged" !BADKEY=auto-import
+time=2026-02-05T16:23:43.029-05:00 level=INFO msg="Daemon started (interval: %v, auto-commit: %v, auto-push: %v)" !BADKEY=5s !BADKEY=false !BADKEY=false
+time=2026-02-05T16:23:43.031-05:00 level=INFO msg="using database" path=/home/rektide/src/gunshi-mcp/.beads/beads.db
+time=2026-02-05T16:23:43.088-05:00 level=INFO msg="database opened" path=/home/rektide/src/gunshi-mcp/.beads/beads.db backend=sqlite freshness_checking=true
+time=2026-02-05T16:23:43.088-05:00 level=INFO msg="upgrading .beads/.gitignore"
+time=2026-02-05T16:23:43.088-05:00 level=WARN msg="failed to upgrade .gitignore" error="open .beads/.gitignore: no such file or directory"
+time=2026-02-05T16:23:43.089-05:00 level=INFO msg="Repository fingerprint validated: %s" !BADKEY=b23607b6
+time=2026-02-05T16:23:43.090-05:00 level=WARN msg="database schema version mismatch" db_version=0.48.0 daemon_version=0.49.2
+time=2026-02-05T16:23:43.090-05:00 level=INFO msg="auto-upgrading database to daemon version"
+time=2026-02-05T16:23:43.090-05:00 level=INFO msg="database version updated" version=0.49.2
+time=2026-02-05T16:23:43.090-05:00 level=INFO msg="starting RPC server" socket=/home/rektide/src/gunshi-mcp/.beads/bd.sock
+time=2026-02-05T16:23:43.090-05:00 level=INFO msg="RPC server ready (socket listening)"
+time=2026-02-05T16:23:43.176-05:00 level=INFO msg="registered in global registry"
+time=2026-02-05T16:23:43.176-05:00 level=INFO msg="Starting %s..." !BADKEY="sync cycle"
+time=2026-02-05T16:23:43.194-05:00 level=INFO msg="Exported to JSONL"
+time=2026-02-05T16:23:43.201-05:00 level=INFO msg="Pull failed: %v" !BADKEY="failed to get current branch: exit status 128"
+time=2026-02-05T16:23:43.201-05:00 level=INFO msg="monitoring parent process" pid=0
+time=2026-02-05T16:23:43.202-05:00 level=INFO msg="using event-driven mode"
+time=2026-02-05T16:23:43.202-05:00 level=INFO msg="Auto-pull disabled: use 'git pull' manually to sync remote changes"
+time=2026-02-05T16:26:00.842-05:00 level=INFO msg="Mutation detected: %s %s" create=gunshi-mcp-47k
+time=2026-02-05T16:26:01.343-05:00 level=INFO msg="Export triggered by mutation events"
+time=2026-02-05T16:26:01.344-05:00 level=INFO msg="Starting %s..." !BADKEY=export
+time=2026-02-05T16:26:01.354-05:00 level=INFO msg="JSONL file created: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-02-05T16:26:01.354-05:00 level=INFO msg="File change detected: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-02-05T16:26:01.359-05:00 level=INFO msg="Exported to JSONL"
+time=2026-02-05T16:26:01.359-05:00 level=INFO msg="Export complete"
+time=2026-02-05T16:26:02.356-05:00 level=INFO msg="Import triggered by file change"
+time=2026-02-05T16:26:02.356-05:00 level=INFO msg="Starting %s..." !BADKEY=auto-import
+time=2026-02-05T16:26:02.356-05:00 level=INFO msg="JSONL content changed, proceeding with %s..." !BADKEY=auto-import
+time=2026-02-05T16:26:02.358-05:00 level=INFO msg="⚠️  WARNING: Uncommitted local changes detected in %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-02-05T16:26:02.358-05:00 level=INFO msg="   Pulling from remote may overwrite local unpushed changes."
+time=2026-02-05T16:26:02.358-05:00 level=INFO msg="   Consider running 'bd sync' to commit and push your changes first."
+time=2026-02-05T16:26:02.360-05:00 level=INFO msg="Pull failed: %v (backoff: %v)" !BADKEY="failed to get current branch: exit status 128" !BADKEY=30s
+time=2026-02-05T16:26:02.641-05:00 level=INFO msg="JSONL file created: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-02-05T16:26:02.641-05:00 level=INFO msg="File change detected: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-02-05T16:26:03.643-05:00 level=INFO msg="Import triggered by file change"
+time=2026-02-05T16:26:03.645-05:00 level=INFO msg="Skipping %s: in backoff period" !BADKEY=auto-import
+time=2026-02-05T19:06:41.695-05:00 level=INFO msg="Git ref change detected: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.git/refs/heads/main.lock
+time=2026-02-05T19:06:42.696-05:00 level=INFO msg="Import triggered by file change"
+time=2026-02-05T19:06:42.697-05:00 level=INFO msg="Starting %s..." !BADKEY=auto-import
+time=2026-02-05T19:06:42.697-05:00 level=INFO msg="Skipping %s: JSONL content unchanged" !BADKEY=auto-import
+time=2026-02-05T19:07:24.115-05:00 level=INFO msg="Git ref change detected: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.git/refs/heads/main.lock
+time=2026-02-05T19:07:25.116-05:00 level=INFO msg="Import triggered by file change"
+time=2026-02-05T19:07:25.116-05:00 level=INFO msg="Starting %s..." !BADKEY=auto-import
+time=2026-02-05T19:07:25.117-05:00 level=INFO msg="Skipping %s: JSONL content unchanged" !BADKEY=auto-import
+time=2026-02-06T16:56:55.595-05:00 level=INFO msg="Git ref change detected: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.git/refs/heads/main.lock
+time=2026-02-06T16:56:56.599-05:00 level=INFO msg="Import triggered by file change"
+time=2026-02-06T16:56:56.599-05:00 level=INFO msg="Starting %s..." !BADKEY=auto-import
+time=2026-02-06T16:56:56.601-05:00 level=INFO msg="Skipping %s: JSONL content unchanged" !BADKEY=auto-import
+time=2026-02-06T17:40:30.286-05:00 level=INFO msg="Git ref change detected: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.git/refs/heads/main.lock
+time=2026-02-06T17:40:31.287-05:00 level=INFO msg="Import triggered by file change"
+time=2026-02-06T17:40:31.313-05:00 level=INFO msg="Starting %s..." !BADKEY=auto-import
+time=2026-02-06T17:40:31.316-05:00 level=INFO msg="Skipping %s: JSONL content unchanged" !BADKEY=auto-import
+time=2026-02-06T17:47:05.817-05:00 level=INFO msg="Mutation detected: %s %s" create=gunshi-mcp-plugin-arch
+time=2026-02-06T17:47:06.322-05:00 level=INFO msg="Export triggered by mutation events"
+time=2026-02-06T17:47:06.332-05:00 level=INFO msg="Starting %s..." !BADKEY=export
+time=2026-02-06T17:47:06.439-05:00 level=INFO msg="JSONL file created: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-02-06T17:47:06.441-05:00 level=INFO msg="File change detected: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-02-06T17:47:06.446-05:00 level=INFO msg="Exported to JSONL"
+time=2026-02-06T17:47:06.446-05:00 level=INFO msg="Export complete"
+time=2026-02-06T17:47:07.442-05:00 level=INFO msg="Import triggered by file change"
+time=2026-02-06T17:47:07.450-05:00 level=INFO msg="Starting %s..." !BADKEY=auto-import
+time=2026-02-06T17:47:07.465-05:00 level=INFO msg="JSONL content changed, proceeding with %s..." !BADKEY=auto-import
+time=2026-02-06T17:47:07.547-05:00 level=INFO msg="⚠️  WARNING: Uncommitted local changes detected in %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-02-06T17:47:07.547-05:00 level=INFO msg="   Pulling from remote may overwrite local unpushed changes."
+time=2026-02-06T17:47:07.547-05:00 level=INFO msg="   Consider running 'bd sync' to commit and push your changes first."
+time=2026-02-06T17:47:07.558-05:00 level=INFO msg="Pull failed: %v (backoff: %v)" !BADKEY="failed to get current branch: exit status 128" !BADKEY=30s
+time=2026-02-06T17:47:16.669-05:00 level=INFO msg="Mutation detected: %s %s" create=gunshi-mcp-schema-plugin
+time=2026-02-06T17:47:17.170-05:00 level=INFO msg="Export triggered by mutation events"
+time=2026-02-06T17:47:17.170-05:00 level=INFO msg="Starting %s..." !BADKEY=export
+time=2026-02-06T17:47:17.170-05:00 level=INFO msg="Pre-export validation failed: %v" !BADKEY="refusing to export: JSONL content has changed since last import (import first to avoid data loss)"
+time=2026-02-06T17:47:26.774-05:00 level=INFO msg="Mutation detected: %s %s" create=gunshi-mcp-registry-plugin
+time=2026-02-06T17:47:27.274-05:00 level=INFO msg="Export triggered by mutation events"
+time=2026-02-06T17:47:27.275-05:00 level=INFO msg="Starting %s..." !BADKEY=export
+time=2026-02-06T17:47:27.275-05:00 level=INFO msg="Pre-export validation failed: %v" !BADKEY="refusing to export: JSONL content has changed since last import (import first to avoid data loss)"
+time=2026-02-06T17:47:35.401-05:00 level=INFO msg="Mutation detected: %s %s" create=gunshi-mcp-server-plugin
+time=2026-02-06T17:47:35.901-05:00 level=INFO msg="Export triggered by mutation events"
+time=2026-02-06T17:47:35.902-05:00 level=INFO msg="Starting %s..." !BADKEY=export
+time=2026-02-06T17:47:35.902-05:00 level=INFO msg="Pre-export validation failed: %v" !BADKEY="refusing to export: JSONL content has changed since last import (import first to avoid data loss)"
+time=2026-02-06T17:47:45.538-05:00 level=INFO msg="Mutation detected: %s %s" create=gunshi-mcp-cli-plugin
+time=2026-02-06T17:47:46.039-05:00 level=INFO msg="Export triggered by mutation events"
+time=2026-02-06T17:47:46.039-05:00 level=INFO msg="Starting %s..." !BADKEY=export
+time=2026-02-06T17:47:46.040-05:00 level=INFO msg="Pre-export validation failed: %v" !BADKEY="refusing to export: JSONL content has changed since last import (import first to avoid data loss)"
+time=2026-02-06T17:47:57.661-05:00 level=INFO msg="Mutation detected: %s %s" create=gunshi-mcp-discovery-plugin
+time=2026-02-06T17:47:58.162-05:00 level=INFO msg="Export triggered by mutation events"
+time=2026-02-06T17:47:58.162-05:00 level=INFO msg="Starting %s..." !BADKEY=export
+time=2026-02-06T17:47:58.163-05:00 level=INFO msg="Pre-export validation failed: %v" !BADKEY="refusing to export: JSONL content has changed since last import (import first to avoid data loss)"
+time=2026-02-06T17:48:06.531-05:00 level=INFO msg="Mutation detected: %s %s" create=gunshi-mcp-opencode-plugin
+time=2026-02-06T17:48:07.032-05:00 level=INFO msg="Export triggered by mutation events"
+time=2026-02-06T17:48:07.032-05:00 level=INFO msg="Starting %s..." !BADKEY=export
+time=2026-02-06T17:48:07.032-05:00 level=INFO msg="Pre-export validation failed: %v" !BADKEY="refusing to export: JSONL content has changed since last import (import first to avoid data loss)"
+time=2026-02-06T17:48:16.337-05:00 level=INFO msg="Mutation detected: %s %s" create=gunshi-mcp-builder
+time=2026-02-06T17:48:16.838-05:00 level=INFO msg="Export triggered by mutation events"
+time=2026-02-06T17:48:16.838-05:00 level=INFO msg="Starting %s..." !BADKEY=export
+time=2026-02-06T17:48:16.838-05:00 level=INFO msg="Pre-export validation failed: %v" !BADKEY="refusing to export: JSONL content has changed since last import (import first to avoid data loss)"
+time=2026-02-06T17:48:22.965-05:00 level=INFO msg="Mutation detected: %s %s" create=gunshi-mcp-cleanup-legacy
+time=2026-02-06T17:48:23.465-05:00 level=INFO msg="Export triggered by mutation events"
+time=2026-02-06T17:48:23.466-05:00 level=INFO msg="Starting %s..." !BADKEY=export
+time=2026-02-06T17:48:23.466-05:00 level=INFO msg="Pre-export validation failed: %v" !BADKEY="refusing to export: JSONL content has changed since last import (import first to avoid data loss)"
+time=2026-02-06T17:48:30.265-05:00 level=INFO msg="Mutation detected: %s %s" create=gunshi-mcp-docs-update
+time=2026-02-06T17:48:30.766-05:00 level=INFO msg="Export triggered by mutation events"
+time=2026-02-06T17:48:30.766-05:00 level=INFO msg="Starting %s..." !BADKEY=export
+time=2026-02-06T17:48:30.766-05:00 level=INFO msg="Pre-export validation failed: %v" !BADKEY="refusing to export: JSONL content has changed since last import (import first to avoid data loss)"
+time=2026-02-06T17:48:39.180-05:00 level=INFO msg="Mutation detected: %s %s" update=gunshi-mcp-schema-plugin
+time=2026-02-06T17:48:39.204-05:00 level=INFO msg="Mutation detected: %s %s" update=gunshi-mcp-registry-plugin
+time=2026-02-06T17:48:39.215-05:00 level=INFO msg="Mutation detected: %s %s" update=gunshi-mcp-server-plugin
+time=2026-02-06T17:48:39.227-05:00 level=INFO msg="Mutation detected: %s %s" update=gunshi-mcp-cli-plugin
+time=2026-02-06T17:48:39.239-05:00 level=INFO msg="Mutation detected: %s %s" update=gunshi-mcp-discovery-plugin
+time=2026-02-06T17:48:39.264-05:00 level=INFO msg="Mutation detected: %s %s" update=gunshi-mcp-opencode-plugin
+time=2026-02-06T17:48:39.286-05:00 level=INFO msg="Mutation detected: %s %s" update=gunshi-mcp-builder
+time=2026-02-06T17:48:39.295-05:00 level=INFO msg="Mutation detected: %s %s" update=gunshi-mcp-cleanup-legacy
+time=2026-02-06T17:48:39.306-05:00 level=INFO msg="Mutation detected: %s %s" update=gunshi-mcp-docs-update
+time=2026-02-06T17:48:39.806-05:00 level=INFO msg="Export triggered by mutation events"
+time=2026-02-06T17:48:39.807-05:00 level=INFO msg="Starting %s..." !BADKEY=export
+time=2026-02-06T17:48:39.807-05:00 level=INFO msg="Pre-export validation failed: %v" !BADKEY="refusing to export: JSONL content has changed since last import (import first to avoid data loss)"
+time=2026-02-06T17:48:45.806-05:00 level=INFO msg="JSONL file created: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-02-06T17:48:45.806-05:00 level=INFO msg="File change detected: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-02-06T17:48:46.807-05:00 level=INFO msg="Import triggered by file change"
+time=2026-02-06T17:48:46.809-05:00 level=INFO msg="Starting %s..." !BADKEY=auto-import
+time=2026-02-06T17:48:46.809-05:00 level=INFO msg="JSONL content changed, proceeding with %s..." !BADKEY=auto-import
+time=2026-02-06T17:48:46.812-05:00 level=INFO msg="⚠️  WARNING: Uncommitted local changes detected in %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-02-06T17:48:46.812-05:00 level=INFO msg="   Pulling from remote may overwrite local unpushed changes."
+time=2026-02-06T17:48:46.812-05:00 level=INFO msg="   Consider running 'bd sync' to commit and push your changes first."
+time=2026-02-06T17:48:46.815-05:00 level=INFO msg="Pull failed: %v (backoff: %v)" !BADKEY="failed to get current branch: exit status 128" !BADKEY=1m0s
+time=2026-02-06T20:30:21.863-05:00 level=INFO msg="Mutation detected: %s %s" status=gunshi-mcp-discovery-plugin
+time=2026-02-06T20:30:22.392-05:00 level=INFO msg="Export triggered by mutation events"
+time=2026-02-06T20:30:22.392-05:00 level=INFO msg="Starting %s..." !BADKEY=export
+time=2026-02-06T20:30:22.412-05:00 level=INFO msg="JSONL file created: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-02-06T20:30:22.419-05:00 level=INFO msg="Exported to JSONL"
+time=2026-02-06T20:30:22.419-05:00 level=INFO msg="Export complete"
+time=2026-02-06T20:30:23.413-05:00 level=INFO msg="Import triggered by file change"
+time=2026-02-06T20:30:23.413-05:00 level=INFO msg="Starting %s..." !BADKEY=auto-import
+time=2026-02-06T20:30:23.413-05:00 level=INFO msg="JSONL content changed, proceeding with %s..." !BADKEY=auto-import
+time=2026-02-06T20:30:23.421-05:00 level=INFO msg="⚠️  WARNING: Uncommitted local changes detected in %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-02-06T20:30:23.421-05:00 level=INFO msg="   Pulling from remote may overwrite local unpushed changes."
+time=2026-02-06T20:30:23.421-05:00 level=INFO msg="   Consider running 'bd sync' to commit and push your changes first."
+time=2026-02-06T20:30:23.424-05:00 level=INFO msg="Pull failed: %v (backoff: %v)" !BADKEY="failed to get current branch: exit status 128" !BADKEY=2m0s
+time=2026-02-06T20:30:50.455-05:00 level=INFO msg="JSONL file created: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-02-06T20:30:50.455-05:00 level=INFO msg="File change detected: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-02-06T20:30:51.456-05:00 level=INFO msg="Import triggered by file change"
+time=2026-02-06T20:30:51.458-05:00 level=INFO msg="Skipping %s: in backoff period" !BADKEY=auto-import
+time=2026-02-06T20:31:03.980-05:00 level=INFO msg="Mutation detected: %s %s" update=gunshi-mcp-discovery-plugin
+time=2026-02-06T20:31:04.480-05:00 level=INFO msg="Export triggered by mutation events"
+time=2026-02-06T20:31:04.480-05:00 level=INFO msg="Starting %s..." !BADKEY=export
+time=2026-02-06T20:31:04.480-05:00 level=INFO msg="Pre-export validation failed: %v" !BADKEY="refusing to export: JSONL content has changed since last import (import first to avoid data loss)"
+time=2026-02-06T20:31:20.975-05:00 level=INFO msg="Mutation detected: %s %s" update=gunshi-mcp-discovery-plugin
+time=2026-02-06T20:31:21.475-05:00 level=INFO msg="Export triggered by mutation events"
+time=2026-02-06T20:31:21.475-05:00 level=INFO msg="Starting %s..." !BADKEY=export
+time=2026-02-06T20:31:21.476-05:00 level=INFO msg="Pre-export validation failed: %v" !BADKEY="refusing to export: JSONL content has changed since last import (import first to avoid data loss)"
+time=2026-02-06T20:31:42.031-05:00 level=INFO msg="JSONL file created: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-02-06T20:31:42.031-05:00 level=INFO msg="File change detected: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-02-06T20:31:43.032-05:00 level=INFO msg="Import triggered by file change"
+time=2026-02-06T20:31:43.034-05:00 level=INFO msg="Skipping %s: in backoff period" !BADKEY=auto-import
+time=2026-02-06T20:39:20.089-05:00 level=INFO msg="Mutation detected: %s %s" status=gunshi-mcp-server-plugin
+time=2026-02-06T20:39:20.589-05:00 level=INFO msg="Export triggered by mutation events"
+time=2026-02-06T20:39:20.589-05:00 level=INFO msg="Starting %s..." !BADKEY=export
+time=2026-02-06T20:39:20.589-05:00 level=INFO msg="Pre-export validation failed: %v" !BADKEY="refusing to export: JSONL content has changed since last import (import first to avoid data loss)"
+time=2026-02-06T20:51:27.918-05:00 level=INFO msg="JSONL file created: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-02-06T20:51:27.930-05:00 level=INFO msg="File change detected: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-02-06T20:51:28.931-05:00 level=INFO msg="Import triggered by file change"
+time=2026-02-06T20:51:28.934-05:00 level=INFO msg="Starting %s..." !BADKEY=auto-import
+time=2026-02-06T20:51:28.934-05:00 level=INFO msg="JSONL content changed, proceeding with %s..." !BADKEY=auto-import
+time=2026-02-06T20:51:28.936-05:00 level=INFO msg="⚠️  WARNING: Uncommitted local changes detected in %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-02-06T20:51:28.936-05:00 level=INFO msg="   Pulling from remote may overwrite local unpushed changes."
+time=2026-02-06T20:51:28.936-05:00 level=INFO msg="   Consider running 'bd sync' to commit and push your changes first."
+time=2026-02-06T20:51:28.939-05:00 level=INFO msg="Pull failed: %v (backoff: %v)" !BADKEY="failed to get current branch: exit status 128" !BADKEY=5m0s
+time=2026-02-06T20:51:53.059-05:00 level=INFO msg="Mutation detected: %s %s" update=gunshi-mcp-server-plugin
+time=2026-02-06T20:51:53.560-05:00 level=INFO msg="Export triggered by mutation events"
+time=2026-02-06T20:51:53.561-05:00 level=INFO msg="Starting %s..." !BADKEY=export
+time=2026-02-06T20:51:53.561-05:00 level=INFO msg="Pre-export validation failed: %v" !BADKEY="refusing to export: JSONL content has changed since last import (import first to avoid data loss)"
+time=2026-02-06T20:52:00.285-05:00 level=INFO msg="Mutation detected: %s %s" update=gunshi-mcp-server-plugin
+time=2026-02-06T20:52:00.786-05:00 level=INFO msg="Export triggered by mutation events"
+time=2026-02-06T20:52:00.786-05:00 level=INFO msg="Starting %s..." !BADKEY=export
+time=2026-02-06T20:52:00.786-05:00 level=INFO msg="Pre-export validation failed: %v" !BADKEY="refusing to export: JSONL content has changed since last import (import first to avoid data loss)"
+time=2026-02-07T03:45:21.942-05:00 level=INFO msg="Mutation detected: %s %s" update=""
+time=2026-02-07T03:45:22.444-05:00 level=INFO msg="Export triggered by mutation events"
+time=2026-02-07T03:45:22.444-05:00 level=INFO msg="Starting %s..." !BADKEY=export
+time=2026-02-07T03:45:22.457-05:00 level=INFO msg="JSONL file created: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-02-07T03:45:22.464-05:00 level=INFO msg="Exported to JSONL"
+time=2026-02-07T03:45:22.464-05:00 level=INFO msg="Export complete"
+time=2026-02-07T03:45:23.458-05:00 level=INFO msg="Import triggered by file change"
+time=2026-02-07T03:45:23.459-05:00 level=INFO msg="Starting %s..." !BADKEY=auto-import
+time=2026-02-07T03:45:23.459-05:00 level=INFO msg="JSONL content changed, proceeding with %s..." !BADKEY=auto-import
+time=2026-02-07T03:45:23.463-05:00 level=INFO msg="⚠️  WARNING: Uncommitted local changes detected in %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-02-07T03:45:23.463-05:00 level=INFO msg="   Pulling from remote may overwrite local unpushed changes."
+time=2026-02-07T03:45:23.463-05:00 level=INFO msg="   Consider running 'bd sync' to commit and push your changes first."
+time=2026-02-07T03:45:23.466-05:00 level=INFO msg="Pull failed: %v (backoff: %v)" !BADKEY="failed to get current branch: exit status 128" !BADKEY=10m0s
+time=2026-02-07T03:47:28.535-05:00 level=INFO msg="Mutation detected: %s %s" update=""
+time=2026-02-07T03:47:29.035-05:00 level=INFO msg="Export triggered by mutation events"
+time=2026-02-07T03:47:29.036-05:00 level=INFO msg="Starting %s..." !BADKEY=export
+time=2026-02-07T03:47:29.036-05:00 level=INFO msg="Pre-export validation failed: %v" !BADKEY="refusing to export: JSONL content has changed since last import (import first to avoid data loss)"
+time=2026-02-07T03:47:31.770-05:00 level=INFO msg="Mutation detected: %s %s" update=""
+time=2026-02-07T03:47:31.821-05:00 level=INFO msg="Mutation detected: %s %s" update=""
+time=2026-02-07T03:47:32.322-05:00 level=INFO msg="Export triggered by mutation events"
+time=2026-02-07T03:47:32.322-05:00 level=INFO msg="Starting %s..." !BADKEY=export
+time=2026-02-07T03:47:32.322-05:00 level=INFO msg="Pre-export validation failed: %v" !BADKEY="refusing to export: JSONL content has changed since last import (import first to avoid data loss)"
+time=2026-02-07T03:49:19.321-05:00 level=INFO msg="Mutation detected: %s %s" status=gunshi-mcp-schema-plugin
+time=2026-02-07T03:49:19.821-05:00 level=INFO msg="Export triggered by mutation events"
+time=2026-02-07T03:49:19.822-05:00 level=INFO msg="Starting %s..." !BADKEY=export
+time=2026-02-07T03:49:19.822-05:00 level=INFO msg="Pre-export validation failed: %v" !BADKEY="refusing to export: JSONL content has changed since last import (import first to avoid data loss)"
+time=2026-02-07T03:49:41.290-05:00 level=INFO msg="Mutation detected: %s %s" status=gunshi-mcp-registry-plugin
+time=2026-02-07T03:49:41.791-05:00 level=INFO msg="Export triggered by mutation events"
+time=2026-02-07T03:49:41.791-05:00 level=INFO msg="Starting %s..." !BADKEY=export
+time=2026-02-07T03:49:41.791-05:00 level=INFO msg="Pre-export validation failed: %v" !BADKEY="refusing to export: JSONL content has changed since last import (import first to avoid data loss)"
+time=2026-02-07T03:49:43.982-05:00 level=INFO msg="Mutation detected: %s %s" status=gunshi-mcp-discovery-plugin
+time=2026-02-07T03:49:44.483-05:00 level=INFO msg="Export triggered by mutation events"
+time=2026-02-07T03:49:44.483-05:00 level=INFO msg="Starting %s..." !BADKEY=export
+time=2026-02-07T03:49:44.483-05:00 level=INFO msg="Pre-export validation failed: %v" !BADKEY="refusing to export: JSONL content has changed since last import (import first to avoid data loss)"
+time=2026-02-07T03:49:47.218-05:00 level=INFO msg="Mutation detected: %s %s" status=gunshi-mcp-server-plugin
+time=2026-02-07T03:49:47.719-05:00 level=INFO msg="Export triggered by mutation events"
+time=2026-02-07T03:49:47.719-05:00 level=INFO msg="Starting %s..." !BADKEY=export
+time=2026-02-07T03:49:47.719-05:00 level=INFO msg="Pre-export validation failed: %v" !BADKEY="refusing to export: JSONL content has changed since last import (import first to avoid data loss)"
+time=2026-02-07T03:50:32.102-05:00 level=INFO msg="JSONL file created: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-02-07T03:50:32.102-05:00 level=INFO msg="File change detected: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-02-07T03:50:33.103-05:00 level=INFO msg="Import triggered by file change"
+time=2026-02-07T03:50:33.132-05:00 level=INFO msg="Skipping %s: in backoff period" !BADKEY=auto-import
+time=2026-02-07T03:51:40.110-05:00 level=INFO msg="Git ref change detected: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.git/refs/heads/main.lock
+time=2026-02-07T03:51:41.111-05:00 level=INFO msg="Import triggered by file change"
+time=2026-02-07T03:51:41.111-05:00 level=INFO msg="Skipping %s: in backoff period" !BADKEY=auto-import
+time=2026-02-08T00:49:09.687-05:00 level=INFO msg="Received reload signal, ignoring"
+time=2026-02-08T00:49:10.122-05:00 level=INFO msg="Received signal %v, shutting down..." !BADKEY=terminated
+time=2026-02-08T03:05:02.589-05:00 level=INFO msg="Daemon started (interval: %v, auto-commit: %v, auto-push: %v)" !BADKEY=5s !BADKEY=false !BADKEY=false
+time=2026-02-08T03:05:02.591-05:00 level=INFO msg="using database" path=/home/rektide/src/gunshi-mcp/.beads/beads.db
+time=2026-02-08T03:05:02.642-05:00 level=INFO msg="database opened" path=/home/rektide/src/gunshi-mcp/.beads/beads.db backend=sqlite freshness_checking=true
+time=2026-02-08T03:05:02.642-05:00 level=INFO msg="upgrading .beads/.gitignore"
+time=2026-02-08T03:05:02.642-05:00 level=WARN msg="failed to upgrade .gitignore" error="open .beads/.gitignore: no such file or directory"
+time=2026-02-08T03:05:02.643-05:00 level=INFO msg="Repository fingerprint validated: %s" !BADKEY=b23607b6
+time=2026-02-08T03:05:02.643-05:00 level=INFO msg="starting RPC server" socket=/home/rektide/src/gunshi-mcp/.beads/bd.sock
+time=2026-02-08T03:05:02.643-05:00 level=INFO msg="RPC server ready (socket listening)"
+time=2026-02-08T03:05:02.647-05:00 level=INFO msg="registered in global registry"
+time=2026-02-08T03:05:02.647-05:00 level=INFO msg="Starting %s..." !BADKEY="sync cycle"
+time=2026-02-08T03:05:02.648-05:00 level=INFO msg="Pre-export validation failed: %v" !BADKEY="refusing to export: JSONL content has changed since last import (import first to avoid data loss)"
+time=2026-02-08T03:05:02.648-05:00 level=INFO msg="monitoring parent process" pid=0
+time=2026-02-08T03:05:02.648-05:00 level=INFO msg="using event-driven mode"
+time=2026-02-08T03:05:02.648-05:00 level=INFO msg="Auto-pull disabled: use 'git pull' manually to sync remote changes"
+time=2026-02-08T03:40:53.547-05:00 level=INFO msg="Mutation detected: %s %s" status=gunshi-mcp-cli-plugin
+time=2026-02-08T03:40:54.048-05:00 level=INFO msg="Export triggered by mutation events"
+time=2026-02-08T03:40:54.048-05:00 level=INFO msg="Starting %s..." !BADKEY=export
+time=2026-02-08T03:40:54.060-05:00 level=INFO msg="JSONL file created: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-02-08T03:40:54.068-05:00 level=INFO msg="Exported to JSONL"
+time=2026-02-08T03:40:54.068-05:00 level=INFO msg="Export complete"
+time=2026-02-08T03:40:55.062-05:00 level=INFO msg="Import triggered by file change"
+time=2026-02-08T03:40:55.062-05:00 level=INFO msg="Starting %s..." !BADKEY=auto-import
+time=2026-02-08T03:40:55.062-05:00 level=INFO msg="JSONL content changed, proceeding with %s..." !BADKEY=auto-import
+time=2026-02-08T03:40:55.064-05:00 level=INFO msg="⚠️  WARNING: Uncommitted local changes detected in %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-02-08T03:40:55.064-05:00 level=INFO msg="   Pulling from remote may overwrite local unpushed changes."
+time=2026-02-08T03:40:55.064-05:00 level=INFO msg="   Consider running 'bd sync' to commit and push your changes first."
+time=2026-02-08T03:40:55.066-05:00 level=INFO msg="Pull failed: %v (backoff: %v)" !BADKEY="failed to get current branch: exit status 128" !BADKEY=30s
+time=2026-02-08T03:41:19.492-05:00 level=INFO msg="JSONL file created: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-02-08T03:41:19.492-05:00 level=INFO msg="File change detected: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-02-08T03:41:20.493-05:00 level=INFO msg="Import triggered by file change"
+time=2026-02-08T03:41:20.495-05:00 level=INFO msg="Skipping %s: in backoff period" !BADKEY=auto-import
+time=2026-02-08T03:51:50.328-05:00 level=INFO msg="JSONL file created: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-02-08T03:51:50.328-05:00 level=INFO msg="File change detected: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-02-08T03:51:51.329-05:00 level=INFO msg="Import triggered by file change"
+time=2026-02-08T03:51:51.330-05:00 level=INFO msg="Starting %s..." !BADKEY=auto-import
+time=2026-02-08T03:51:51.331-05:00 level=INFO msg="JSONL content changed, proceeding with %s..." !BADKEY=auto-import
+time=2026-02-08T03:51:51.335-05:00 level=INFO msg="Pull failed: %v (backoff: %v)" !BADKEY="failed to get current branch: exit status 128" !BADKEY=1m0s
+time=2026-02-08T15:19:09.979-05:00 level=INFO msg="Mutation detected: %s %s" update=gunshi-mcp-plugin-arch
+time=2026-02-08T15:19:10.481-05:00 level=INFO msg="Export triggered by mutation events"
+time=2026-02-08T15:19:10.482-05:00 level=INFO msg="Starting %s..." !BADKEY=export
+time=2026-02-08T15:19:10.493-05:00 level=INFO msg="JSONL file created: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-02-08T15:19:10.500-05:00 level=INFO msg="Exported to JSONL"
+time=2026-02-08T15:19:10.501-05:00 level=INFO msg="Export complete"
+time=2026-02-08T15:19:11.494-05:00 level=INFO msg="Import triggered by file change"
+time=2026-02-08T15:19:11.495-05:00 level=INFO msg="Starting %s..." !BADKEY=auto-import
+time=2026-02-08T15:19:11.495-05:00 level=INFO msg="JSONL content changed, proceeding with %s..." !BADKEY=auto-import
+time=2026-02-08T15:19:11.497-05:00 level=INFO msg="⚠️  WARNING: Uncommitted local changes detected in %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-02-08T15:19:11.497-05:00 level=INFO msg="   Pulling from remote may overwrite local unpushed changes."
+time=2026-02-08T15:19:11.497-05:00 level=INFO msg="   Consider running 'bd sync' to commit and push your changes first."
+time=2026-02-08T15:19:11.499-05:00 level=INFO msg="Pull failed: %v (backoff: %v)" !BADKEY="failed to get current branch: exit status 128" !BADKEY=2m0s
+time=2026-02-08T15:19:11.985-05:00 level=INFO msg="JSONL file created: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-02-08T15:19:11.985-05:00 level=INFO msg="File change detected: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-02-08T15:19:12.985-05:00 level=INFO msg="Import triggered by file change"
+time=2026-02-08T15:19:12.987-05:00 level=INFO msg="Skipping %s: in backoff period" !BADKEY=auto-import
+time=2026-02-08T15:34:42.196-05:00 level=INFO msg="Mutation detected: %s %s" update=gunshi-mcp-plugin-arch
+time=2026-02-08T15:34:42.696-05:00 level=INFO msg="Export triggered by mutation events"
+time=2026-02-08T15:34:42.696-05:00 level=INFO msg="Starting %s..." !BADKEY=export
+time=2026-02-08T15:34:42.717-05:00 level=INFO msg="JSONL file created: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-02-08T15:34:42.724-05:00 level=INFO msg="Exported to JSONL"
+time=2026-02-08T15:34:42.724-05:00 level=INFO msg="Export complete"
+time=2026-02-08T15:34:43.718-05:00 level=INFO msg="Import triggered by file change"
+time=2026-02-08T15:34:43.718-05:00 level=INFO msg="Starting %s..." !BADKEY=auto-import
+time=2026-02-08T15:34:43.718-05:00 level=INFO msg="JSONL content changed, proceeding with %s..." !BADKEY=auto-import
+time=2026-02-08T15:34:43.720-05:00 level=INFO msg="⚠️  WARNING: Uncommitted local changes detected in %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-02-08T15:34:43.720-05:00 level=INFO msg="   Pulling from remote may overwrite local unpushed changes."
+time=2026-02-08T15:34:43.720-05:00 level=INFO msg="   Consider running 'bd sync' to commit and push your changes first."
+time=2026-02-08T15:34:43.723-05:00 level=INFO msg="Pull failed: %v (backoff: %v)" !BADKEY="failed to get current branch: exit status 128" !BADKEY=5m0s
+time=2026-02-08T15:34:44.684-05:00 level=INFO msg="JSONL file created: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-02-08T15:34:44.684-05:00 level=INFO msg="File change detected: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.beads/issues.jsonl
+time=2026-02-08T15:34:45.685-05:00 level=INFO msg="Import triggered by file change"
+time=2026-02-08T15:34:45.687-05:00 level=INFO msg="Skipping %s: in backoff period" !BADKEY=auto-import
+time=2026-02-08T15:57:59.370-05:00 level=INFO msg="Git ref change detected: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.git/refs/heads/main.lock
+time=2026-02-08T15:58:00.371-05:00 level=INFO msg="Import triggered by file change"
+time=2026-02-08T15:58:00.371-05:00 level=INFO msg="Starting %s..." !BADKEY=auto-import
+time=2026-02-08T15:58:00.371-05:00 level=INFO msg="JSONL content changed, proceeding with %s..." !BADKEY=auto-import
+time=2026-02-08T15:58:00.375-05:00 level=INFO msg="Pull failed: %v (backoff: %v)" !BADKEY="failed to get current branch: exit status 128" !BADKEY=10m0s
+time=2026-02-08T16:38:45.902-05:00 level=INFO msg="Git ref change detected: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.git/refs/heads/main.lock
+time=2026-02-08T16:38:46.903-05:00 level=INFO msg="Import triggered by file change"
+time=2026-02-08T16:38:46.904-05:00 level=INFO msg="Starting %s..." !BADKEY=auto-import
+time=2026-02-08T16:38:46.904-05:00 level=INFO msg="JSONL content changed, proceeding with %s..." !BADKEY=auto-import
+time=2026-02-08T16:38:46.908-05:00 level=INFO msg="Pull failed: %v (backoff: %v)" !BADKEY="failed to get current branch: exit status 128" !BADKEY=30m0s
+time=2026-02-08T16:45:12.379-05:00 level=INFO msg="Git ref change detected: %s" !BADKEY=/home/rektide/src/gunshi-mcp/.git/refs/heads/main.lock
+time=2026-02-08T16:45:13.381-05:00 level=INFO msg="Import triggered by file change"
+time=2026-02-08T16:45:13.381-05:00 level=INFO msg="Skipping %s: in backoff period" !BADKEY=auto-import
+time=2026-02-25T01:19:05.996-05:00 level=INFO msg="Received signal %v, shutting down..." !BADKEY=terminated
